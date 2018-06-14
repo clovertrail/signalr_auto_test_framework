@@ -1,0 +1,138 @@
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using Bench.Server.Worker.Counters;
+using Bench.Server.Worker.Savers;
+using Bench.Server.Worker.StartTimeOffsetGenerator;
+using Bench.Common.Config;
+using Bench.Common;
+
+namespace Bench.Server.Worker.Operations
+{
+    
+
+    class EchoOp : BaseOp, IOperation
+    {
+        private List<System.Timers.Timer> TimerPerConnection;
+        private List<TimeSpan> DelayPerConnection;
+        private IStartTimeOffsetGenerator StartTimeOffsetGenerator;
+        private List<int> _sentMessages;
+        private WorkerToolkit _tk;
+
+        public void Do(WorkerToolkit tk)
+        {
+            tk.Test.Add(1);
+            Util.Log($"do echo, {tk.Test.Count}");
+
+            // setup
+            _tk = tk;
+            Setup();
+
+            _tk.State = Stat.Types.State.SendReady;
+
+            // send message
+            StartSendMsg();
+
+            // wait to stop
+            Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + _tk.JobConfig.Interval*2)).ContinueWith(t => {
+                SaveCounters();
+            }).Wait();
+
+            _tk.State = Stat.Types.State.SendComplete;
+            Util.Log($"exit echo");
+        }
+
+        private void Setup()
+        {
+            StartTimeOffsetGenerator = new RandomGenerator(new LocalFileSaver());
+
+            _sentMessages = new List<int>();
+            for (int i = 0; i < _tk.JobConfig.Connections; i++)
+            {
+                _sentMessages.Add(0);
+            }
+
+            SetCallbacks();
+            SetTimers();
+            _tk.Counters.ResetCounters();
+        }
+
+        private void SetCallbacks()
+        {
+            for (int i = 0; i < _tk.Connections.Count; i++)
+            {
+                int ind = i;
+                _tk.Connections[i].On(_tk.JobConfig.CallbackName, (string uid, string time) =>
+                {
+                    var sendTimestamp = Convert.ToInt64(time);
+                    var receiveTimestamp = Util.Timestamp();
+
+                    _tk.Counters.CountLatency(sendTimestamp, receiveTimestamp);
+                    if (ind == 0) Util.Log($"#### echocallback");
+                });
+            }
+        }
+
+        private void StartSendMsg()
+        {
+            _tk.State = Stat.Types.State.SendRunning;
+            for (int i = 0; i < _tk.Connections.Count; i++)
+            {
+                int ind = i;
+                _ = Task.Delay(DelayPerConnection[i]).ContinueWith(_ =>
+                {
+                    TimerPerConnection[ind].Start();
+                });
+            }
+        }
+
+        private void SetTimers()
+        {
+            TimerPerConnection = new List<System.Timers.Timer>();
+            DelayPerConnection = new List<TimeSpan>();
+
+            Util.Log($" duration: {_tk.JobConfig.Duration}, interval: {_tk.JobConfig.Interval}");
+
+            for (int i = 0; i < _tk.Connections.Count; i++)
+            {
+                var delay = StartTimeOffsetGenerator.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Interval));
+                DelayPerConnection.Add(delay);
+
+                TimerPerConnection.Add(new System.Timers.Timer());
+
+                var ind = i;
+                TimerPerConnection[i].AutoReset = true;
+                TimerPerConnection[i].Elapsed += (sender, e) =>
+                {
+                    if (_sentMessages[ind] >= _tk.JobConfig.Duration * _tk.JobConfig.Interval)
+                    {
+                        TimerPerConnection[ind].Stop();
+                        return;
+                    }
+
+                    if (TimerPerConnection[ind].Interval != _tk.JobConfig.Interval * 1000)
+                    {
+                        TimerPerConnection[ind].Stop();
+                        TimerPerConnection[ind].Interval = _tk.JobConfig.Interval * 1000;
+                        TimerPerConnection[ind].Start();
+                    }
+
+                    if (ind == 0)
+                    {
+                        Util.Log($"@@@@ timer send");
+                    }
+                    _sentMessages[ind]++;
+                    _tk.Counters.IncreseSentMsg();
+                    _ = _tk.Connections[ind].SendAsync("Echo", $"{Util.GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+                };
+            }
+        }
+
+        private void SaveCounters()
+        {
+            _tk.Counters.SaveCounters();
+        }
+    }
+}

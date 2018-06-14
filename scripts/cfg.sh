@@ -1,0 +1,1 @@
+../../cfg/signalrautotest/cfg.bash

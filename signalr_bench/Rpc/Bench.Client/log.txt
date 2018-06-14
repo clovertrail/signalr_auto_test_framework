@@ -1,0 +1,26 @@
+[01:28:17.845] agent config: master: localhost
+slaves:
+#  - wanlsignalrautotestagent.eastus.cloudapp.azure.com
+ - localhost
+appServer: localhost 
+rpcPort: 5555
+sshPort: 22222
+user: wanl
+password: wanl12151215WANL
+repo: https://github.com/realwanpengli/signalr_auto_test_framework.git
+
+[01:28:18.843] slave: localhost
+[01:28:18.844] add channel: localhost:5555
+[01:28:18.942] job config: connections: 1000
+hubProtocol: json
+transportType: websockets
+interval: 1
+duration: 10
+scenarios: [echo]
+# serverUrl: http://localhost:5000/echo
+serverUrl: http://wanlsignalrautotestappserver.eastus.cloudapp.azure.com:5000/echo
+pipeline: [createConn, startConn, echo, stopConn, disposeConn]
+callbackName: "EchoCallback"
+[01:28:19.086] create worker state: WorkerCreated
+[01:28:19.095] load job config state: ConfigLoaded
+Exit client...

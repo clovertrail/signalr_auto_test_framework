@@ -1,0 +1,2 @@
+[linux]
+label ansible_host=wanlsignalrbenchserver.eastus.cloudapp.azure.com ansible_port=22222 

@@ -1,0 +1,56 @@
+/usr/share/dotnet/sdk/2.1.300/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ObsoleteReferences.targets(33,5): warning : The tool 'Microsoft.Extensions.SecretManager.Tools' is now included in the .NET Core SDK. Information on resolving this warning is available at (https://aka.ms/dotnetclitools-in-box). [/mnt/c/Users/wanl/Documents/microsoft/workspace/signalr_auto_test_framework/signalr_bench/AppServer/AppServer.csproj]
+/usr/share/dotnet/sdk/2.1.300/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ObsoleteReferences.targets(33,5): warning : The tool 'Microsoft.Extensions.SecretManager.Tools' is now included in the .NET Core SDK. Information on resolving this warning is available at (https://aka.ms/dotnetclitools-in-box). [/mnt/c/Users/wanl/Documents/microsoft/workspace/signalr_auto_test_framework/signalr_bench/AppServer/AppServer.csproj]
+Using launch settings from /mnt/c/Users/wanl/Documents/microsoft/workspace/signalr_auto_test_framework/signalr_bench/AppServer/Properties/launchSettings.json...
+use local signalr: True, use msgpack: False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Hosting.Internal.WebHost[3]
+      Hosting starting
+[40m[32minfo[39m[22m[49m: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[0]
+      User profile is available. Using '/home/wanl/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[37]
+      Reading data from file '/home/wanl/.aspnet/DataProtection-Keys/key-75dbe0de-f80f-4c85-9377-bc23f189c8ca.xml'.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[18]
+      Found key {75dbe0de-f80f-4c85-9377-bc23f189c8ca}.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.DataProtection.KeyManagement.DefaultKeyResolver[13]
+      Considering key {75dbe0de-f80f-4c85-9377-bc23f189c8ca} with expiration date 2018-08-19 09:08:54Z as default key.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.DataProtection.TypeForwardingActivator[0]
+      Forwarded activator type request from Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ManagedAuthenticatedEncryptorFactory[11]
+      Using managed symmetric algorithm 'System.Security.Cryptography.Aes'.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ManagedAuthenticatedEncryptorFactory[10]
+      Using managed keyed hash algorithm 'System.Security.Cryptography.HMACSHA256'.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.DataProtection.KeyManagement.KeyRingProvider[2]
+      Using key {75dbe0de-f80f-4c85-9377-bc23f189c8ca} as the default key.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.DataProtection.Internal.DataProtectionStartupFilter[0]
+      Key ring with default key {75dbe0de-f80f-4c85-9377-bc23f189c8ca} was loaded during application startup.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.MvcJsonOptions[0]
+      Compatibility switch AllowInputFormatterExceptionMessages in type MvcJsonOptions is using default value False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.MvcOptions[0]
+      Compatibility switch AllowCombiningAuthorizeFilters in type MvcOptions is using default value False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.MvcOptions[0]
+      Compatibility switch AllowBindingHeaderValuesToNonStringModelTypes in type MvcOptions is using default value False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.MvcOptions[0]
+      Compatibility switch AllowValidatingTopLevelNodes in type MvcOptions is using default value False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.MvcOptions[0]
+      Compatibility switch InputFormatterExceptionPolicy in type MvcOptions is using default value AllExceptions
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.MvcOptions[0]
+      Compatibility switch SuppressBindingUndefinedValueToEnumType in type MvcOptions is using default value False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.RazorPages.RazorPagesOptions[0]
+      Compatibility switch AllowAreas in type RazorPagesOptions is using default value False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.RazorPages.RazorPagesOptions[0]
+      Compatibility switch AllowMappingHeadRequestsToGetHandler in type RazorPagesOptions is using default value False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.MvcViewOptions[0]
+      Compatibility switch SuppressTempDataAttributePrefix in type MvcViewOptions is using default value False
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Mvc.ModelBinding.ModelBinderFactory[12]
+      Registered model binder providers, in the following order: Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BinderTypeModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ServicesModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.HeaderModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FloatingPointTypeModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.EnumTypeModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.SimpleTypeModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CancellationTokenModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ByteArrayModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormFileModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormCollectionModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.KeyValuePairModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DictionaryModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ArrayModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CollectionModelBinderProvider, Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.SignalR.Internal.DefaultHubProtocolResolver[1]
+      Registered SignalR Protocol: json, implemented by Microsoft.AspNetCore.SignalR.Protocol.JsonHubProtocol.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServer[2]
+      Failed to locate the development https certificate at '(null)'.
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Hosting.Internal.WebHost[4]
+      Hosting started
+[40m[37mdbug[39m[22m[49m: Microsoft.AspNetCore.Hosting.Internal.WebHost[0]
+      Loaded hosting startup assembly AppServer
+Hosting environment: Development
+Content root path: /mnt/c/Users/wanl/Documents/microsoft/workspace/signalr_auto_test_framework/signalr_bench/AppServer
+Now listening on: http://[::]:5000
+Application started. Press Ctrl+C to shut down.
