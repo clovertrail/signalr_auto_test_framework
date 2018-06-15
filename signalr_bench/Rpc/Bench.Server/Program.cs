@@ -34,7 +34,7 @@ namespace Bench.Server {
             //Console.WriteLine ("Press any key to stop the server...");
             //Console.ReadKey ();
 
-            Task.Delay(TimeSpan.FromDays(365)).Wait();
+            Task.Delay(Timeout.Infinite).Wait();
 
             server.ShutdownAsync().Wait();
         }
