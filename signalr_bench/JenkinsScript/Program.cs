@@ -106,14 +106,14 @@ namespace JenkinsScript
 
             // start master
             //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile} > log.txt";
-            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' > log.txt";
+            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; killall dotnet || true; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' > log.txt";
             Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
             var maxRetry = 100;
             for (var i = 0; i < maxRetry; i++)
             {
                 (errCode, result) = ShellHelper.Bash(cmd);
                 if (errCode == 0) break;
-                if (i != 0) Util.Log($"retry {i}th time");
+                Util.Log($"retry {i}th time");
                 Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
                 Task.Delay(1000).Wait();
 
