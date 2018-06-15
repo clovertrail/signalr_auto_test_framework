@@ -16,6 +16,6 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-            .UseUrls("http://*:5888");
+            .UseUrls("http://*:5000");
     }
 }
