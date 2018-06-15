@@ -13,13 +13,13 @@ namespace JenkinsScript
         [Option('j', "jobconfig", Required = false, HelpText = "Specify Job Config File")]
         public string JobConfigFile { get; set; }
 
-        [Option('c', "containername", Required = false, HelpText = "Specify Azure Container Name")]
+        [Option('C', "containername", Required = false, HelpText = "Specify Azure Container Name")]
         public string ContainerName { get; set; }
 
-        [Option('y', "jobblobname", Required = false, HelpText = "Specify Azure Blob Name For Job Config File")]
+        [Option('J', "jobblobname", Required = false, HelpText = "Specify Azure Blob Name For Job Config File")]
         public string JobBlobName { get; set; }
 
-        [Option('x', "agentblobname", Required = false, HelpText = "Specify Azure Blob Name For Agent Config File")]
+        [Option('A', "agentblobname", Required = false, HelpText = "Specify Azure Blob Name For Agent Config File")]
         public string AgentBlobName { get; set; }
 
 
