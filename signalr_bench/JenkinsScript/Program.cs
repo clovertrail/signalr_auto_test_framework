@@ -91,7 +91,7 @@ namespace JenkinsScript
             cfg.Slaves.ForEach(host =>
             {
                 //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; dotnet run -a {argsOption.AgentConfigFile} -d 0.0.0.0 > log.txt";
-                cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; dotnet run -a {argsOption.AgentConfigFile} -d 0.0.0.0 > log.txt";
+                cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; dotnet run -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
                 Util.Log($"CMD: {cfg.User}@{host}: {cmd}");
                 (errCode, result) = ShellHelper.RemoteBash(cfg.User, host, cfg.SshPort, cfg.Password, cmd, wait: false);
                 if (errCode != 0) return;
@@ -106,7 +106,7 @@ namespace JenkinsScript
 
             // start master
             //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile} > log.txt";
-            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile}";
+            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}'";
             Util.Log($"{cfg.User}@{cfg.Master}: {cmd}");
             var maxRetry = 100;
             for (var i = 0; i < maxRetry; i++)
