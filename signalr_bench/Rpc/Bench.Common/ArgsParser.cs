@@ -15,5 +15,14 @@ namespace Bench.Common
 
         [Option('d', "dnsname", Required = false, HelpText = "Specify DNS Name")]
         public string DnsName { get; set; }
+
+        [Option('c', "containername", Required = false, HelpText = "Specify Azure Container Name")]
+        public string ContainerName { get; set; }
+
+        [Option('y', "jobblobname", Required = false, HelpText = "Specify Azure Blob Name For Job Config File")]
+        public string JobBlobName { get; set; }
+
+        [Option('x', "agentblobname", Required = false, HelpText = "Specify Azure Blob Name For Agent Config File")]
+        public string AgentBlobName { get; set; }
     }
 }

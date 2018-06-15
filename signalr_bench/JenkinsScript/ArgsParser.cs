@@ -13,6 +13,17 @@ namespace JenkinsScript
         [Option('j', "jobconfig", Required = false, HelpText = "Specify Job Config File")]
         public string JobConfigFile { get; set; }
 
+        [Option('c', "containername", Required = false, HelpText = "Specify Azure Container Name")]
+        public string ContainerName { get; set; }
+
+        [Option('y', "jobblobname", Required = false, HelpText = "Specify Azure Blob Name For Job Config File")]
+        public string JobBlobName { get; set; }
+
+        [Option('x', "agentblobname", Required = false, HelpText = "Specify Azure Blob Name For Agent Config File")]
+        public string AgentBlobName { get; set; }
+
+
+
         [Option('h', "help", Required = false, HelpText = " dotnet run -j /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/job.yaml -a  /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/agent.yaml")]
         public string Help { get; set; }
     }
