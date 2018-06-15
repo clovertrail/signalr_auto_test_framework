@@ -30,9 +30,11 @@ namespace Bench.Server {
             };
             server.Start ();
 
-            Console.WriteLine ("Server listening on port " + config.RpcPort);
-            Console.WriteLine ("Press any key to stop the server...");
-            Console.ReadKey ();
+            //Console.WriteLine ("Server listening on port " + config.RpcPort);
+            //Console.WriteLine ("Press any key to stop the server...");
+            //Console.ReadKey ();
+
+            Task.Delay(TimeSpan.FromDays(365)).Wait();
 
             server.ShutdownAsync().Wait();
         }
