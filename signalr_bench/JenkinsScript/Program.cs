@@ -77,7 +77,7 @@ namespace JenkinsScript
             //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/AppServer/; dotnet run > log.txt";
             cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/AppServer/; dotnet run > log.txt";
             Util.Log($"{cfg.User}@{cfg.AppServer}: {cmd}");
-            (errCode, result) = ShellHelper.Bash(cmd, wait: false);
+            (errCode, result) = ShellHelper.RemoteBash(cfg.User, cfg.AppServer, cfg.SshPort, cfg.Password, cmd, wait: false);
 
             if (errCode != 0)
             {
@@ -102,20 +102,20 @@ namespace JenkinsScript
                 Environment.Exit(1);
             }
 
-            Task.Delay(5000).Wait();
+            Task.Delay(10000).Wait();
 
             // start master
             //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile} > log.txt";
-            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; killall dotnet || true; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' > log.txt";
+            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' > log.txt";
             Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
             var maxRetry = 100;
             for (var i = 0; i < maxRetry; i++)
             {
-                (errCode, result) = ShellHelper.Bash(cmd);
+                (errCode, result) = ShellHelper.RemoteBash(cfg.User, cfg.Master, cfg.SshPort, cfg.Password, cmd);
                 if (errCode == 0) break;
                 Util.Log($"retry {i}th time");
                 Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
-                Task.Delay(1000).Wait();
+                Task.Delay(2000).Wait();
 
                 if (errCode != 0)
                 {

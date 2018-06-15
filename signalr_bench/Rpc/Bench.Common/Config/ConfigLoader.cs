@@ -55,6 +55,8 @@ namespace Bench.Common.Config
             {
                 content = File.ReadAllText(path);
             }
+
+            Util.Log($"Config: \n {content}");
             return content;
         }
 
