@@ -29,7 +29,7 @@ namespace Bench.Server.Worker.Savers
 
             JObject rec = new JObject
             {
-                { "Time", Timestamp2DateTimeStr(timestamp) },
+                { "Time", Util.Timestamp2DateTimeStr(timestamp) },
                 { "Counters", jCounters },
                 {"totalSent", counters["message:sent"]},
                 {"totalReceive", totalReceive }
@@ -49,10 +49,7 @@ namespace Bench.Server.Worker.Savers
 
         }
 
-        private string Timestamp2DateTimeStr(long timestamp)
-        {
-            return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).ToString("yyyy-MM-ddThh:mm:ssZ");
-        }
+        
 
         
     }

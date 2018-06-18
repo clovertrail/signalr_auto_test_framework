@@ -99,9 +99,14 @@ namespace Bench.Client
                     var sortedCounters = Util.Sort(jobj);
                     string oneLineRecord = Regex.Replace(sortedCounters.ToString(), @"\s+", "");
                     oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
-                    StreamWriter sw = File.CreateText("PerSecond.txt");
+                    oneLineRecord = $"[{Util.Timestamp2DateTimeStr(Util.Timestamp())}]: {oneLineRecord}";
+                    if (!File.Exists("PerSecond.txt"))
+                    {
+                        StreamWriter sw = File.CreateText("PerSecond.txt");
+                    }
+
                     File.AppendAllText("PerSecond.txt", oneLineRecord);
-                    Util.Log(oneLineRecord);
+                    Util.Log("per second: " + oneLineRecord);
                 });
             };
             collectTimer.Start();

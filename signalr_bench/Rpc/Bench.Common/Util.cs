@@ -30,11 +30,11 @@ namespace Bench.Common
 
         public static JObject Sort(JObject jobj)
         {
-            Util.Log($"jobj = {jobj.ToString()}");
+            //Util.Log($"jobj = {jobj.ToString()}");
             var sorted = new JObject(
                 jobj.Properties().OrderBy(p =>
                 {
-                    Util.Log($"p.name = {p.Name}");
+                    //Util.Log($"p.name = {p.Name}");
                     var startInd = p.Name.LastIndexOf(":") + 1;
                     int latency = 99999;
                     try
@@ -50,12 +50,17 @@ namespace Bench.Common
                         latency += 1;
                     }
 
-                    Util.Log($"latencay = {latency}");
+                    //Util.Log($"latencay = {latency}");
                     return latency;
                 })
             );
-            Util.Log($"sorted jobj = {sorted.ToString()}");
+            //Util.Log($"sorted jobj = {sorted.ToString()}");
             return sorted;
+        }
+
+        public static string Timestamp2DateTimeStr(long timestamp)
+        {
+            return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).ToString("yyyy-MM-ddThh:mm:ssZ");
         }
 
         public static class GuidEncoder
