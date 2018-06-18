@@ -104,6 +104,7 @@ namespace Bench.Client
                     Util.Log(oneLineRecord);
                 });
             };
+            collectTimer.Start();
             
 
             // process pipeline
