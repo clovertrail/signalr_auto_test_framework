@@ -48,14 +48,15 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
             if (useLocalSignalR)
                 app.UseSignalR(routes =>
                 {
-                    routes.MapHub<EchoHub>("/echo");
+                    routes.MapHub<BenchHub>("/echo");
                 });
             else
                 app.UseAzureSignalR(routes =>
                 {
-                    routes.MapHub<EchoHub>("/echo");
+                    routes.MapHub<BenchHub>("/echo");
                 });
 
         }
+
     }
 }

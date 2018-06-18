@@ -22,6 +22,7 @@ using Bench.Client.Allocators;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Collections.Concurrent;
 
 namespace Bench.Client
 {
@@ -82,32 +83,39 @@ namespace Bench.Client
             collectTimer.AutoReset = true;
             collectTimer.Elapsed += (sender, e) =>
             {
+                var allClientCounters = new ConcurrentDictionary<string, int>();
                 clients.ForEach(client =>
                 {
                     var state = client.GetState(new Empty { });
                     if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
                     var counters = client.CollectCounters(new Force { Force_ = false });
-                    var jobj = new JObject();
 
                     for (var i = 0; i < counters.Pairs.Count; i++)
                     {
                         var key = counters.Pairs[i].Key;
                         var value = counters.Pairs[i].Value;
-                        jobj.Add(key, value);
+                        allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
                     }
-
-                    var sortedCounters = Util.Sort(jobj);
-                    string oneLineRecord = Regex.Replace(sortedCounters.ToString(), @"\s+", "");
-                    oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
-                    oneLineRecord = $"[{Util.Timestamp2DateTimeStr(Util.Timestamp())}]: {oneLineRecord}";
-                    if (!File.Exists("PerSecond.txt"))
-                    {
-                        StreamWriter sw = File.CreateText("PerSecond.txt");
-                    }
-
-                    File.AppendAllText("PerSecond.txt", oneLineRecord);
-                    Util.Log("per second: " + oneLineRecord);
                 });
+
+                var jobj = new JObject();
+                foreach(var item in allClientCounters)
+                {
+                    jobj.Add(item.Key, item.Value);
+                }
+
+                var sortedCounters = Util.Sort(jobj);
+                string oneLineRecord = Regex.Replace(sortedCounters.ToString(), @"\s+", "");
+                oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
+                oneLineRecord = $"[{Util.Timestamp2DateTimeStr(Util.Timestamp())}]: {oneLineRecord}";
+                if (!File.Exists("PerSecond.txt"))
+                {
+                    StreamWriter sw = File.CreateText("PerSecond.txt");
+                }
+
+                File.AppendAllText("PerSecond.txt", oneLineRecord);
+                Util.Log("per second: " + oneLineRecord);
+
             };
             collectTimer.Start();
             
