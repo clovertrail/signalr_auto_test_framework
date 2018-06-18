@@ -101,6 +101,7 @@ namespace Bench.Client
                     oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
                     StreamWriter sw = File.CreateText("PerSecond.txt");
                     File.AppendAllText("PerSecond.txt", oneLineRecord);
+                    Util.Log(oneLineRecord);
                 });
             };
             
