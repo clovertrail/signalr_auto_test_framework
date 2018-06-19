@@ -89,10 +89,10 @@ namespace Bench.Client
                 clients.ForEach(client =>
                 {
                     var state = client.GetState(new Empty { });
-                    Util.Log($"{ind}th client:");
+                    Util.Log($"{ind}th client: state {state.State}");
                     ind = ind + 1;
-                    if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
-                    var counters = client.CollectCounters(new Force { Force_ = false });
+                    //if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
+                    var counters = client.CollectCounters(new Force { Force_ = true });
 
                     for (var i = 0; i < counters.Pairs.Count; i++)
                     {
