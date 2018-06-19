@@ -14,6 +14,8 @@ using Client.Statistics;
 using Client.Statistics.Savers;
 using Client.Tools;
 using Client.Workers.OperationsNs;
+using Microsoft.AspNetCore.SignalR.Protocol;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Client.WorkerNs
 {
@@ -168,21 +170,23 @@ namespace Client.WorkerNs
                 {
                     httpConnectionOptions.HttpMessageHandlerFactory = _ => _httpClientHandler;
                     httpConnectionOptions.Transports = transportType;
-                    //httpConnectionOptions.SkipNegotiation = true;
                     httpConnectionOptions.CloseTimeout = TimeSpan.FromMinutes(100);
                 });
+
+                HubConnection connection = null;
 
                 switch (_pkg.Job.HubProtocol)
                 {
                     case "json":
                         // json hub protocol is set by default
+                        connection = hubConnectionBuilder.Build();
+                        break;
+                    case "messagepack":
+                        connection = hubConnectionBuilder.AddMessagePackProtocol().Build();
                         break;
                     default:
                         throw new Exception($"{_pkg.Job.HubProtocol} is an invalid hub protocol name.");
                 }
-
-
-                var connection = hubConnectionBuilder.Build();
 
                 _pkg.Connections.Add(connection);
                 _pkg.SentMassage.Add(0);

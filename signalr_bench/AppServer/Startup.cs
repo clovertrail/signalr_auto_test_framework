@@ -14,7 +14,7 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         {
             Configuration = configuration;
             useLocalSignalR = true;
-            useMessagePack = false;
+            useMessagePack = true;
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine($"use local signalr: {useLocalSignalR}, use msgpack: {useMessagePack}");
