@@ -34,7 +34,7 @@ namespace JenkinsScript
         public static (int, string) RemoteBash(string user, string host, int port, string password, string cmd, bool wait=true)
         {
             if (host.IndexOf("localhost") >= 0 || host.IndexOf("127.0.0.1") >= 0) return Bash(cmd, wait);
-            string sshPassCmd = $"sshpass -p {password} ssh -p {port} -o StrictHostKeyChecking=no {user}@{host} \"{cmd}\"";
+            string sshPassCmd = $"ssh -p {port} -o StrictHostKeyChecking=no {user}@{host} \"{cmd}\"";
             return Bash(sshPassCmd, wait);
         }
     }
