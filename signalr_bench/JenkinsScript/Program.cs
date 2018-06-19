@@ -87,22 +87,22 @@ namespace JenkinsScript
 
             Task.Delay(5000).Wait();
 
-            // start rpc agents
-            cfg.Slaves.ForEach(host =>
-            {
-                //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; dotnet run -a {argsOption.AgentConfigFile} -d 0.0.0.0 > log.txt";
-                cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
-                Util.Log($"CMD: {cfg.User}@{host}: {cmd}");
-                (errCode, result) = ShellHelper.RemoteBash(cfg.User, host, cfg.SshPort, cfg.Password, cmd, wait: false);
-                if (errCode != 0) return;
-            });
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
-            }
+            //// start rpc agents
+            //cfg.Slaves.ForEach(host =>
+            //{
+            //    //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; dotnet run -a {argsOption.AgentConfigFile} -d 0.0.0.0 > log.txt";
+            //    cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
+            //    Util.Log($"CMD: {cfg.User}@{host}: {cmd}");
+            //    (errCode, result) = ShellHelper.RemoteBash(cfg.User, host, cfg.SshPort, cfg.Password, cmd, wait: false);
+            //    if (errCode != 0) return;
+            //});
+            //if (errCode != 0)
+            //{
+            //    Util.Log($"ERR {errCode}: {result}");
+            //    Environment.Exit(1);
+            //}
 
-            Task.Delay(20000).Wait();
+            //Task.Delay(20000).Wait();
 
             //// start master
             ////cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile} > log.txt";
@@ -126,7 +126,7 @@ namespace JenkinsScript
             //{
             //    Util.Log($"ERR {errCode}: {result}");
             //    Environment.Exit(1);
-            }
+            //}
 
 
         }
