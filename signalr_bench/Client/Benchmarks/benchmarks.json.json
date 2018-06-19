@@ -12,5 +12,5 @@
     "Scenarios": "Echo",
     "CallbackName": "EchoCallback"
   },
-  "Echo1": {"Id": 0,"Connections": 1000}
+  "Echo1": {"Id": 0,"Connections": 10000}
 }

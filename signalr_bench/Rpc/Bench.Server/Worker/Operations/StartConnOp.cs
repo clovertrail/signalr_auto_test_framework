@@ -25,12 +25,13 @@ namespace Bench.Server.Worker.Operations
             _tk.State = Stat.Types.State.HubconnConnecting;
             var tasks = new List<Task>(connections.Count);
 
-            //int i = 0;
+            int i = 0;
             foreach (var conn in connections)
             {
-                //int ind = ++i;
-                //tasks.Add(Task.Delay(10*ind).ContinueWith(_ => conn.StartAsync()));
-                conn.StartAsync();
+                i += 1;
+                int ind = i;
+                tasks.Add(Task.Delay(10 * ind).ContinueWith(_ => conn.StartAsync()));
+                //conn.StartAsync();
             }
             Task.WhenAll(tasks).Wait();
             _tk.State = Stat.Types.State.HubconnConnected;

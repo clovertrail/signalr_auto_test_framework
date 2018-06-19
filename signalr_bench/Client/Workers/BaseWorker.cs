@@ -237,7 +237,7 @@ namespace Client.WorkerNs
                 //    Util.Log($"wait {i} connections start");
                 //}
                 int ind = i;
-                tasks.Add(Task.Delay(ind / 100 * 2000).ContinueWith(_ => _pkg.Connections[ind].StartAsync()));
+                tasks.Add(Task.Delay(ind / 100 * 500).ContinueWith(_ => _pkg.Connections[ind].StartAsync()));
             }
 
             await Task.WhenAll(tasks);

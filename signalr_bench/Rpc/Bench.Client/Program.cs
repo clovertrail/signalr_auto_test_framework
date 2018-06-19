@@ -126,8 +126,9 @@ namespace Bench.Client
 
             // process pipeline
             var tasks = new List<Task>();
-            clients.ForEach(client => tasks.Add(Task.Delay(0).ContinueWith(_ => client.RunJob(new Empty()))));
+            clients.ForEach(client => tasks.Add(Task.Delay(0).ContinueWith(t => Task.FromResult(client.RunJob(new Empty())))));
 
+            Util.Log($"wait for tasks");
             Task.WhenAll(tasks).Wait();
 
             for (var i = 0; i < channels.Count; i++)
