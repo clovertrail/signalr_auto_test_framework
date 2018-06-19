@@ -75,7 +75,7 @@ namespace JenkinsScript
 
             // start appserver
             //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/AppServer/; dotnet run > log.txt";
-            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/AppServer/;export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}' dotnet run > log.txt";
+            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/AppServer/;export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log.txt";
             Util.Log($"{cfg.User}@{cfg.AppServer}: {cmd}");
             (errCode, result) = ShellHelper.RemoteBash(cfg.User, cfg.AppServer, cfg.SshPort, cfg.Password, cmd, wait: false);
 
