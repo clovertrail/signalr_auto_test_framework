@@ -7,6 +7,7 @@ namespace Bench.Common.Config
     public class JobConfig
     {
         public int Connections { get; set; }
+        public int Slaves { get; set; }
         public int Interval { get; set; }
         public int Duration { get; set; }
         public string HubProtocol { get; set; }

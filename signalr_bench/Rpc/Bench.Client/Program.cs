@@ -63,9 +63,9 @@ namespace Bench.Client
 
             // allocate connections/protocol/transport type...
             // TODO, only for dev
-            var criteria = new Dictionary<string, int>();
-            var allocator = new OneAllocator();
-            var allocated = allocator.Allocate(agentConfig.Slaves, jobConfig.Connections, criteria);
+            //var criteria = new Dictionary<string, int>();
+            //var allocator = new OneAllocator();
+            //var allocated = allocator.Allocate(agentConfig.Slaves, jobConfig.Connections, criteria);
 
             // call salves to load job config
             clients.ForEach( client =>
@@ -77,13 +77,13 @@ namespace Bench.Client
                 Util.Log($"load job config state: {state.State}");
             });
 
-            // TODO
             // collect counters
             var collectTimer = new System.Timers.Timer(1000);
             collectTimer.AutoReset = true;
             collectTimer.Elapsed += (sender, e) =>
             {
                 var allClientCounters = new ConcurrentDictionary<string, int>();
+                int perclient = 0;
                 clients.ForEach(client =>
                 {
                     var state = client.GetState(new Empty { });
@@ -95,6 +95,7 @@ namespace Bench.Client
                         var key = counters.Pairs[i].Key;
                         var value = counters.Pairs[i].Value;
                         allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
+                        perclient += value;
                     }
                 });
 
@@ -108,6 +109,8 @@ namespace Bench.Client
                 string oneLineRecord = Regex.Replace(sortedCounters.ToString(), @"\s+", "");
                 oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
                 oneLineRecord = $"[{Util.Timestamp2DateTimeStr(Util.Timestamp())}]: {oneLineRecord}";
+                oneLineRecord += Convert.ToString(perclient);
+
                 if (!File.Exists("PerSecond.txt"))
                 {
                     StreamWriter sw = File.CreateText("PerSecond.txt");
