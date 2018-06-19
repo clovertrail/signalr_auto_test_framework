@@ -84,18 +84,21 @@ namespace Bench.Client
             {
                 var allClientCounters = new ConcurrentDictionary<string, int>();
                 int perclient = 0;
+                int ind = 0;
                 clients.ForEach(client =>
                 {
                     var state = client.GetState(new Empty { });
                     if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
                     var counters = client.CollectCounters(new Force { Force_ = false });
 
+                    Util.Log($"{ind++}th client:");
                     for (var i = 0; i < counters.Pairs.Count; i++)
                     {
                         var key = counters.Pairs[i].Key;
                         var value = counters.Pairs[i].Value;
                         allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
                         perclient += value;
+                        Util.Log($"{key}: {value}");
                     }
                 });
 
