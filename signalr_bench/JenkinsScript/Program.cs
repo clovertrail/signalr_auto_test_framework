@@ -102,7 +102,7 @@ namespace JenkinsScript
                 Environment.Exit(1);
             }
 
-            Task.Delay(10000).Wait();
+            Task.Delay(20000).Wait();
 
             // start master
             //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile} > log.txt";
