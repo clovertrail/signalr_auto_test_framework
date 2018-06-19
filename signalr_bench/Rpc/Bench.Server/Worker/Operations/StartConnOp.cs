@@ -30,7 +30,7 @@ namespace Bench.Server.Worker.Operations
             {
                 i += 1;
                 int ind = i;
-                tasks.Add(Task.Delay(10 * ind).ContinueWith(_ => conn.StartAsync()));
+                tasks.Add(Task.Delay(ind/100 * 1000).ContinueWith(_ => conn.StartAsync()));
                 //conn.StartAsync();
             }
             Task.WhenAll(tasks).Wait();

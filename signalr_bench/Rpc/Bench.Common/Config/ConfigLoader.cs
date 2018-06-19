@@ -20,7 +20,7 @@ namespace Bench.Common.Config
 
         private string ReadFile<T>(string path)
         {
-            Util.Log($"Config Path: {path}");
+            //Util.Log($"Config Path: {path}");
             var content = "";
             if (path.Contains("DefaultEndpointsProtocol") && path.Contains("AccountKey") && path.Contains("EndpointSuffix"))
             {
@@ -56,7 +56,7 @@ namespace Bench.Common.Config
                 content = File.ReadAllText(path);
             }
 
-            Util.Log($"Config: \n {content}");
+            //Util.Log($"Config: \n {content}");
             return content;
         }
 
