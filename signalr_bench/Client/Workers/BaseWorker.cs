@@ -45,6 +45,7 @@ namespace Client.WorkerNs
             await StartConnections();
 
             // start jobs
+            Util.Log("start jobs");
             StartJob();
 
             // stop job

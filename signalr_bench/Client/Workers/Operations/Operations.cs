@@ -107,10 +107,11 @@ namespace Client.Workers.OperationsNs
                     {
                         Util.Log($"Sending Message: {ind}th epoach");
                     }
-                    _ = _pkg.Connections[ind].SendAsync("Echo", $"{GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+                    _pkg.Connections[ind].SendAsync("Echo", $"{GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+                    //_pkg.Connections[ind].SendAsync("Echo", "ccc", "xxx");
                     _pkg.SentMassage[ind]++;
                     Counters.IncreseSentMsg();
-                        
+
                 };
             }
         }

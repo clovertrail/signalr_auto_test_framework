@@ -104,28 +104,28 @@ namespace JenkinsScript
 
             Task.Delay(20000).Wait();
 
-            // start master
-            //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile} > log.txt";
-            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' > log.txt";
-            Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
-            var maxRetry = 100;
-            for (var i = 0; i < maxRetry; i++)
-            {
-                (errCode, result) = ShellHelper.RemoteBash(cfg.User, cfg.Master, cfg.SshPort, cfg.Password, cmd);
-                if (errCode == 0) break;
-                Util.Log($"retry {i}th time");
-                Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
-                Task.Delay(2000).Wait();
+            //// start master
+            ////cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile} > log.txt";
+            //cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' > log.txt";
+            //Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
+            //var maxRetry = 100;
+            //for (var i = 0; i < maxRetry; i++)
+            //{
+            //    (errCode, result) = ShellHelper.RemoteBash(cfg.User, cfg.Master, cfg.SshPort, cfg.Password, cmd);
+            //    if (errCode == 0) break;
+            //    Util.Log($"retry {i}th time");
+            //    Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
+            //    Task.Delay(2000).Wait();
 
-                if (errCode != 0)
-                {
-                    Util.Log($"ERR {errCode}: {result}");
-                }
-            }
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
+            //    if (errCode != 0)
+            //    {
+            //        Util.Log($"ERR {errCode}: {result}");
+            //    }
+            //}
+            //if (errCode != 0)
+            //{
+            //    Util.Log($"ERR {errCode}: {result}");
+            //    Environment.Exit(1);
             }
 
 

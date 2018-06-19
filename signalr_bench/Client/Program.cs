@@ -26,21 +26,21 @@ namespace Client
 
         private const string _defaultUrl = "http://localhost:5002";
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMvc();
-        }
+        //public void ConfigureServices(IServiceCollection services)
+        //{
+        //    services.AddMvc();
+        //}
 
-        public void Configure(IApplicationBuilder app)
-        {
-            app.UseMvc();
+        //public void Configure(IApplicationBuilder app)
+        //{
+        //    app.UseMvc();
 
-            // Register a default startup page to ensure the application is up
-            app.Run((context) =>
-            {
-                return context.Response.WriteAsync("Client is runing");
-            });
-        }
+        //    // Register a default startup page to ensure the application is up
+        //    app.Run((context) =>
+        //    {
+        //        return context.Response.WriteAsync("Client is runing");
+        //    });
+        //}
 
         public static int Main(string[] args)
         {
@@ -83,17 +83,18 @@ namespace Client
 
         private static async Task<int> Run(string url, List<ClientJob> allJobs)
         {
-            var host = new WebHostBuilder()
-                    .UseKestrel()
-                    .UseStartup<Startup>()
-                    .UseUrls(url)
-                    .Build();
+            //var host = new WebHostBuilder()
+            //        .UseKestrel()
+            //        .UseStartup<Startup>()
+            //        .UseUrls(url)
+            //        .Build();
 
-            var hostTask = host.RunAsync();
+            //var hostTask = host.RunAsync();
 
             var processJobsTask = ProcessJobs(allJobs);
 
-            var completedTask = await Task.WhenAny(hostTask, processJobsTask);
+            //var completedTask = await Task.WhenAny(hostTask, processJobsTask);
+            var completedTask = await Task.WhenAny(processJobsTask);
 
             // Propagate exception (and exit process) if either task faulted
             await completedTask;
