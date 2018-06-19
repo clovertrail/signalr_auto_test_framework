@@ -44,8 +44,10 @@ namespace Client.WorkerNs
             // start connections
             await StartConnections();
 
+
             // start jobs
             Util.Log("start jobs");
+            Task.Delay(10 * 1000).Wait();
             StartJob();
 
             // stop job
