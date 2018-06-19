@@ -22,6 +22,9 @@ namespace JenkinsScript
         [Option('A', "agentblobname", Required = false, HelpText = "Specify Azure Blob Name For Agent Config File")]
         public string AgentBlobName { get; set; }
 
+        [Option('s', "azuresignalr", Required = false, HelpText = "Specify Azure Signalr connection string")]
+        public string AzureSignalrConnectionString { get; set; }
+
 
 
         [Option('h', "help", Required = false, HelpText = " dotnet run -j /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/job.yaml -a  /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/agent.yaml")]
