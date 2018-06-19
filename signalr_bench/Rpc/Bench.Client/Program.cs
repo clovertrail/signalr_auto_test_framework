@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace Bench.Client
 {
@@ -91,8 +92,8 @@ namespace Bench.Client
                     var state = client.GetState(new Empty { });
                     Util.Log($"{ind}th client: state {state.State}");
                     ind = ind + 1;
-                    //if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
-                    var counters = client.CollectCounters(new Force { Force_ = true });
+                    if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
+                    var counters = client.CollectCounters(new Force { Force_ = false });
 
                     for (var i = 0; i < counters.Pairs.Count; i++)
                     {
@@ -126,10 +127,13 @@ namespace Bench.Client
 
             };
             collectTimer.Start();
-            
+
 
             // process pipeline
-            clients.ForEach(client => client.RunJob(new Empty()));
+            var tasks = new List<Task>();
+            clients.ForEach(client => tasks.Add(Task.Delay(0).ContinueWith(_ => client.RunJob(new Empty()))));
+
+            Task.WhenAll(tasks).Wait();
 
             for (var i = 0; i < channels.Count; i++)
             {
