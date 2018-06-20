@@ -2,9 +2,9 @@
   "Default": {
     "Client": "SignalRCoreEcho",
     "State": "Waiting",
-    "ServerBenchmarkUri": "http://localhost:5000/echo",
-    "ServerBenchmarkUriBak": "http://wanlsignalrautotestappserver.eastus.cloudapp.azure.com:5000/echo",
-    "Duration": 2400,
+    "ServerBenchmarkUribAK": "http://localhost:5000/echo",
+    "ServerBenchmarkUri": "http://wanlsignalrautotestappserver.eastus.cloudapp.azure.com:5000/echo",
+    "Duration": 10,
     "Interval": 1,
     "TransportType": "WebSockets",
     "HubProtocolBak": "messagepack",
@@ -12,5 +12,5 @@
     "Scenarios": "Echo",
     "CallbackName": "EchoCallback"
   },
-  "Echo1": {"Id": 0,"Connections": 1000}
+  "Echo1": {"Id": 0,"Connections": 5000}
 }

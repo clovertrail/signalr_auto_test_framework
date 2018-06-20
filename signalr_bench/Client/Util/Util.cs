@@ -14,7 +14,7 @@ namespace Client.UtilNs
 
         public static long Timestamp()
         {
-            var unixDateTime = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalMilliseconds;
+            var unixDateTime = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalMilliseconds;
             return unixDateTime;
         }
 

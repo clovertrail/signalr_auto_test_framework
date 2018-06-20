@@ -23,8 +23,9 @@ namespace Bench.Server.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            tk.Test.Add(1);
-            Util.Log($"do echo, {tk.Test.Count}");
+            //tk.Test.Add(1);
+            //Util.Log($"do echo, {tk.Test.Count}");
+            Task.Delay(15000).Wait();
 
             // setup
             _tk = tk;
@@ -48,7 +49,7 @@ namespace Bench.Server.Worker.Operations
         {
             StartTimeOffsetGenerator = new RandomGenerator(new LocalFileSaver());
 
-            _sentMessages = new List<int>();
+            _sentMessages = new List<int>(_tk.JobConfig.Connections);
             for (int i = 0; i < _tk.JobConfig.Connections; i++)
             {
                 _sentMessages.Add(0);
@@ -66,8 +67,8 @@ namespace Bench.Server.Worker.Operations
                 int ind = i;
                 _tk.Connections[i].On(_tk.JobConfig.CallbackName, (string uid, string time) =>
                 {
-                    var sendTimestamp = Convert.ToInt64(time);
                     var receiveTimestamp = Util.Timestamp();
+                    var sendTimestamp = Convert.ToInt64(time);
 
                     _tk.Counters.CountLatency(sendTimestamp, receiveTimestamp);
                     if (ind == 0) Util.Log($"#### echocallback");
@@ -90,8 +91,8 @@ namespace Bench.Server.Worker.Operations
 
         private void SetTimers()
         {
-            TimerPerConnection = new List<System.Timers.Timer>();
-            DelayPerConnection = new List<TimeSpan>();
+            TimerPerConnection = new List<System.Timers.Timer>(_tk.JobConfig.Connections);
+            DelayPerConnection = new List<TimeSpan>(_tk.JobConfig.Connections);
 
             Util.Log($" duration: {_tk.JobConfig.Duration}, interval: {_tk.JobConfig.Interval}");
 
@@ -106,18 +107,22 @@ namespace Bench.Server.Worker.Operations
                 TimerPerConnection[i].AutoReset = true;
                 TimerPerConnection[i].Elapsed += (sender, e) =>
                 {
+                    TimerPerConnection[ind].Stop();
+                    TimerPerConnection[ind].Interval = _tk.JobConfig.Interval * 1000;
+                    TimerPerConnection[ind].Start();
+
                     if (_sentMessages[ind] >= _tk.JobConfig.Duration * _tk.JobConfig.Interval)
                     {
                         TimerPerConnection[ind].Stop();
                         return;
                     }
 
-                    if (TimerPerConnection[ind].Interval != _tk.JobConfig.Interval * 1000)
-                    {
-                        TimerPerConnection[ind].Stop();
-                        TimerPerConnection[ind].Interval = _tk.JobConfig.Interval * 1000;
-                        TimerPerConnection[ind].Start();
-                    }
+                    //if (TimerPerConnection[ind].Interval != _tk.JobConfig.Interval * 1000)
+                    //{
+                    //    TimerPerConnection[ind].Stop();
+                    //    TimerPerConnection[ind].Interval = _tk.JobConfig.Interval * 1000;
+                    //    TimerPerConnection[ind].Start();
+                    //}
 
                     if (ind == 0)
                     {
@@ -125,7 +130,7 @@ namespace Bench.Server.Worker.Operations
                     }
                     _sentMessages[ind]++;
                     _tk.Counters.IncreseSentMsg();
-                    _ = _tk.Connections[ind].SendAsync("Echo", $"{Util.GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+                    _tk.Connections[ind].SendAsync("Echo", $"{Util.GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
                 };
             }
         }

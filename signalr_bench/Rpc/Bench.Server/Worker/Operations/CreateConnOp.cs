@@ -17,8 +17,8 @@ namespace Bench.Server.Worker.Operations
             _tk = tk;
 
             // TODO: remove, only for debug
-            _tk.Test = new List<int>();
-            _tk.Test.Add(1);
+            //_tk.Test = new List<int>();
+            //_tk.Test.Add(1);
 
             _tk.State = Stat.Types.State.HubconnUnconnected;
             _tk.Connections = Create(_tk.JobConfig.Connections/_tk.JobConfig.Slaves, _tk.JobConfig.ServerUrl, _tk.JobConfig.TransportType, _tk.JobConfig.HubProtocol);
@@ -28,7 +28,7 @@ namespace Bench.Server.Worker.Operations
             string transportTypeName = "Websockets",
             string hubProtocol = "json") 
         {
-            
+            Util.Log($"transport type: {transportTypeName}");
             var transportType = HttpTransportType.WebSockets;
             switch (transportTypeName)
             {
@@ -48,7 +48,9 @@ namespace Bench.Server.Worker.Operations
 
             var httpClientHandler = new HttpClientHandler
             {
-                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                MaxConnectionsPerServer = 200000,
+                MaxAutomaticRedirections = 200000
             };
 
             _tk.State = Stat.Types.State.HubconnCreating;
@@ -60,9 +62,10 @@ namespace Bench.Server.Worker.Operations
                 {
                     httpConnectionOptions.HttpMessageHandlerFactory = _ => httpClientHandler;
                     httpConnectionOptions.Transports = transportType;
+                    httpConnectionOptions.CloseTimeout = TimeSpan.FromMinutes(100);
                 });
 
-                switch(hubProtocol)
+                switch (hubProtocol)
                 {
                     case "json":
                         break;

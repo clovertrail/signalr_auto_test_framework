@@ -46,8 +46,8 @@ namespace Client.WorkerNs
 
 
             // start jobs
-            Util.Log("start jobs");
-            Task.Delay(10 * 1000).Wait();
+            //Util.Log("start jobs");
+            //Task.Delay(10 * 1000).Wait();
             StartJob();
 
             // stop job

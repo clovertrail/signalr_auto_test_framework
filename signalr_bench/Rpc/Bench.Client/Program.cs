@@ -78,50 +78,50 @@ namespace Bench.Client
                 Util.Log($"load job config state: {state.State}");
             });
 
-            // collect counters
-            var collectTimer = new System.Timers.Timer(1000);
-            collectTimer.AutoReset = true;
-            collectTimer.Elapsed += (sender, e) =>
-            {
-                var allClientCounters = new ConcurrentDictionary<string, int>();
-                int perclient = 0;
-                clients.ForEach(client =>
-                {
-                    var state = client.GetState(new Empty { });
-                    if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
-                    var counters = client.CollectCounters(new Force { Force_ = false });
+            //// collect counters
+            //var collectTimer = new System.Timers.Timer(1000);
+            //collectTimer.AutoReset = true;
+            //collectTimer.Elapsed += (sender, e) =>
+            //{
+            //    var allClientCounters = new ConcurrentDictionary<string, int>();
+            //    int perclient = 0;
+            //    clients.ForEach(client =>
+            //    {
+            //        var state = client.GetState(new Empty { });
+            //        if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
+            //        var counters = client.CollectCounters(new Force { Force_ = false });
 
-                    for (var i = 0; i < counters.Pairs.Count; i++)
-                    {
-                        var key = counters.Pairs[i].Key;
-                        var value = counters.Pairs[i].Value;
-                        allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
-                        perclient += value;
-                    }
-                });
+            //        for (var i = 0; i < counters.Pairs.Count; i++)
+            //        {
+            //            var key = counters.Pairs[i].Key;
+            //            var value = counters.Pairs[i].Value;
+            //            allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
+            //            perclient += value;
+            //        }
+            //    });
 
-                var jobj = new JObject();
-                foreach(var item in allClientCounters)
-                {
-                    jobj.Add(item.Key, item.Value);
-                }
+            //    var jobj = new JObject();
+            //    foreach(var item in allClientCounters)
+            //    {
+            //        jobj.Add(item.Key, item.Value);
+            //    }
 
-                var sortedCounters = Util.Sort(jobj);
-                string oneLineRecord = Regex.Replace(sortedCounters.ToString(), @"\s+", "");
-                oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
-                oneLineRecord = $"[{Util.Timestamp2DateTimeStr(Util.Timestamp())}]: {oneLineRecord}";
-                oneLineRecord += Convert.ToString(perclient);
+            //    var sortedCounters = Util.Sort(jobj);
+            //    string oneLineRecord = Regex.Replace(sortedCounters.ToString(), @"\s+", "");
+            //    oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
+            //    oneLineRecord = $"[{Util.Timestamp2DateTimeStr(Util.Timestamp())}]: {oneLineRecord}";
+            //    oneLineRecord += Convert.ToString(perclient);
 
-                if (!File.Exists("PerSecond.txt"))
-                {
-                    StreamWriter sw = File.CreateText("PerSecond.txt");
-                }
+            //    if (!File.Exists("PerSecond.txt"))
+            //    {
+            //        StreamWriter sw = File.CreateText("PerSecond.txt");
+            //    }
 
-                File.AppendAllText("PerSecond.txt", oneLineRecord);
-                Util.Log("per second: " + oneLineRecord);
+            //    File.AppendAllText("PerSecond.txt", oneLineRecord);
+            //    Util.Log("per second: " + oneLineRecord);
 
-            };
-            collectTimer.Start();
+            //};
+            //collectTimer.Start();
 
 
             // process pipeline

@@ -57,8 +57,9 @@ namespace Client.Workers.OperationsNs
                 {
                     var receiveTimestamp = Util.Timestamp();
                     var sendTimestamp = Convert.ToInt64(time);
-
+                    //Util.Log($"diff time: {receiveTimestamp - sendTimestamp}");
                     Counters.CountLatency(sendTimestamp, receiveTimestamp);
+                    if (ind == 0) Util.Log($"#### echocallback");
                 });
             }
         }
@@ -108,7 +109,6 @@ namespace Client.Workers.OperationsNs
                         Util.Log($"Sending Message: {ind}th epoach");
                     }
                     _pkg.Connections[ind].SendAsync("Echo", $"{GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
-                    //_pkg.Connections[ind].SendAsync("Echo", "ccc", "xxx");
                     _pkg.SentMassage[ind]++;
                     Counters.IncreseSentMsg();
 

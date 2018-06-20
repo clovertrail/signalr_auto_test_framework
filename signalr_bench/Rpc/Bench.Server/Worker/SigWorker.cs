@@ -29,6 +29,18 @@ namespace Bench.Server.Worker
                 op.Do(_tk);
             });
 
+            //var op1 = new CreateConnOp();
+            //var op2 = new StartConnOp();
+            //var op3 = new EchoOp();
+            //var op4 = new StopConnOp();
+            //var op5 = new DisposeConnOp();
+
+            //op1.Do(_tk);
+            //op2.Do(_tk);
+            //op3.Do(_tk);
+            //op4.Do(_tk);
+            //op5.Do(_tk);
+
             return Stat.Types.State.SendComplete;
         }
 

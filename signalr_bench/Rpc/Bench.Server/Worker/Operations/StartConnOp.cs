@@ -15,7 +15,7 @@ namespace Bench.Server.Worker.Operations
         public void Do(WorkerToolkit tk)
         {
             _tk = tk;
-            tk.Test.Add(1);
+            //tk.Test.Add(1);
             Start(tk.Connections);
         }
 
