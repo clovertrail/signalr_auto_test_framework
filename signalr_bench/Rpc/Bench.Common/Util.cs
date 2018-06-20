@@ -45,9 +45,14 @@ namespace Bench.Common
                     {
                     }
 
-                    if (p.Name.IndexOf("ge") >= 0)
+                    if (p.Name.Contains("ge"))
                     {
                         latency += 1;
+                    }
+                    
+                    if (p.Name.Contains("receive"))
+                    {
+                        latency -= 1;
                     }
 
                     //Util.Log($"latencay = {latency}");

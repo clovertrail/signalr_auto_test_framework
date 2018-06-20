@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>Bench.Client</AssemblyTitle>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>Bench.Client</AssemblyName>
     <OutputType>Exe</OutputType>

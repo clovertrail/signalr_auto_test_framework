@@ -2,6 +2,7 @@
 using Bench.Common.Config;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -65,18 +66,19 @@ namespace Bench.Server.Worker.Operations
                     httpConnectionOptions.CloseTimeout = TimeSpan.FromMinutes(100);
                 });
 
+                HubConnection connection = null;
                 switch (hubProtocol)
                 {
                     case "json":
+                        connection = hubConnectionBuilder.Build();
                         break;
                     case "messagepack":
-                        // todo
+                        connection = hubConnectionBuilder.AddMessagePackProtocol().Build();
                         break;
                     default:
                         throw new Exception($"{hubProtocol} is invalid.");
                 }
 
-                var connection = hubConnectionBuilder.Build();
                 connections.Add(connection);
             }
 

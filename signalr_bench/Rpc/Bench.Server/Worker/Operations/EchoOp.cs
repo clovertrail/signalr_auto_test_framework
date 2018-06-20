@@ -23,8 +23,6 @@ namespace Bench.Server.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            //tk.Test.Add(1);
-            //Util.Log($"do echo, {tk.Test.Count}");
             Task.Delay(15000).Wait();
 
             // setup
