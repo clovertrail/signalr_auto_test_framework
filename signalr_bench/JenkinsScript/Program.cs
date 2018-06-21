@@ -102,9 +102,19 @@ namespace JenkinsScript
 
             Task.Delay(20000).Wait();
 
-            
+            // export for generating reports
+            cmd = $"export bench_type_list='service'; export bench_codec_list='{jobConfig.HubProtocol}'; bench_name_list='{jobConfig.Pipeline[2]}'; export result_root=`date +%Y%m%d%H%M%S`";
+            Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
+            (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
+
+            if (errCode != 0)
+            {
+                Util.Log($"ERR {errCode}: {result}");
+                Environment.Exit(1);
+            }
+
             // start master
-            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' -o {argsOption.OutputCounterFile}";
+            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' -o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/counters.txt'";
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
             var maxRetry = 100;
             for (var i = 0; i < maxRetry; i++)
@@ -120,17 +130,6 @@ namespace JenkinsScript
                     Util.Log($"ERR {errCode}: {result}");
                 }
             }
-
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
-            }
-
-            // export for generating reports
-            cmd = $"export bench_type_list='service'; export bench_codec_list='{jobConfig.HubProtocol}'; bench_name_list='{jobConfig.Pipeline[2]}'; export result_root=`date +%Y%m%d%H%M%S`";
-            Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
-            (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
 
             if (errCode != 0)
             {
