@@ -142,17 +142,24 @@
                 modal.style = 'display: block;';
             }
 
-            var connection = new signalR.HubConnectionBuilder()
-                                        .withUrl('/chat')
-                                        .build();
-            bindConnectionMessage(connection);
-            connection.start()
-                .then(function () {
-                    onConnected(connection);
-                })
-                .catch(function (error) {
-                    console.error(error.message);
-                });
+            i = 0;
+            for (i = 0; i < 1; i++) 
+            {
+                var connection = new signalR.HubConnectionBuilder()
+                            .withUrl('/signalrbench')
+                            .build();
+                        // bindConnectionMessage(connection);
+                        connection.start()
+                            .then(function () {
+                                // onConnected(connection);
+                            })
+                            .catch(function (error) {
+                                console.error(error.message);
+                            });
+            }
+            
+                
+
         });
     </script>
 </body>

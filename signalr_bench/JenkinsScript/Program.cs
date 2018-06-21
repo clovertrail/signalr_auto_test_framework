@@ -43,11 +43,11 @@ namespace JenkinsScript
                 case "startrpcserver":
                     (errCode, result) = ShellHelper.StartRpcSlaves(hosts, agentConfig, argsOption);
                     break;
-                case "startrpcmaster":
-                    (errCode, result) = ShellHelper.StartRpcMaster(hosts, agentConfig, argsOption, "", "", "", "");
+                case "createsignalr":
+                    (errCode, result) = ShellHelper.CreateSignalrService(argsOption);
                     break;
-                case "generatereport":
-                    (errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
+                case "deletesignalr":
+                    (errCode, result) = ShellHelper.DeleteResourceGroup(argsOption);
                     break;
                 case "all": 
                 default:
@@ -68,7 +68,8 @@ namespace JenkinsScript
                                     (errCode, result) = ShellHelper.StartRpcSlaves(hosts, agentConfig, argsOption);
                                     Task.Delay(20000).Wait();
                                     (errCode, result) = ShellHelper.StartRpcMaster(hosts, agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario);
-                                    (errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig);
+                                    if (errCode == 0)
+                                        (errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig, serviceType, transportType, hubProtocol, scenario);
                                 }
                             }
                         }

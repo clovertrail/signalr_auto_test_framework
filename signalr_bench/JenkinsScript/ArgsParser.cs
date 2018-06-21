@@ -31,6 +31,21 @@ namespace JenkinsScript
         [Option('S', "step", Required = false, HelpText = "Specify the step")]
         public string  Step{ get; set; }
 
+        // for signalr service
+        //[Option('l', "location", Required = false, HelpText = "Specify Location for Signalr Service")]
+        //public string Location { get; set; }
+
+        //[Option('i', "appid", Required = false, HelpText = "Specify AppId for Signalr Service")]
+        //public string AppId { get; set; }
+
+        //[Option('p', "password", Required = false, HelpText = "Specify Password for Signalr Service")]
+        //public string Password { get; set; }
+
+        //[Option('t', "tenant", Required = false, HelpText = "Specify Tenant for Signalr Service")]
+        //public string Tenant { get; set; }
+
+        //[Option('R', "signalrconfig", Required = false, HelpText = "Specify Config file for signalr service")]
+        //public string SignalrConfig { get; set; }
 
         [Option('h', "help", Required = false, HelpText = " dotnet run -j /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/job.yaml -a  /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/agent.yaml")]
         public string Help { get; set; }

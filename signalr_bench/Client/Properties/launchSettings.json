@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Client": {
+      "commandName": "Project",
+      "commandLineArgs": "-j C:\\Users\\wanl\\Documents\\microsoft\\workspace\\signalr_auto_test_framework_x\\signalr_bench\\Client\\Benchmarks\\benchmarks.json.json"
+    }
+  }
+}

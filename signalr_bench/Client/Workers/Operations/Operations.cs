@@ -108,7 +108,7 @@ namespace Client.Workers.OperationsNs
                     {
                         Util.Log($"Sending Message: {ind}th epoach");
                     }
-                    _pkg.Connections[ind].SendAsync("Echo", $"{GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+                    _pkg.Connections[ind].SendAsync("echo", $"{GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
                     _pkg.SentMassage[ind]++;
                     Counters.IncreseSentMsg();
 
