@@ -11,11 +11,12 @@ namespace Bench.RpcSlave.Worker.Operations
     {
         public static Tuple<object, Type> CreateOp(string opName, WorkerToolkit tk)
         {
-            opName += "Op";
             if (opName.Contains("scenario"))
             {
                 opName = tk.BenchmarkCellConfig.Scenario;
             }
+            opName += "Op";
+
             var myType = typeof(OperationFactory);
             var nspace = myType.Namespace;
 
