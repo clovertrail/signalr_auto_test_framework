@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bench.Client", "Bench.Client\Bench.Client.csproj", "{BD68D8C4-C884-4A17-AF7A-481DD882A8DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bench.RpcMaster", "Bench.Client\Bench.RpcMaster.csproj", "{BD68D8C4-C884-4A17-AF7A-481DD882A8DC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bench.Common", "Bench.Common\Bench.Common.csproj", "{D1D5E127-E880-4C55-BE3F-F819C25FB20E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bench.Server", "Bench.Server\Bench.Server.csproj", "{729D0F45-2A1E-4E40-970B-EAC586D85B67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bench.RpcSlave", "Bench.Server\Bench.RpcSlave.csproj", "{729D0F45-2A1E-4E40-970B-EAC586D85B67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

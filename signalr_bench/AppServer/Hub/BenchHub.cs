@@ -11,12 +11,12 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
     {
         public void Echo(string uid, string time)
         {
-            Clients.Client(Context.ConnectionId).SendAsync("EchoCallback", uid, time);
+            Clients.Client(Context.ConnectionId).SendAsync("echo", uid, time);
         }
 
         public void Broadcast(string uid, string time)
         {
-            Clients.All.SendAsync("BroadcastCallback", uid, time);
+            Clients.All.SendAsync("broadcast", uid, time);
         }
     }
 }

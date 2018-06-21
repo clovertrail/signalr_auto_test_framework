@@ -22,7 +22,7 @@ namespace Bench.RpcSlave.Worker.Operations
             //_tk.Test.Add(1);
 
             _tk.State = Stat.Types.State.HubconnUnconnected;
-            _tk.Connections = Create(_tk.JobConfig.Connections/_tk.JobConfig.Slaves, _tk.JobConfig.ServerUrl, _tk.JobConfig.TransportType, _tk.JobConfig.HubProtocol);
+            _tk.Connections = Create(_tk.JobConfig.Connections/_tk.JobConfig.Slaves, _tk.JobConfig.ServerUrl, _tk.BenchmarkCellConfig.TransportType, _tk.BenchmarkCellConfig.HubProtocol);
         }
 
         private List<HubConnection> Create(int conn, string url, 

@@ -20,6 +20,7 @@ namespace Bench.Common {
     static readonly grpc::Marshaller<global::Bench.Common.Path> __Marshaller_Path = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Path.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.Force> __Marshaller_Force = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Force.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.CounterDict> __Marshaller_CounterDict = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.CounterDict.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Bench.Common.BenchmarkCellConfig> __Marshaller_BenchmarkCellConfig = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.BenchmarkCellConfig.Parser.ParseFrom);
 
     static readonly grpc::Method<global::Bench.Common.Empty, global::Bench.Common.Timestamp> __Method_GetTimestamp = new grpc::Method<global::Bench.Common.Empty, global::Bench.Common.Timestamp>(
         grpc::MethodType.Unary,
@@ -63,11 +64,11 @@ namespace Bench.Common {
         __Marshaller_Force,
         __Marshaller_CounterDict);
 
-    static readonly grpc::Method<global::Bench.Common.Empty, global::Bench.Common.Stat> __Method_RunJob = new grpc::Method<global::Bench.Common.Empty, global::Bench.Common.Stat>(
+    static readonly grpc::Method<global::Bench.Common.BenchmarkCellConfig, global::Bench.Common.Stat> __Method_RunJob = new grpc::Method<global::Bench.Common.BenchmarkCellConfig, global::Bench.Common.Stat>(
         grpc::MethodType.Unary,
         __ServiceName,
         "RunJob",
-        __Marshaller_Empty,
+        __Marshaller_BenchmarkCellConfig,
         __Marshaller_Stat);
 
     static readonly grpc::Method<global::Bench.Common.Strg, global::Bench.Common.Stat> __Method_Test = new grpc::Method<global::Bench.Common.Strg, global::Bench.Common.Stat>(
@@ -116,7 +117,7 @@ namespace Bench.Common {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      public virtual global::System.Threading.Tasks.Task<global::Bench.Common.Stat> RunJob(global::Bench.Common.Empty request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::Bench.Common.Stat> RunJob(global::Bench.Common.BenchmarkCellConfig request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -247,19 +248,19 @@ namespace Bench.Common {
       {
         return CallInvoker.AsyncUnaryCall(__Method_CollectCounters, null, options, request);
       }
-      public virtual global::Bench.Common.Stat RunJob(global::Bench.Common.Empty request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::Bench.Common.Stat RunJob(global::Bench.Common.BenchmarkCellConfig request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return RunJob(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::Bench.Common.Stat RunJob(global::Bench.Common.Empty request, grpc::CallOptions options)
+      public virtual global::Bench.Common.Stat RunJob(global::Bench.Common.BenchmarkCellConfig request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_RunJob, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Stat> RunJobAsync(global::Bench.Common.Empty request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Stat> RunJobAsync(global::Bench.Common.BenchmarkCellConfig request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return RunJobAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Stat> RunJobAsync(global::Bench.Common.Empty request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Stat> RunJobAsync(global::Bench.Common.BenchmarkCellConfig request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_RunJob, null, options, request);
       }

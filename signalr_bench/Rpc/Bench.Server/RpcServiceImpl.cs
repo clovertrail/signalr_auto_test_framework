@@ -74,8 +74,16 @@ namespace Bench.RpcSlave
             return Task.FromResult(dict);
         }
 
-        public override Task<Stat> RunJob(Empty empty, ServerCallContext context)
+        public override Task<Stat> RunJob(Common.BenchmarkCellConfig cellConfig, ServerCallContext context)
         {
+            Worker.BenchmarkCellConfig benchmarkCellConfig = new Worker.BenchmarkCellConfig
+            {
+                ServiceType = cellConfig.ServiveType,
+                HubProtocol = cellConfig.HubProtocol,
+                TransportType = cellConfig.TransportType,
+                Scenario = cellConfig.Scenario
+            };
+            _sigWorker.LoadBenchmarkCellConfig(benchmarkCellConfig);
             _sigWorker.ProcessJob();
 
             return Task.FromResult(new Stat { State = Stat.Types.State.DebugTodo });

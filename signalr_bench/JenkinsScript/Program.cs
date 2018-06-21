@@ -7,8 +7,6 @@ namespace JenkinsScript
 {
     class Program
     {
-
-
         static void Main(string[] args)
         {
             // read options
@@ -30,117 +28,55 @@ namespace JenkinsScript
 
             var errCode = 0;
             var result = "";
-            var cmd = "";
-
-            // git clone repo
-            hosts.ForEach(host =>
+            
+            switch(argsOption.Step)
             {
-                cmd = $"rm -rf /home/{agentConfig.User}/signalr_auto_test_framework; git clone {agentConfig.Repo} /home/{agentConfig.User}/signalr_auto_test_framework"; //TODO
-                Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
-                if (host == agentConfig.Master) { }
-                else (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd);
-                if (errCode != 0) return;
-                return;//TODO: only for debug, to remove
-            });
+                case "killalldotnet":
+                    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
+                    break;
+                case "clonerepo":
+                    (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
+                    break;
+                case "startappserver":
+                    (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
+                    break;
+                case "startrpcserver":
+                    (errCode, result) = ShellHelper.StartRpcSlaves(hosts, agentConfig, argsOption);
+                    break;
+                case "startrpcmaster":
+                    (errCode, result) = ShellHelper.StartRpcMaster(hosts, agentConfig, argsOption, "", "", "", "");
+                    break;
+                case "generatereport":
+                    (errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
+                    break;
+                case "all": 
+                default:
+                    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
+                    (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
 
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
+                    foreach (var serviceType in jobConfig.ServiceTypeList)
+                    {
+                        foreach (var transportType in jobConfig.TransportTypeList)
+                        {
+                            foreach (var hubProtocol in jobConfig.HubProtocolList)
+                            {
+                                foreach (var scenario in jobConfig.ScenarioList)
+                                {
+                                    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
+                                    (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
+                                    Task.Delay(5000).Wait();
+                                    (errCode, result) = ShellHelper.StartRpcSlaves(hosts, agentConfig, argsOption);
+                                    Task.Delay(20000).Wait();
+                                    (errCode, result) = ShellHelper.StartRpcMaster(hosts, agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario);
+                                    (errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig);
+                                }
+                            }
+                        }
+                    }
+                    (errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
+                    break;
             }
 
-            // kill all dotnet process
-            hosts.ForEach(host =>
-            {
-                cmd = $"killall dotnet || true";
-                if (host.Contains("localhost") || host.Contains("127.0.0.1")) { }
-                else if (host == agentConfig.Master)
-                {
-                    Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
-                    (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd);
-                }
-                else
-                {
-                    Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
-                    (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd);
-                }
-                if (errCode != 0) return;
-            });
-
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
-            }
-
-            // start appserver
-            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log.txt";
-            Util.Log($"{agentConfig.User}@{agentConfig.AppServer}: {cmd}");
-            (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.AppServer, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
-
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
-            }
-
-            Task.Delay(5000).Wait();
-
-            // start rpc agents
-            agentConfig.Slaves.ForEach(host =>
-            {
-                cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
-                Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
-                (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
-                if (errCode != 0) return;
-            });
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
-            }
-
-            Task.Delay(20000).Wait();
-
-            // start master
-            var bench_type_list = "service";
-            var bench_codec_list = $"{jobConfig.HubProtocol}";
-            var bench_name_list = $"{jobConfig.Pipeline[2]}";
-            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export bench_type_list='service'; export bench_codec_list='{jobConfig.HubProtocol}'; export bench_name_list='{jobConfig.Pipeline[2]}'; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' -o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{bench_codec_list}_{bench_name_list}/counters.txt'";
-            Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
-            var maxRetry = 100;
-            for (var i = 0; i < maxRetry; i++)
-            {
-                (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
-                if (errCode == 0) break;
-                Util.Log($"retry {i}th time");
-                Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
-                Task.Delay(2000).Wait();
-
-                if (errCode != 0)
-                {
-                    Util.Log($"ERR {errCode}: {result}");
-                }
-            }
-
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
-            }
-
-            // gen report
-            cmd = $"cd /home/{agentConfig.User}/signalr-bench/; sh gen_html.sh; sh gen_all_report.sh; sh publish_report.sh; sh gen_summary.sh;";
-            Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
-            (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
-
-            if (errCode != 0)
-            {
-                Util.Log($"ERR {errCode}: {result}");
-                Environment.Exit(1);
-            }
-
-            Util.Log($"Report: http://wanlsignalrbenchserver.eastus.cloudapp.azure.com:8000/" + Environment.GetEnvironmentVariable("result_root") + "/all.html");
         }
     }
 }

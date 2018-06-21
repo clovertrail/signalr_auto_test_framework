@@ -75,7 +75,6 @@ namespace Client.WorkerNs
                 timer.Interval = (_pkg.Job.Duration + laterTime) * 1000;
                 timer.Start();
 
-
                 if (ind >= scenarios.Length)
                 {
                     timer.Stop();
@@ -171,6 +170,7 @@ namespace Client.WorkerNs
                 var hubConnectionBuilder = new HubConnectionBuilder()
                 .WithUrl(_pkg.Job.ServerBenchmarkUri, transportType, httpConnectionOptions =>
                 {
+                    
                     httpConnectionOptions.HttpMessageHandlerFactory = _ => _httpClientHandler;
                     httpConnectionOptions.Transports = transportType;
                     httpConnectionOptions.CloseTimeout = TimeSpan.FromMinutes(100);

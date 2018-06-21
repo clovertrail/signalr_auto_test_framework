@@ -28,7 +28,13 @@ namespace JenkinsScript
         [Option('o', "outputcounterfile", Required = false, HelpText = "Specify Output File For Counters")]
         public string OutputCounterFile { get; set; }
 
+        [Option('S', "step", Required = false, HelpText = "Specify the step")]
+        public string  Step{ get; set; }
+
+
         [Option('h', "help", Required = false, HelpText = " dotnet run -j /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/job.yaml -a  /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/agent.yaml")]
         public string Help { get; set; }
+
+
     }
 }

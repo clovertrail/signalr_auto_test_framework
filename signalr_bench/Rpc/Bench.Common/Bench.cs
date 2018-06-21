@@ -22,37 +22,40 @@ namespace Bench.Common {
     static BenchReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgtCZW5jaC5wcm90bxIMQmVuY2guQ29tbW9uIhYKBUZvcmNlEg0KBWZvcmNl",
-            "GAEgASgIIiIKBFBhaXISCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgFIjAK",
-            "C0NvdW50ZXJEaWN0EiEKBXBhaXJzGAEgAygLMhIuQmVuY2guQ29tbW9uLlBh",
-            "aXIiFQoEUGF0aBINCgVwcGF0aBgBIAEoCSL3AwoEU3RhdBInCgVzdGF0ZRgB",
-            "IAEoDjIYLkJlbmNoLkNvbW1vbi5TdGF0LlN0YXRlIsUDCgVTdGF0ZRIOCgpE",
-            "RUJVR19UT0RPEAASFwoTSFVCQ09OTl9VTkNPTk5FQ1RFRBABEhYKEkhVQkNP",
-            "Tk5fQ09OTkVDVElORxACEhUKEUhVQkNPTk5fQ09OTkVDVEVEEAMSGQoVSFVC",
-            "Q09OTl9ESVNDT05ORUNUSU5HEAQSGAoUSFVCQ09OTl9ESVNDT05ORUNURUQQ",
-            "BRIVChFIVUJDT05OX0RJU1BPU0lORxAGEhQKEEhVQkNPTk5fRElTUE9TRUQQ",
-            "BxITCg9DT05GSUdfVU5MT0FERUQQCBISCg5DT05GSUdfTE9BRElORxAJEhEK",
-            "DUNPTkZJR19MT0FERUQQChIOCgpTRU5EX1JFQURZEAsSEAoMU0VORF9SVU5O",
-            "SU5HEAwSEQoNU0VORF9DT01QTEVURRANEhIKDldPUktFUl9VTkVYSVNUEA4S",
-            "EwoPV09SS0VSX0NSRUFUSU5HEA8SEgoOV09SS0VSX0NSRUFURUQQEBISCg5X",
-            "T1JLRVJfRVhJU1RFRBAREhUKEUhVQkNPTk5fVU5DUkVBVEVEEBISFAoQSFVC",
-            "Q09OTl9DUkVBVElORxATEhMKD0hVQkNPTk5fQ1JFQVRFRBAUIhMKBFN0cmcS",
-            "CwoDc3RyGAEgASgJIhkKCVRpbWVzdGFtcBIMCgR0aW1lGAEgASgEIgcKBUVt",
-            "cHR5MuUDCgpScGNTZXJ2aWNlEj4KDEdldFRpbWVzdGFtcBITLkJlbmNoLkNv",
-            "bW1vbi5FbXB0eRoXLkJlbmNoLkNvbW1vbi5UaW1lc3RhbXAiABI+ChFHZXRD",
-            "b3VudGVySnNvblN0chITLkJlbmNoLkNvbW1vbi5FbXB0eRoSLkJlbmNoLkNv",
-            "bW1vbi5TdHJnIgASNQoIR2V0U3RhdGUSEy5CZW5jaC5Db21tb24uRW1wdHka",
-            "Ei5CZW5jaC5Db21tb24uU3RhdCIAEjkKDUxvYWRKb2JDb25maWcSEi5CZW5j",
-            "aC5Db21tb24uUGF0aBoSLkJlbmNoLkNvbW1vbi5TdGF0IgASOQoMQ3JlYXRl",
-            "V29ya2VyEhMuQmVuY2guQ29tbW9uLkVtcHR5GhIuQmVuY2guQ29tbW9uLlN0",
-            "YXQiABJDCg9Db2xsZWN0Q291bnRlcnMSEy5CZW5jaC5Db21tb24uRm9yY2Ua",
-            "GS5CZW5jaC5Db21tb24uQ291bnRlckRpY3QiABIzCgZSdW5Kb2ISEy5CZW5j",
-            "aC5Db21tb24uRW1wdHkaEi5CZW5jaC5Db21tb24uU3RhdCIAEjAKBFRlc3QS",
-            "Ei5CZW5jaC5Db21tb24uU3RyZxoSLkJlbmNoLkNvbW1vbi5TdGF0IgBiBnBy",
-            "b3RvMw=="));
+            "CgtCZW5jaC5wcm90bxIMQmVuY2guQ29tbW9uImgKE0JlbmNobWFya0NlbGxD",
+            "b25maWcSEwoLc2Vydml2ZVR5cGUYASABKAkSFQoNdHJhbnNwb3J0VHlwZRgC",
+            "IAEoCRITCgtodWJQcm90b2NvbBgDIAEoCRIQCghzY2VuYXJpbxgEIAEoCSIW",
+            "CgVGb3JjZRINCgVmb3JjZRgBIAEoCCIiCgRQYWlyEgsKA2tleRgBIAEoCRIN",
+            "CgV2YWx1ZRgCIAEoBSIwCgtDb3VudGVyRGljdBIhCgVwYWlycxgBIAMoCzIS",
+            "LkJlbmNoLkNvbW1vbi5QYWlyIhUKBFBhdGgSDQoFcHBhdGgYASABKAki9wMK",
+            "BFN0YXQSJwoFc3RhdGUYASABKA4yGC5CZW5jaC5Db21tb24uU3RhdC5TdGF0",
+            "ZSLFAwoFU3RhdGUSDgoKREVCVUdfVE9ETxAAEhcKE0hVQkNPTk5fVU5DT05O",
+            "RUNURUQQARIWChJIVUJDT05OX0NPTk5FQ1RJTkcQAhIVChFIVUJDT05OX0NP",
+            "Tk5FQ1RFRBADEhkKFUhVQkNPTk5fRElTQ09OTkVDVElORxAEEhgKFEhVQkNP",
+            "Tk5fRElTQ09OTkVDVEVEEAUSFQoRSFVCQ09OTl9ESVNQT1NJTkcQBhIUChBI",
+            "VUJDT05OX0RJU1BPU0VEEAcSEwoPQ09ORklHX1VOTE9BREVEEAgSEgoOQ09O",
+            "RklHX0xPQURJTkcQCRIRCg1DT05GSUdfTE9BREVEEAoSDgoKU0VORF9SRUFE",
+            "WRALEhAKDFNFTkRfUlVOTklORxAMEhEKDVNFTkRfQ09NUExFVEUQDRISCg5X",
+            "T1JLRVJfVU5FWElTVBAOEhMKD1dPUktFUl9DUkVBVElORxAPEhIKDldPUktF",
+            "Ul9DUkVBVEVEEBASEgoOV09SS0VSX0VYSVNURUQQERIVChFIVUJDT05OX1VO",
+            "Q1JFQVRFRBASEhQKEEhVQkNPTk5fQ1JFQVRJTkcQExITCg9IVUJDT05OX0NS",
+            "RUFURUQQFCITCgRTdHJnEgsKA3N0chgBIAEoCSIZCglUaW1lc3RhbXASDAoE",
+            "dGltZRgBIAEoBCIHCgVFbXB0eTLzAwoKUnBjU2VydmljZRI+CgxHZXRUaW1l",
+            "c3RhbXASEy5CZW5jaC5Db21tb24uRW1wdHkaFy5CZW5jaC5Db21tb24uVGlt",
+            "ZXN0YW1wIgASPgoRR2V0Q291bnRlckpzb25TdHISEy5CZW5jaC5Db21tb24u",
+            "RW1wdHkaEi5CZW5jaC5Db21tb24uU3RyZyIAEjUKCEdldFN0YXRlEhMuQmVu",
+            "Y2guQ29tbW9uLkVtcHR5GhIuQmVuY2guQ29tbW9uLlN0YXQiABI5Cg1Mb2Fk",
+            "Sm9iQ29uZmlnEhIuQmVuY2guQ29tbW9uLlBhdGgaEi5CZW5jaC5Db21tb24u",
+            "U3RhdCIAEjkKDENyZWF0ZVdvcmtlchITLkJlbmNoLkNvbW1vbi5FbXB0eRoS",
+            "LkJlbmNoLkNvbW1vbi5TdGF0IgASQwoPQ29sbGVjdENvdW50ZXJzEhMuQmVu",
+            "Y2guQ29tbW9uLkZvcmNlGhkuQmVuY2guQ29tbW9uLkNvdW50ZXJEaWN0IgAS",
+            "QQoGUnVuSm9iEiEuQmVuY2guQ29tbW9uLkJlbmNobWFya0NlbGxDb25maWca",
+            "Ei5CZW5jaC5Db21tb24uU3RhdCIAEjAKBFRlc3QSEi5CZW5jaC5Db21tb24u",
+            "U3RyZxoSLkJlbmNoLkNvbW1vbi5TdGF0IgBiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.BenchmarkCellConfig), global::Bench.Common.BenchmarkCellConfig.Parser, new[]{ "ServiveType", "TransportType", "HubProtocol", "Scenario" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Force), global::Bench.Common.Force.Parser, new[]{ "Force_" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Pair), global::Bench.Common.Pair.Parser, new[]{ "Key", "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CounterDict), global::Bench.Common.CounterDict.Parser, new[]{ "Pairs" }, null, null, null),
@@ -67,6 +70,207 @@ namespace Bench.Common {
 
   }
   #region Messages
+  public sealed partial class BenchmarkCellConfig : pb::IMessage<BenchmarkCellConfig> {
+    private static readonly pb::MessageParser<BenchmarkCellConfig> _parser = new pb::MessageParser<BenchmarkCellConfig>(() => new BenchmarkCellConfig());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<BenchmarkCellConfig> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BenchmarkCellConfig() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BenchmarkCellConfig(BenchmarkCellConfig other) : this() {
+      serviveType_ = other.serviveType_;
+      transportType_ = other.transportType_;
+      hubProtocol_ = other.hubProtocol_;
+      scenario_ = other.scenario_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public BenchmarkCellConfig Clone() {
+      return new BenchmarkCellConfig(this);
+    }
+
+    /// <summary>Field number for the "serviveType" field.</summary>
+    public const int ServiveTypeFieldNumber = 1;
+    private string serviveType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ServiveType {
+      get { return serviveType_; }
+      set {
+        serviveType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "transportType" field.</summary>
+    public const int TransportTypeFieldNumber = 2;
+    private string transportType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string TransportType {
+      get { return transportType_; }
+      set {
+        transportType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "hubProtocol" field.</summary>
+    public const int HubProtocolFieldNumber = 3;
+    private string hubProtocol_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string HubProtocol {
+      get { return hubProtocol_; }
+      set {
+        hubProtocol_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "scenario" field.</summary>
+    public const int ScenarioFieldNumber = 4;
+    private string scenario_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Scenario {
+      get { return scenario_; }
+      set {
+        scenario_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as BenchmarkCellConfig);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(BenchmarkCellConfig other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ServiveType != other.ServiveType) return false;
+      if (TransportType != other.TransportType) return false;
+      if (HubProtocol != other.HubProtocol) return false;
+      if (Scenario != other.Scenario) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ServiveType.Length != 0) hash ^= ServiveType.GetHashCode();
+      if (TransportType.Length != 0) hash ^= TransportType.GetHashCode();
+      if (HubProtocol.Length != 0) hash ^= HubProtocol.GetHashCode();
+      if (Scenario.Length != 0) hash ^= Scenario.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (ServiveType.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ServiveType);
+      }
+      if (TransportType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(TransportType);
+      }
+      if (HubProtocol.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(HubProtocol);
+      }
+      if (Scenario.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Scenario);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (ServiveType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiveType);
+      }
+      if (TransportType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TransportType);
+      }
+      if (HubProtocol.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(HubProtocol);
+      }
+      if (Scenario.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Scenario);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(BenchmarkCellConfig other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ServiveType.Length != 0) {
+        ServiveType = other.ServiveType;
+      }
+      if (other.TransportType.Length != 0) {
+        TransportType = other.TransportType;
+      }
+      if (other.HubProtocol.Length != 0) {
+        HubProtocol = other.HubProtocol;
+      }
+      if (other.Scenario.Length != 0) {
+        Scenario = other.Scenario;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            ServiveType = input.ReadString();
+            break;
+          }
+          case 18: {
+            TransportType = input.ReadString();
+            break;
+          }
+          case 26: {
+            HubProtocol = input.ReadString();
+            break;
+          }
+          case 34: {
+            Scenario = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class Force : pb::IMessage<Force> {
     private static readonly pb::MessageParser<Force> _parser = new pb::MessageParser<Force>(() => new Force());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -74,7 +278,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -191,7 +395,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -336,7 +540,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -445,7 +649,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -562,7 +766,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -710,7 +914,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -827,7 +1031,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -944,7 +1148,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

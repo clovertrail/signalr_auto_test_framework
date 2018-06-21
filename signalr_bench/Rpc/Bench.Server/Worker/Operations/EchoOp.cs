@@ -63,7 +63,7 @@ namespace Bench.RpcSlave.Worker.Operations
             for (int i = 0; i < _tk.Connections.Count; i++)
             {
                 int ind = i;
-                _tk.Connections[i].On(_tk.JobConfig.CallbackName, (string uid, string time) =>
+                _tk.Connections[i].On(_tk.BenchmarkCellConfig.Scenario, (string uid, string time) =>
                 {
                     var receiveTimestamp = Util.Timestamp();
                     var sendTimestamp = Convert.ToInt64(time);
@@ -128,7 +128,7 @@ namespace Bench.RpcSlave.Worker.Operations
                     }
                     _sentMessages[ind]++;
                     _tk.Counters.IncreseSentMsg();
-                    _tk.Connections[ind].SendAsync("Echo", $"{Util.GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+                    _tk.Connections[ind].SendAsync(_tk.BenchmarkCellConfig.Scenario, $"{Util.GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
                 };
             }
         }

@@ -27,5 +27,18 @@ namespace Bench.Common
 
         [Option('o', "outputcounterfile", Required = false, HelpText = "Specify Output File For Counters")]
         public string OutputCounterFile { get; set; }
+
+        [Option('v', "servicetype", Required = false, HelpText = "Specify BenchMark Service Type")]
+        public string ServiceType { get; set; }
+
+        [Option('t', "transporttype", Required = false, HelpText = "Specify TransportType")]
+        public string TransportType { get; set; }
+
+        [Option('p', "hubprotocol", Required = false, HelpText = "Specify BenchMark Hub Protocol")]
+        public string HubProtocal { get; set; }
+
+        [Option('s', "scenerio", Required = false, HelpText = "Specify BenchMark Scenario")]
+        public string Scenario { get; set; }
+
     }
 }

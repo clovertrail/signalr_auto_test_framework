@@ -139,7 +139,14 @@ namespace Bench.RpcMaster
 
             // process pipeline
             var tasks = new List<Task>();
-            clients.ForEach(client => tasks.Add(Task.Delay(0).ContinueWith(t => Task.FromResult(client.RunJob(new Empty())))));
+            var benchmarkCellConfig = new BenchmarkCellConfig
+            {
+                ServiveType = argsOption.ServiceType,
+                TransportType = argsOption.TransportType,
+                HubProtocol = argsOption.HubProtocal,
+                Scenario = argsOption.Scenario
+            };
+            clients.ForEach(client => tasks.Add(Task.Delay(0).ContinueWith(t => Task.FromResult(client.RunJob(benchmarkCellConfig)))));
 
             Util.Log($"wait for tasks");
             Task.WhenAll(tasks).Wait();

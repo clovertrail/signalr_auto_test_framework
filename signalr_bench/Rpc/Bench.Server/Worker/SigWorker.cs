@@ -17,6 +17,12 @@ namespace Bench.RpcSlave.Worker
             _tk.JobConfig = jobConfig; 
         }
 
+        public void LoadBenchmarkCellConfig(BenchmarkCellConfig benchmarkCellConfig)
+        {
+            _tk.BenchmarkCellConfig = benchmarkCellConfig;
+        }
+
+
         public Stat.Types.State ProcessJob()
         {
             // process operations
