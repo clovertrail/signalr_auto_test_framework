@@ -103,7 +103,10 @@ namespace JenkinsScript
             Task.Delay(20000).Wait();
 
             // start master
-            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export bench_type_list='service'; export bench_codec_list='{jobConfig.HubProtocol}'; bench_name_list='{jobConfig.Pipeline[2]}'; export result_root=`date +%Y%m%d%H%M%S`; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' -o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{Environment.GetEnvironmentVariable("bench_type_list")}_{Environment.GetEnvironmentVariable("bench_codec_list")}_{Environment.GetEnvironmentVariable("bench_name_list")}/counters.txt'";
+            var bench_type_list = "service";
+            var bench_codec_list = $"{jobConfig.HubProtocol}";
+            var bench_name_list = $"{jobConfig.Pipeline[2]}";
+            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export bench_type_list='service'; export bench_codec_list='{jobConfig.HubProtocol}'; export bench_name_list='{jobConfig.Pipeline[2]}'; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' -o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{bench_codec_list}_{bench_name_list}/counters.txt'";
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
             var maxRetry = 100;
             for (var i = 0; i < maxRetry; i++)
