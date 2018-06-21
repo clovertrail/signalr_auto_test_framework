@@ -120,6 +120,11 @@ namespace Bench.RpcMaster
                 oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "");
                 oneLineRecord += "," + Environment.NewLine;
 
+                var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
                 if (!File.Exists(argsOption.OutputCounterFile))
                 {
                     StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
