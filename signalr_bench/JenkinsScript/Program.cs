@@ -140,8 +140,7 @@ namespace JenkinsScript
                 Environment.Exit(1);
             }
 
-            var startInd = argsOption.OutputCounterFile.IndexOf("signalr-bench/") + "signalr-bench/".Length;
-            Util.Log($"Report: http://wanlsignalrbenchserver.eastus.cloudapp.azure.com:8000/" + argsOption.OutputCounterFile.Substring(startInd));
+            Util.Log($"Report: http://wanlsignalrbenchserver.eastus.cloudapp.azure.com:8000/" + Environment.GetEnvironmentVariable("result_root") + "/all.html");
         }
     }
 }

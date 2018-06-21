@@ -116,7 +116,7 @@ namespace Bench.RpcMaster
                     { "Time", Util.Timestamp2DateTimeStr(Util.Timestamp()) },
                     { "Counters", sortedCounters}
                 };
-                string oneLineRecord = Regex.Replace(sortedCounters.ToString(), @"\s+", "");
+                string oneLineRecord = Regex.Replace(finalRec.ToString(), @"\s+", "");
                 oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "");
                 oneLineRecord += "," + Environment.NewLine;
 
