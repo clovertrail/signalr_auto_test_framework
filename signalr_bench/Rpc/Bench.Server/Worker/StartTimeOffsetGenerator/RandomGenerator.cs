@@ -1,9 +1,9 @@
-﻿using Bench.Server.Worker.Savers;
+﻿using Bench.RpcSlave.Worker.Savers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Bench.Server.Worker.StartTimeOffsetGenerator
+namespace Bench.RpcSlave.Worker.StartTimeOffsetGenerator
 {
     class RandomGenerator : IStartTimeOffsetGenerator
     {

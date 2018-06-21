@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Bench.Server.Worker.Operations
+namespace Bench.RpcSlave.Worker.Operations
 {
     class BaseOp
     {

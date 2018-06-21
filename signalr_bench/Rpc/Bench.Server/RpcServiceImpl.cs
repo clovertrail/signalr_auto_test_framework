@@ -1,15 +1,15 @@
 ﻿using Bench.Common;
 using Bench.Common.Config;
-using Bench.Server.Worker;
+using Bench.RpcSlave.Worker;
 using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Bench.Server.Worker.Operations;
+using Bench.RpcSlave.Worker.Operations;
 
-namespace Bench.Server
+namespace Bench.RpcSlave
 {
     public class RpcServiceImpl : RpcService.RpcServiceBase
     {

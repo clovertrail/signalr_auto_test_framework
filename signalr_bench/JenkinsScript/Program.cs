@@ -19,13 +19,14 @@ namespace JenkinsScript
 
             // parse agent config file
             var configLoader = new ConfigLoader();
-            var cfg = configLoader.Load<AgentConfig>(argsOption.AgentConfigFile);
+            var agentConfig = configLoader.Load<AgentConfig>(argsOption.AgentConfigFile);
+            var jobConfig = configLoader.Load<JobConfig>(argsOption.JobConfigFile);
             Util.Log("finish loading config");
 
             var hosts = new List<string>();
-            hosts.Add(cfg.AppServer);
-            cfg.Slaves.ForEach(slv => hosts.Add(slv));
-            hosts.Add(cfg.Master);
+            hosts.Add(agentConfig.AppServer);
+            agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
+            hosts.Add(agentConfig.Master);
 
             var errCode = 0;
             var result = "";
@@ -34,11 +35,10 @@ namespace JenkinsScript
             // git clone repo
             hosts.ForEach(host =>
             {
-                //cmd = $"rm -rf /home/{cfg.User}/signalr_auto_test_framework; cp -rf /home/{cfg.User}/workspace/signalr_auto_test_framework /home/{cfg.User}/signalr_auto_test_framework"; //TODO
-                cmd = $"rm -rf /home/{cfg.User}/signalr_auto_test_framework; git clone {cfg.Repo} /home/{cfg.User}/signalr_auto_test_framework"; //TODO
-                Util.Log($"CMD: {cfg.User}@{host}: {cmd}");
-                if (host == cfg.Master) { }
-                else (errCode, result) = ShellHelper.RemoteBash(cfg.User, host, cfg.SshPort, cfg.Password, cmd);
+                cmd = $"rm -rf /home/{agentConfig.User}/signalr_auto_test_framework; git clone {agentConfig.Repo} /home/{agentConfig.User}/signalr_auto_test_framework"; //TODO
+                Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
+                if (host == agentConfig.Master) { }
+                else (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd);
                 if (errCode != 0) return;
                 return;//TODO: only for debug, to remove
             });
@@ -54,15 +54,15 @@ namespace JenkinsScript
             {
                 cmd = $"killall dotnet || true";
                 if (host.Contains("localhost") || host.Contains("127.0.0.1")) { }
-                else if (host == cfg.Master)
+                else if (host == agentConfig.Master)
                 {
-                    Util.Log($"CMD: {cfg.User}@{host}: {cmd}");
-                    (errCode, result) = ShellHelper.RemoteBash(cfg.User, host, cfg.SshPort, cfg.Password, cmd);
+                    Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
+                    (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd);
                 }
                 else
                 {
-                    Util.Log($"CMD: {cfg.User}@{host}: {cmd}");
-                    (errCode, result) = ShellHelper.RemoteBash(cfg.User, host, cfg.SshPort, cfg.Password, cmd);
+                    Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
+                    (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd);
                 }
                 if (errCode != 0) return;
             });
@@ -74,10 +74,9 @@ namespace JenkinsScript
             }
 
             // start appserver
-            //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/AppServer/; dotnet run > log.txt";
-            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log.txt";
-            Util.Log($"{cfg.User}@{cfg.AppServer}: {cmd}");
-            (errCode, result) = ShellHelper.RemoteBash(cfg.User, cfg.AppServer, cfg.SshPort, cfg.Password, cmd, wait: false);
+            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log.txt";
+            Util.Log($"{agentConfig.User}@{agentConfig.AppServer}: {cmd}");
+            (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.AppServer, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
 
             if (errCode != 0)
             {
@@ -88,12 +87,11 @@ namespace JenkinsScript
             Task.Delay(5000).Wait();
 
             // start rpc agents
-            cfg.Slaves.ForEach(host =>
+            agentConfig.Slaves.ForEach(host =>
             {
-                //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; dotnet run -a {argsOption.AgentConfigFile} -d 0.0.0.0 > log.txt";
-                cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
-                Util.Log($"CMD: {cfg.User}@{host}: {cmd}");
-                (errCode, result) = ShellHelper.RemoteBash(cfg.User, host, cfg.SshPort, cfg.Password, cmd, wait: false);
+                cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
+                Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
+                (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
                 if (errCode != 0) return;
             });
             if (errCode != 0)
@@ -104,17 +102,17 @@ namespace JenkinsScript
 
             Task.Delay(20000).Wait();
 
+            
             // start master
-            //cmd = $"cd /home/{cfg.User}/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; dotnet run -a {argsOption.AgentConfigFile} -j {argsOption.JobConfigFile} > log.txt";
-            cmd = $"cd /home/{cfg.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' > log.txt";
-            Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
+            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' -o {argsOption.OutputCounterFile}";
+            Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
             var maxRetry = 100;
             for (var i = 0; i < maxRetry; i++)
             {
-                (errCode, result) = ShellHelper.RemoteBash(cfg.User, cfg.Master, cfg.SshPort, cfg.Password, cmd);
+                (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
                 if (errCode == 0) break;
                 Util.Log($"retry {i}th time");
-                Util.Log($"CMD: {cfg.User}@{cfg.Master}: {cmd}");
+                Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
                 Task.Delay(2000).Wait();
 
                 if (errCode != 0)
@@ -122,13 +120,37 @@ namespace JenkinsScript
                     Util.Log($"ERR {errCode}: {result}");
                 }
             }
+
             if (errCode != 0)
             {
                 Util.Log($"ERR {errCode}: {result}");
                 Environment.Exit(1);
             }
 
+            // export for generating reports
+            cmd = $"export bench_type_list='service'; export bench_codec_list='{jobConfig.HubProtocol}'; bench_name_list='{jobConfig.Pipeline[2]}'; export result_root=`date +%Y%m%d%H%M%S`";
+            Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
+            (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
 
+            if (errCode != 0)
+            {
+                Util.Log($"ERR {errCode}: {result}");
+                Environment.Exit(1);
+            }
+
+            // gen report
+            cmd = $"cd /home/{agentConfig.User}/signalr-bench/; sh gen_html.sh; sh gen_all_report.sh; sh publish_report.sh; sh gen_summary.sh;";
+            Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
+            (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
+
+            if (errCode != 0)
+            {
+                Util.Log($"ERR {errCode}: {result}");
+                Environment.Exit(1);
+            }
+
+            var startInd = argsOption.OutputCounterFile.IndexOf("signalr-bench/") + "signalr-bench/".Length;
+            Util.Log($"Report: http://wanlsignalrbenchserver.eastus.cloudapp.azure.com:8000/" + argsOption.OutputCounterFile.Substring(startInd));
         }
     }
 }

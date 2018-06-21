@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Bench.Client.Allocators
+namespace Bench.RpcMaster.Allocators
 {
     class OneAllocator : IAllocator
     {

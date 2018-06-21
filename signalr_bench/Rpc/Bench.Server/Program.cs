@@ -5,9 +5,9 @@ using Grpc.Core;
 using Bench.Common;
 using CommandLine;
 using Bench.Common.Config;
-using Bench.Server.Worker;
+using Bench.RpcSlave.Worker;
 
-namespace Bench.Server {
+namespace Bench.RpcSlave {
     
 
     class Program

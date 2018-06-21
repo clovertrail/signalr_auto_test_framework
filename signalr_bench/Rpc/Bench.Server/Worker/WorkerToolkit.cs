@@ -1,11 +1,11 @@
 ﻿using Bench.Common;
 using Bench.Common.Config;
-using Bench.Server.Worker.Counters;
-using Bench.Server.Worker.Savers;
+using Bench.RpcSlave.Worker.Counters;
+using Bench.RpcSlave.Worker.Savers;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Collections.Generic;
 
-namespace Bench.Server.Worker
+namespace Bench.RpcSlave.Worker
 {
     public class WorkerToolkit
     {

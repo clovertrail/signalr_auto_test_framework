@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 
-namespace Bench.Server.Worker.Operations
+namespace Bench.RpcSlave.Worker.Operations
 {
     class CreateConnOp : BaseOp, IOperation
     {

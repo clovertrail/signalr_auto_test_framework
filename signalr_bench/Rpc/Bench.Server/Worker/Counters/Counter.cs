@@ -3,9 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bench.Common;
-using Bench.Server.Worker.Savers;
+using Bench.RpcSlave.Worker.Savers;
 
-namespace Bench.Server.Worker.Counters
+namespace Bench.RpcSlave.Worker.Counters
 {
     public class Counter: ICounters
     {

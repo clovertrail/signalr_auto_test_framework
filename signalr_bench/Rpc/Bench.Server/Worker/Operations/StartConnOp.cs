@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bench.Server.Worker.Operations
+namespace Bench.RpcSlave.Worker.Operations
 {
     class StartConnOp : BaseOp, IOperation
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Bench.Server.Worker.Operations
+namespace Bench.RpcSlave.Worker.Operations
 {
     class OperationFactory
     {

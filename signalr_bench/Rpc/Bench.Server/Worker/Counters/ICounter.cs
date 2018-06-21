@@ -5,7 +5,7 @@ using System.Text;
 
 
 
-namespace Bench.Server.Worker.Counters
+namespace Bench.RpcSlave.Worker.Counters
 {
     public interface ICounters
     {

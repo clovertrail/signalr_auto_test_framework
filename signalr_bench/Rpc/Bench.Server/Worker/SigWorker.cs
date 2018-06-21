@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Bench.Server.Worker.Operations;
+using Bench.RpcSlave.Worker.Operations;
 using Bench.Common;
 
-namespace Bench.Server.Worker
+namespace Bench.RpcSlave.Worker
 {
     class SigWorker
     {

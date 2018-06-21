@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Bench.Server.Worker.Savers
+namespace Bench.RpcSlave.Worker.Savers
 {
     public interface ISaver
     {

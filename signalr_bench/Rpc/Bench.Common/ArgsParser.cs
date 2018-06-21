@@ -24,5 +24,8 @@ namespace Bench.Common
 
         [Option('x', "agentblobname", Required = false, HelpText = "Specify Azure Blob Name For Agent Config File")]
         public string AgentBlobName { get; set; }
+
+        [Option('o', "outputcounterfile", Required = false, HelpText = "Specify Output File For Counters")]
+        public string OutputCounterFile { get; set; }
     }
 }

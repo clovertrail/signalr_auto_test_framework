@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Bench.Server.Worker.Savers
+namespace Bench.RpcSlave.Worker.Savers
 {
     class LocalFileSaver : ISaver
     {

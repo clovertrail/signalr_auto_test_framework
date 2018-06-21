@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Bench.Server.Worker.StartTimeOffsetGenerator
+namespace Bench.RpcSlave.Worker.StartTimeOffsetGenerator
 {
     public interface IStartTimeOffsetGenerator
     {

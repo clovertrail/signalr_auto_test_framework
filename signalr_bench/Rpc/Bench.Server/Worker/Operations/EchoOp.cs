@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Bench.Server.Worker.Counters;
-using Bench.Server.Worker.Savers;
-using Bench.Server.Worker.StartTimeOffsetGenerator;
+using Bench.RpcSlave.Worker.Counters;
+using Bench.RpcSlave.Worker.Savers;
+using Bench.RpcSlave.Worker.StartTimeOffsetGenerator;
 using Bench.Common.Config;
 using Bench.Common;
 
-namespace Bench.Server.Worker.Operations
+namespace Bench.RpcSlave.Worker.Operations
 {
     
 

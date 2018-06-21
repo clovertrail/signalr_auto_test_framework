@@ -18,14 +18,14 @@ using Bench.Common;
 using Bench.Common.Config;
 using CommandLine;
 using System.Collections.Generic;
-using Bench.Client.Allocators;
+using Bench.RpcMaster.Allocators;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace Bench.Client
+namespace Bench.RpcMaster
 {
     class Program
     {
@@ -105,7 +105,7 @@ namespace Bench.Client
                     jobj.Add(item.Key, item.Value);
                     if (!item.Key.Contains("sent"))
                     {
-                        received++;
+                        received += item.Value;
                     }
                 }
 
@@ -117,16 +117,15 @@ namespace Bench.Client
                     { "Counters", sortedCounters}
                 };
                 string oneLineRecord = Regex.Replace(sortedCounters.ToString(), @"\s+", "");
-                oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
-                oneLineRecord = $"{oneLineRecord}";
-                oneLineRecord += ",";
+                oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "");
+                oneLineRecord += "," + Environment.NewLine;
 
-                if (!File.Exists("PerSecond.txt"))
+                if (!File.Exists(argsOption.OutputCounterFile))
                 {
-                    StreamWriter sw = File.CreateText("PerSecond.txt");
+                    StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
                 }
 
-                File.AppendAllText("PerSecond.txt", oneLineRecord);
+                File.AppendAllText(argsOption.OutputCounterFile, oneLineRecord);
                 Util.Log("per second: " + oneLineRecord);
 
             };
