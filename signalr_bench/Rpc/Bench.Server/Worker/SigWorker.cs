@@ -28,7 +28,7 @@ namespace Bench.RpcSlave.Worker
             // process operations
             GetPipeline().ForEach(opName =>
             {
-                var tuple = OperationFactory.CreateOp(opName);
+                var tuple = OperationFactory.CreateOp(opName, _tk);
                 var obj = tuple.Item1;
                 var type = tuple.Item2;
                 dynamic op = Convert.ChangeType(obj, type);

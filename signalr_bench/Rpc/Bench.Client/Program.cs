@@ -146,6 +146,8 @@ namespace Bench.RpcMaster
                 HubProtocol = argsOption.HubProtocal,
                 Scenario = argsOption.Scenario
             };
+            Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}");
+
             clients.ForEach(client => tasks.Add(Task.Delay(0).ContinueWith(t => Task.FromResult(client.RunJob(benchmarkCellConfig)))));
 
             Util.Log($"wait for tasks");
