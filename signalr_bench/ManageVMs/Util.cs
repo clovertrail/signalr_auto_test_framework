@@ -38,7 +38,7 @@ namespace ManageVMs
                     var startInd = p.Name.LastIndexOf(":") + 1;
                     int latency = 99999;
                     try
-                    {
+                    { 
                         latency = Convert.ToInt32((p.Name.Substring(startInd)));
                     }
                     catch (Exception)
