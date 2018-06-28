@@ -86,7 +86,8 @@ namespace Bench.RpcMaster
                 var allClientCounters = new ConcurrentDictionary<string, int>();
                 var collectCountersTasks = new List<Task>();
                 var ind = 0;
-                var isReady = false;
+                var isSend = false;
+                //var isAllComplete = false;
                 clients.ForEach(client =>
                 {
                     collectCountersTasks.Add(
@@ -94,7 +95,7 @@ namespace Bench.RpcMaster
                             {
                                 var state = client.GetState(new Empty { });
                                 if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
-                                isReady = true;
+                                isSend = true;
                                 Util.Log($"ind: {ind++}, state: {state.State}");
                                 var counters = client.CollectCounters(new Force { Force_ = false });
 
@@ -112,7 +113,7 @@ namespace Bench.RpcMaster
 
                 Task.WhenAll(collectCountersTasks).Wait();
 
-                if (isReady == false)
+                if (isSend == false)
                 {
                     return;
                 }
@@ -167,7 +168,17 @@ namespace Bench.RpcMaster
             };
             Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}");
 
-            clients.ForEach(client => tasks.Add(Task.Delay(0).ContinueWith(t => Task.FromResult(client.RunJob(benchmarkCellConfig)))));
+            var indStartJob = 0;
+            clients.ForEach(client => 
+                tasks.Add(
+                    Task.Delay(0).ContinueWith(
+                        t => {
+                            Util.Log($"client start ind: {indStartJob++}");
+                            client.RunJob(benchmarkCellConfig);
+                        }
+                    )
+                )
+            );
 
             Util.Log($"wait for tasks");
             Task.WhenAll(tasks).Wait();
