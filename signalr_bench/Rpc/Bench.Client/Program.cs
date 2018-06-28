@@ -195,10 +195,11 @@ namespace Bench.RpcMaster
             Action[] actions = new Action[clients.Count];
             for (var i = 0; i < clients.Count; i++)
             {
+                int ind = i;
                 actions[i] = () => 
                 {
                     Util.Log($"client start");
-                    clients[i].RunJob(benchmarkCellConfig);
+                    clients[ind].RunJob(benchmarkCellConfig);
                 };
             }
             Parallel.Invoke(actions);
