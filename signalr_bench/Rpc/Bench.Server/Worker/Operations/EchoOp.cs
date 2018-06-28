@@ -23,7 +23,7 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            Task.Delay(1000).Wait();
+            Task.Delay(15000).Wait();
 
             // setup
             _tk = tk;
@@ -35,7 +35,7 @@ namespace Bench.RpcSlave.Worker.Operations
             StartSendMsg();
 
             // wait to stop
-            Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + _tk.JobConfig.Interval*2)).ContinueWith(t => {
+            Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + _tk.JobConfig.Interval*5)).ContinueWith(t => {
                 SaveCounters();
             }).Wait();
 

@@ -86,6 +86,7 @@ namespace Bench.RpcMaster
                 var allClientCounters = new ConcurrentDictionary<string, int>();
                 var collectCountersTasks = new List<Task>();
                 var ind = 0;
+                var isReady = false;
                 clients.ForEach(client =>
                 {
                     collectCountersTasks.Add(
@@ -93,7 +94,8 @@ namespace Bench.RpcMaster
                             {
                                 var state = client.GetState(new Empty { });
                                 if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
-                                Util.Log($"ind: {ind}, state: {state.State}");
+                                isReady = true;
+                                Util.Log($"ind: {ind++}, state: {state.State}");
                                 var counters = client.CollectCounters(new Force { Force_ = false });
 
                                 for (var i = 0; i < counters.Pairs.Count; i++)
@@ -109,6 +111,11 @@ namespace Bench.RpcMaster
                 });
 
                 Task.WhenAll(collectCountersTasks).Wait();
+
+                if (isReady == false)
+                {
+                    return;
+                }
 
                 var jobj = new JObject();
                 var received = 0;
