@@ -84,19 +84,29 @@ namespace Bench.RpcMaster
             collectTimer.Elapsed += (sender, e) =>
             {
                 var allClientCounters = new ConcurrentDictionary<string, int>();
+                var collectCountersTasks = new List<Task>();
                 clients.ForEach(client =>
                 {
-                    var state = client.GetState(new Empty { });
-                    if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
-                    var counters = client.CollectCounters(new Force { Force_ = false });
+                    collectCountersTasks.Add(
+                        Task.Delay(0).ContinueWith(t =>
+                            {
+                                var state = client.GetState(new Empty { });
+                                if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
+                                var counters = client.CollectCounters(new Force { Force_ = false });
 
-                    for (var i = 0; i < counters.Pairs.Count; i++)
-                    {
-                        var key = counters.Pairs[i].Key;
-                        var value = counters.Pairs[i].Value;
-                        allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
-                    }
+                                for (var i = 0; i < counters.Pairs.Count; i++)
+                                {
+                                    var key = counters.Pairs[i].Key;
+                                    var value = counters.Pairs[i].Value;
+                                    allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
+                                }
+                            }
+                        )
+                    );
+                    
                 });
+
+                Task.WhenAll(collectCountersTasks).Wait();
 
                 var jobj = new JObject();
                 var received = 0;
