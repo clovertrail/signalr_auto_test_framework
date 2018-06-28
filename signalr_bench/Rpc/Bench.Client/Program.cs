@@ -169,15 +169,18 @@ namespace Bench.RpcMaster
             Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}");
 
             var indStartJob = 0;
-            clients.ForEach(client => 
-                tasks.Add(
-                    Task.Delay(0).ContinueWith(
-                        t => {
-                            Util.Log($"client start ind: {indStartJob++}");
-                            client.RunJob(benchmarkCellConfig);
-                        }
-                    )
-                )
+            clients.ForEach(client => {
+                    Util.Log($"client add task ind: {indStartJob}");
+                    tasks.Add(
+                        Task.Delay(0).ContinueWith(
+                            t =>
+                            {
+                                Util.Log($"client start ind: {indStartJob++}");
+                                client.RunJob(benchmarkCellConfig);
+                            }
+                        )
+                    );
+                }
             );
 
             Util.Log($"wait for tasks");
