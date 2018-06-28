@@ -221,7 +221,7 @@ namespace ManageVMs
             // install dotnet
             for (var i = 0; i < argsOption.VmCount; i++)
             {
-                Console.WriteLine($"modify limits: {i}th");
+                Console.WriteLine($"install dotnet: {i}th");
                 var port = 22;
                 var domain = DomainName(argsOption, rndNum, i);
                 cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb";

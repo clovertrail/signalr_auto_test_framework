@@ -23,7 +23,7 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            Task.Delay(15000).Wait();
+            Task.Delay(1000).Wait();
 
             // setup
             _tk = tk;
