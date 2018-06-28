@@ -94,7 +94,7 @@ namespace Bench.RpcMaster
                         Task.Delay(0).ContinueWith(t =>
                             {
                                 var state = client.GetState(new Empty { });
-                                if ((int)state.State >= (int)Stat.Types.State.SendComplete)
+                                if ((int)state.State >= (int)Stat.Types.State.SendComplete || (int)state.State < (int)Stat.Types.State.SendRunning)
                                 {
                                     isComplete = true;
                                     return;
@@ -188,30 +188,30 @@ namespace Bench.RpcMaster
             //    }
             //);
 
-            //clients.ForEach(client =>
-            //{
-            //    Util.Log($"client add task ind: {indStartJob}");
-            //    tasks.Add(Task.Run(() =>
-            //    {
-            //        Util.Log($"client start ind: {indStartJob++}");
-            //        client.RunJob(benchmarkCellConfig);
-            //    }));
-            //});
-
-            Action[] actions = new Action[clients.Count];
-            for (var i = 0; i < clients.Count; i++)
+            clients.ForEach(client =>
             {
-                int ind = i;
-                actions[i] = () => 
+                Util.Log($"client add task ind: {indStartJob}");
+                tasks.Add(Task.Run(() =>
                 {
-                    Util.Log($"client start");
-                    clients[ind].RunJob(benchmarkCellConfig);
-                };
-            }
-            Parallel.Invoke(actions);
+                    Util.Log($"client start ind: {indStartJob++}");
+                    client.RunJob(benchmarkCellConfig);
+                }));
+            });
+
+            //Action[] actions = new Action[clients.Count];
+            //for (var i = 0; i < clients.Count; i++)
+            //{
+            //    int ind = i;
+            //    actions[i] = () => 
+            //    {
+            //        Util.Log($"client start");
+            //        clients[ind].RunJob(benchmarkCellConfig);
+            //    };
+            //}
+            //Parallel.Invoke(actions);
 
             Util.Log($"wait for tasks");
-            //Task.WhenAll(tasks).Wait();
+            Task.WhenAll(tasks).Wait();
 
             for (var i = 0; i < channels.Count; i++)
             {
