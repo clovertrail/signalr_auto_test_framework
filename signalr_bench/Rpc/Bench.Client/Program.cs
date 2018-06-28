@@ -87,13 +87,18 @@ namespace Bench.RpcMaster
                 var collectCountersTasks = new List<Task>();
                 var ind = 0;
                 var isSend = false;
-                //var isAllComplete = false;
+                var isComplete = false;
                 clients.ForEach(client =>
                 {
                     collectCountersTasks.Add(
                         Task.Delay(0).ContinueWith(t =>
                             {
                                 var state = client.GetState(new Empty { });
+                                if ((int)state.State >= (int)Stat.Types.State.SendComplete)
+                                {
+                                    isComplete = true;
+                                    return;
+                                }
                                 if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
                                 isSend = true;
                                 Util.Log($"ind: {ind++}, state: {state.State}");
@@ -113,7 +118,7 @@ namespace Bench.RpcMaster
 
                 Task.WhenAll(collectCountersTasks).Wait();
 
-                if (isSend == false)
+                if (isSend == false || isComplete == true)
                 {
                     return;
                 }
@@ -192,6 +197,7 @@ namespace Bench.RpcMaster
             //        client.RunJob(benchmarkCellConfig);
             //    }));
             //});
+
             Action[] actions = new Action[clients.Count];
             for (var i = 0; i < clients.Count; i++)
             {
