@@ -35,7 +35,7 @@ namespace Bench.RpcSlave.Worker.Operations
             StartSendMsg();
 
             // wait to stop
-            Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + _tk.JobConfig.Interval*5)).ContinueWith(t => {
+            Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + 30)).ContinueWith(t => {
                 SaveCounters();
             }).Wait();
 
