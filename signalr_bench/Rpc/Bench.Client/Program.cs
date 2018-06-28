@@ -183,18 +183,28 @@ namespace Bench.RpcMaster
             //    }
             //);
 
-            clients.ForEach(client =>
+            //clients.ForEach(client =>
+            //{
+            //    Util.Log($"client add task ind: {indStartJob}");
+            //    tasks.Add(Task.Run(() =>
+            //    {
+            //        Util.Log($"client start ind: {indStartJob++}");
+            //        client.RunJob(benchmarkCellConfig);
+            //    }));
+            //});
+            Action[] actions = new Action[clients.Count];
+            for (var i = 0; i < clients.Count; i++)
             {
-                Util.Log($"client add task ind: {indStartJob}");
-                tasks.Add(Task.Run(() =>
+                actions[i] = () => 
                 {
-                    Util.Log($"client start ind: {indStartJob++}");
-                    client.RunJob(benchmarkCellConfig);
-                }));
-            });
+                    Util.Log($"client start");
+                    clients[i].RunJob(benchmarkCellConfig);
+                };
+            }
+            Parallel.Invoke(actions);
 
             Util.Log($"wait for tasks");
-            Task.WhenAll(tasks).Wait();
+            //Task.WhenAll(tasks).Wait();
 
             for (var i = 0; i < channels.Count; i++)
             {
