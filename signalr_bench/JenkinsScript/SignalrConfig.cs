@@ -10,7 +10,7 @@ namespace JenkinsScript
         public string Password { get; set; }
         public string Tenant { get; set; }
         public string Location { get; set; }
-        public string Basename { get; set; }
+        public string BaseName { get; set; }
         public string Sku { get; set; }
         public int UnitCount { get; set; }
     }

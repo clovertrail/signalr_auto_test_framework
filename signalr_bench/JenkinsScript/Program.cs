@@ -16,15 +16,23 @@ namespace JenkinsScript
                 .WithNotParsed(error => { });
 
             // parse agent config file
-            var configLoader = new ConfigLoader();
-            var agentConfig = configLoader.Load<AgentConfig>(argsOption.AgentConfigFile);
-            var jobConfig = configLoader.Load<JobConfig>(argsOption.JobConfigFile);
-            Util.Log("finish loading config");
+            AgentConfig agentConfig = new AgentConfig();
+            JobConfig jobConfig = new JobConfig();
+            List<string> hosts = new List<string>();
 
-            var hosts = new List<string>();
-            hosts.Add(agentConfig.AppServer);
-            agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
-            hosts.Add(agentConfig.Master);
+            if (argsOption.AgentConfigFile != null && argsOption.JobConfigFile != null)
+            {
+                var configLoader = new ConfigLoader();
+                agentConfig = configLoader.Load<AgentConfig>(argsOption.AgentConfigFile);
+                jobConfig = configLoader.Load<JobConfig>(argsOption.JobConfigFile);
+                Util.Log("finish loading config");
+
+                hosts = new List<string>();
+                hosts.Add(agentConfig.AppServer);
+                agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
+                hosts.Add(agentConfig.Master);
+            }
+            
 
             var errCode = 0;
             var result = "";

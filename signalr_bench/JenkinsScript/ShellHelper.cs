@@ -233,7 +233,6 @@ namespace JenkinsScript
             return (errCode, result);
         }
 
-        static string SrRndNum = "";
         public static (int, string) CreateSignalrService(ArgsOption argsOption)
         {
             var errCode = 0;
@@ -241,18 +240,19 @@ namespace JenkinsScript
             var cmd = "";
 
             var content = ReadBlob("SignalrConfigFileName");
+            Console.WriteLine($"content: {content}");
             var config = ParseYaml<SignalrConfig>(content);
 
             // login to azure
-            cmd = $"az login --service-principal --username {config.AppId} --password {config.Password} --tenant {config.Tenant};";
-            Util.Log($"CMD: signalr service: {cmd}");
+            cmd = $"az login --service-principal --username {config.AppId} --password {config.Password} --tenant {config.Tenant}";
+            Util.Log($"CMD: signalr service: az login");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 
             var rnd = new Random();
-            SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
+            var SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
 
-            var groupName = config.Basename + SrRndNum + "Group";
-            var srName = config.Basename + SrRndNum + "SR";
+            var groupName = config.BaseName + "Group";
+            var srName = config.BaseName + SrRndNum + "SR";
 
             // create resource group
             cmd = $"  az group create --name {groupName} --location {config.Location}";
@@ -261,22 +261,26 @@ namespace JenkinsScript
             
 
             //create signalr service
-            cmd = $"az signalr create --name {srName} --resource-group {srName}  --sku {config.Sku} --unit-count {config.UnitCount} --query hostName -o tsv";
+            cmd = $"az signalr create --name {srName} --resource-group {groupName}  --sku {config.Sku} --unit-count {config.UnitCount} --query hostName -o tsv";
             Util.Log($"CMD: signalr service: {cmd}");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 
             var signalrHostName = result;
+            Console.WriteLine($"signalrHostName: {signalrHostName}");
 
             // get access key
-            cmd = $"az signalr key list --name {srName} --resource - group {groupName} --query primaryKey -o tsv";
+            cmd = $"az signalr key list --name {srName} --resource-group {groupName} --query primaryKey -o tsv";
             Util.Log($"CMD: signalr service: {cmd}");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             var signalrPrimaryKey = result;
+            Console.WriteLine($"signalrPrimaryKey: {signalrPrimaryKey}");
 
             // combine to connection string
+            signalrHostName = signalrHostName.Substring(0, signalrHostName.Length - 1);
+            signalrPrimaryKey = signalrPrimaryKey.Substring(0, signalrPrimaryKey.Length - 1);
             var connectionString = $"Endpoint=https://{signalrHostName};AccessKey={signalrPrimaryKey};";
             Console.WriteLine($"connection string: {connectionString}");
-
+            ShellHelper.Bash($"export AzureSignalRConnectionString='{connectionString}'", handleRes: true);
             return (errCode, result);
         }
 
@@ -289,15 +293,15 @@ namespace JenkinsScript
             var content = ReadBlob("SignalrConfigFileName");
             var config = ParseYaml<SignalrConfig>(content);
 
-            var groupName = config.Basename + SrRndNum + "Group";
+            var groupName = config.BaseName + "Group";
 
             // login to azure
             cmd = $"az login --service-principal --username {config.AppId} --password {config.Password} --tenant {config.Tenant}";
-            Util.Log($"CMD: signalr service: {cmd}");
+            Util.Log($"CMD: signalr service: logint azure");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 
             // delete resource group
-            cmd = $"az group delete --name {groupName}";
+            cmd = $"az group delete --name {groupName} --yes";
             Util.Log($"CMD: signalr service: {cmd}");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 
@@ -310,8 +314,11 @@ namespace JenkinsScript
             CloudStorageAccount storageAccount = null;
             CloudBlobContainer cloudBlobContainer = null;
             var content = "";
-
-            if (CloudStorageAccount.TryParse(Environment.GetEnvironmentVariable("AzureStorageConnectionString"), out storageAccount))
+            var AzureStorageConnectionString = Environment.GetEnvironmentVariable("AzureStorageConnectionString");
+            Console.WriteLine($"AzureStorageConnectionString : {AzureStorageConnectionString }");
+            Console.WriteLine($"container: {Environment.GetEnvironmentVariable("ConfigBlobContainerName")}");
+            Console.WriteLine($"configkey: {configKey}");
+            if (CloudStorageAccount.TryParse(AzureStorageConnectionString, out storageAccount))
             {
                 try
                 {

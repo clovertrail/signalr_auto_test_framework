@@ -241,10 +241,10 @@ namespace Client.WorkerNs
 
 
             ///* connection method 1:*/
-            // var tasks = new List<Task>();
+            //var tasks = new List<Task>();
 
-            // for (var i = 0;  i < _pkg.Connections.Count; i++)
-            // {
+            //for (var i = 0; i < _pkg.Connections.Count; i++)
+            //{
             //    // TODO: bug in signal client
             //    //tasks.Add((_pkg.Connections[i].StartAsync()));
             //    //if (i > 0 && i % 100 == 0)
@@ -254,23 +254,23 @@ namespace Client.WorkerNs
             //    //}
             //    int ind = i;
             //    tasks.Add(Task.Delay(ind / 100 * 2000).ContinueWith(_ => _pkg.Connections[ind].StartAsync()));
-            // }
+            //}
 
-            // // foreach (var conn in _pkg.Connections)
-            // // {
-            // //    tasks.Add(conn.StartAsync());
-            // // }
+            //// foreach (var conn in _pkg.Connections)
+            //// {
+            ////    tasks.Add(conn.StartAsync());
+            //// }
 
-            // await Task.WhenAll(tasks);
-            // Util.Log("Wait more time");
-            // Task.Delay(TimeSpan.FromMinutes(3)).Wait();
+            //await Task.WhenAll(tasks);
+            //Util.Log("Wait more time");
+            //Task.Delay(TimeSpan.FromMinutes(3)).Wait();
 
             ///* end method 1 */
 
 
             /* connection method 2:*/
             var total = _pkg.Connections.Count;
-            var inner = 500;
+            var inner = 100;
             var outer = total / inner;
             var taskMatrix = new List<List<Task>>();
             for (var i = 0; i < outer; i++)
@@ -296,8 +296,8 @@ namespace Client.WorkerNs
             /* connection method 3:*/
             /* end method 3 */
 
-            
-           
+
+
 
 
 

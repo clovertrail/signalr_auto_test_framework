@@ -2,8 +2,8 @@
   "Default": {
     "Client": "SignalRCoreEcho",
     "State": "Waiting",
-    "ServerBenchmarkUri": "http://localhost:5000/signalrbench",
-    "ServerBenchmarkUriBak": "http://wanlsignalrautotestappserver.eastus.cloudapp.azure.com:5000/signalrbench",
+    "ServerBenchmarkUribAK": "http://localhost:5000/signalrbench",
+    "ServerBenchmarkUri": "http://wanlsignalrautotestappserver.eastus.cloudapp.azure.com:5000/signalrbench",
     "Duration": 5,
     "Interval": 1,
     "TransportType": "WebSockets",
