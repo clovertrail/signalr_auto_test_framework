@@ -158,7 +158,7 @@ namespace Bench.RpcMaster
 
 
             // process pipeline
-            var tasks = new List<Task>();
+            var tasks = new List<Task>(clients.Count);
             var benchmarkCellConfig = new BenchmarkCellConfig
             {
                 ServiveType = argsOption.ServiceType,
