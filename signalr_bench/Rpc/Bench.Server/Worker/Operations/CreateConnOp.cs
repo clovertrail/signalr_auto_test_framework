@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Bench.RpcSlave.Worker.Operations
 {
@@ -79,6 +80,20 @@ namespace Bench.RpcSlave.Worker.Operations
                         throw new Exception($"{hubProtocol} is invalid.");
                 }
 
+                connection.Closed += e =>
+                {
+                    if (_tk.State != Stat.Types.State.HubconnDisconnected ||
+                        _tk.State != Stat.Types.State.HubconnDisconnecting ||
+                        _tk.State != Stat.Types.State.HubconnDisposing ||
+                        _tk.State != Stat.Types.State.HubconnDisposed
+                    )
+                    {
+                        var error = $"Connection closed early: {e}";
+                        Util.Log(error);
+                    }
+
+                    return Task.CompletedTask;
+                };
                 connections.Add(connection);
             }
 

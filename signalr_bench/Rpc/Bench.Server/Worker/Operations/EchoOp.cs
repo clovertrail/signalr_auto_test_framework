@@ -109,7 +109,7 @@ namespace Bench.RpcSlave.Worker.Operations
                     TimerPerConnection[ind].Interval = _tk.JobConfig.Interval * 1000;
                     TimerPerConnection[ind].Start();
 
-                    if (_sentMessages[ind] >= _tk.JobConfig.Duration * _tk.JobConfig.Interval)
+                    if (_sentMessages[ind] >= _tk.JobConfig.Duration / _tk.JobConfig.Interval)
                     {
                         TimerPerConnection[ind].Stop();
                         return;
