@@ -1,4 +1,10 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.Azure.Management.Compute.Fluent;
+using Microsoft.Azure.Management.Compute.Fluent.Models;
+using Microsoft.Azure.Management.Fluent;
+using Microsoft.Azure.Management.ResourceManager.Fluent;
+using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
+using Microsoft.Azure.Management.ResourceManager.Fluent.Core.ResourceActions;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
@@ -239,9 +245,9 @@ namespace JenkinsScript
             var result = "";
             var cmd = "";
 
-            var content = ReadBlob("SignalrConfigFileName");
+            var content = AzureBlobReader.ReadBlob("SignalrConfigFileName");
             Console.WriteLine($"content: {content}");
-            var config = ParseYaml<SignalrConfig>(content);
+            var config = AzureBlobReader.ParseYaml<SignalrConfig>(content);
 
             // login to azure
             cmd = $"az login --service-principal --username {config.AppId} --password {config.Password} --tenant {config.Tenant}";
@@ -284,14 +290,14 @@ namespace JenkinsScript
             return (errCode, result);
         }
 
-        public static (int, string) DeleteResourceGroup(ArgsOption args)
+        public static (int, string) DeleteSignalr(ArgsOption args)
         {
             var errCode = 0;
             var result = "";
             var cmd = "";
 
-            var content = ReadBlob("SignalrConfigFileName");
-            var config = ParseYaml<SignalrConfig>(content);
+            var content = AzureBlobReader.ReadBlob("SignalrConfigFileName");
+            var config = AzureBlobReader.ParseYaml<SignalrConfig>(content);
 
             var groupName = config.BaseName + "Group";
 
@@ -307,48 +313,8 @@ namespace JenkinsScript
 
             return (errCode, result);
         }
+
         
-        private static string ReadBlob(string configKey)
-        {
-            // load signalr config
-            CloudStorageAccount storageAccount = null;
-            CloudBlobContainer cloudBlobContainer = null;
-            var content = "";
-            var AzureStorageConnectionString = Environment.GetEnvironmentVariable("AzureStorageConnectionString");
-            Console.WriteLine($"AzureStorageConnectionString : {AzureStorageConnectionString }");
-            Console.WriteLine($"container: {Environment.GetEnvironmentVariable("ConfigBlobContainerName")}");
-            Console.WriteLine($"configkey: {configKey}");
-            if (CloudStorageAccount.TryParse(AzureStorageConnectionString, out storageAccount))
-            {
-                try
-                {
-                    CloudBlobClient cloudBlobClient = storageAccount.CreateCloudBlobClient();
-                    cloudBlobContainer = cloudBlobClient.GetContainerReference(Environment.GetEnvironmentVariable("ConfigBlobContainerName"));
-                    CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(Environment.GetEnvironmentVariable(configKey));
-                    content = cloudBlockBlob.DownloadTextAsync().GetAwaiter().GetResult();
-
-                }
-                catch (StorageException ex)
-                {
-                    Console.WriteLine("Error returned from the service: {0}", ex.Message);
-
-                }
-            }
-            return content;
-        }
-
-        private static T ParseYaml<T>(string content)
-        {
-            var input = new StringReader(content);
-
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(new CamelCaseNamingConvention())
-                .Build();
-
-            var config = deserializer.Deserialize<T>(input);
-            return config;
-        }
-
 
     }
 

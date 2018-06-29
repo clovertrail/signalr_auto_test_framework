@@ -36,28 +36,36 @@ namespace JenkinsScript
 
             var errCode = 0;
             var result = "";
-            
-            switch(argsOption.Step)
+            var azureManager = new AzureManager();
+            var vmBuilder = new BenchmarkVmBuilder(agentConfig);
+
+            switch (argsOption.Step)
             {
-                case "killalldotnet":
+                case "KillAllDotnet":
                     (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                     break;
-                case "clonerepo":
+                case "CloneRepo":
                     (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
                     break;
-                case "startappserver":
+                case "StartAppServer":
                     (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                     break;
-                case "startrpcserver":
+                case "StartRpcServer":
                     (errCode, result) = ShellHelper.StartRpcSlaves(hosts, agentConfig, argsOption);
                     break;
-                case "createsignalr":
+                case "CreateSignalr":
                     (errCode, result) = ShellHelper.CreateSignalrService(argsOption);
                     break;
-                case "deletesignalr":
-                    (errCode, result) = ShellHelper.DeleteResourceGroup(argsOption);
+                case "DeleteSignalr":
+                    (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
                     break;
-                case "all": 
+                case "CreateAllAgentVMs":
+                    vmBuilder.Build();
+                    break;
+                case "DeleteAllAgentVMs":
+                    azureManager.DeleteResourceGroup(vmBuilder.GroupName);
+                    break;
+                case "All": 
                 default:
                     (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                     (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);

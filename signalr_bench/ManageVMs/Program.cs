@@ -19,18 +19,18 @@ namespace ManageVMs
             
 
             // parse args
-            var argsOption = new ArgsOption();
+            var agentConfig = new ArgsOption();
             var result = Parser.Default.ParseArguments<ArgsOption>(args)
-                .WithParsed(options => argsOption = options)
+                .WithParsed(options => agentConfig = options)
                 .WithNotParsed(error => { });
 
             var sw = new Stopwatch();
             sw.Start();
 
             // auth file
-            Util.Log($"auth file: {argsOption.AuthFile}");
+            Util.Log($"auth file: {agentConfig.AuthFile}");
             var credentials = SdkContext.AzureCredentialsFactory
-                .FromFile(argsOption.AuthFile);
+                .FromFile(agentConfig.AuthFile);
 
             //var credentials = SdkContext.AzureCredentialsFactory.FromServicePrincipal(clientId:, clientSecret:, tenantId:, environment:AzureEnvironment.AzureGlobalCloud)
 
@@ -42,11 +42,11 @@ namespace ManageVMs
 
             // create resource group
             var rnd = new Random();
-            var groupName = argsOption.Prefix + "ResourceGroup";
+            var groupName = agentConfig.Prefix + "ResourceGroup";
             var rndNum = Convert.ToString(rnd.Next(0, 100000) * rnd.Next(0, 100000));
-            var vmNameBase = argsOption.Prefix.ToLower() + rndNum + "vm";
+            var vmNameBase = agentConfig.Prefix.ToLower() + rndNum + "vm";
             Region location = null;
-            switch (argsOption.Location.ToLower())
+            switch (agentConfig.Location.ToLower())
             {
                 case "useast":
                     location = Region.USEast;
@@ -60,7 +60,7 @@ namespace ManageVMs
             }
 
             VirtualMachineSizeTypes VmSize = null;
-            switch (argsOption.VmSize.ToLower())
+            switch (agentConfig.VmSize.ToLower())
             {
                 case "standardds1":
                     VmSize = VirtualMachineSizeTypes.StandardDS1;
@@ -79,7 +79,7 @@ namespace ManageVMs
 
             // create availability set
             Console.WriteLine("Creating availability set...");
-            var availabilitySet = azure.AvailabilitySets.Define(argsOption.Prefix + "AVSet")
+            var availabilitySet = azure.AvailabilitySets.Define(agentConfig.Prefix + "AVSet")
                 .WithRegion(location)
                 .WithExistingResourceGroup(groupName)
                 .WithSku(AvailabilitySetSkuTypes.Managed)
@@ -88,11 +88,11 @@ namespace ManageVMs
 
             // create virtual net
             Console.WriteLine("Creating virtual network...");
-            var network = azure.Networks.Define(argsOption.Prefix + rndNum + "VNet")
+            var network = azure.Networks.Define(agentConfig.Prefix + rndNum + "VNet")
                 .WithRegion(location)
                 .WithExistingResourceGroup(groupName)
                 .WithAddressSpace("10.0.0.0/16")
-                .WithSubnet(argsOption.Prefix + rndNum + "Subnet", "10.0.0.0/24")
+                .WithSubnet(agentConfig.Prefix + rndNum + "Subnet", "10.0.0.0/24")
                 .Create();
 
 
@@ -100,20 +100,20 @@ namespace ManageVMs
             List<ICreatable<IVirtualMachine>> creatableVirtualMachines = new List<ICreatable<IVirtualMachine>>();
 
             // create vms
-            for (var i = 0; i < argsOption.VmCount; i++)
+            for (var i = 0; i < agentConfig.VmCount; i++)
             {
                 // create public ip
                 Console.WriteLine("Creating public IP address...");
-                var publicIPAddress = azure.PublicIPAddresses.Define(argsOption.Prefix + rndNum + "PublicIP" + Convert.ToString(i))
+                var publicIPAddress = azure.PublicIPAddresses.Define(agentConfig.Prefix + rndNum + "PublicIP" + Convert.ToString(i))
                     .WithRegion(location)
                     .WithExistingResourceGroup(groupName)
-                    .WithLeafDomainLabel(argsOption.Prefix + rndNum + "DNS" + Convert.ToString(i))
+                    .WithLeafDomainLabel(agentConfig.Prefix + rndNum + "DNS" + Convert.ToString(i))
                     .WithDynamicIP()
                     .Create();
 
                 // create network security group
                 Console.WriteLine($"Creating network security group...");
-                var nsg = azure.NetworkSecurityGroups.Define(argsOption.Prefix + rndNum + "NSG" + Convert.ToString(i))
+                var nsg = azure.NetworkSecurityGroups.Define(agentConfig.Prefix + rndNum + "NSG" + Convert.ToString(i))
                     .WithRegion(location)
                     .WithExistingResourceGroup(groupName)
                     .DefineRule("SSH-PORT")
@@ -130,7 +130,7 @@ namespace ManageVMs
                         .FromAnyAddress()
                         .FromAnyPort()
                         .ToAnyAddress()
-                        .ToPort(argsOption.SshPort)
+                        .ToPort(agentConfig.SshPort)
                         .WithAnyProtocol()
                         .WithPriority(101)
                         .Attach()
@@ -139,7 +139,7 @@ namespace ManageVMs
                         .FromAnyAddress()
                         .FromAnyPort()
                         .ToAnyAddress()
-                        .ToPort(argsOption.OtherPort)
+                        .ToPort(agentConfig.OtherPort)
                         .WithAnyProtocol()
                         .WithPriority(102)
                         .Attach()
@@ -156,11 +156,11 @@ namespace ManageVMs
 
                 // create network interface
                 Console.WriteLine("Creating network interface...");
-                var networkInterface = azure.NetworkInterfaces.Define(argsOption.Prefix + rndNum + "NIC" + Convert.ToString(i))
+                var networkInterface = azure.NetworkInterfaces.Define(agentConfig.Prefix + rndNum + "NIC" + Convert.ToString(i))
                     .WithRegion(location)
                     .WithExistingResourceGroup(groupName)
                     .WithExistingPrimaryNetwork(network)
-                    .WithSubnet(argsOption.Prefix + rndNum + "Subnet")
+                    .WithSubnet(agentConfig.Prefix + rndNum + "Subnet")
                     .WithPrimaryPrivateIPAddressDynamic()
                     .WithExistingPrimaryPublicIPAddress(publicIPAddress)
                     .WithExistingNetworkSecurityGroup(nsg)
@@ -172,9 +172,9 @@ namespace ManageVMs
                     .WithExistingResourceGroup(groupName)
                     .WithExistingPrimaryNetworkInterface(networkInterface)
                     .WithPopularLinuxImage(KnownLinuxVirtualMachineImage.UbuntuServer16_04_Lts)
-                    .WithRootUsername(argsOption.VmName)
-                    .WithRootPassword(argsOption.VmPassWord)
-                    .WithSsh(argsOption.Ssh)
+                    .WithRootUsername(agentConfig.VmName)
+                    .WithRootPassword(agentConfig.VmPassWord)
+                    .WithSsh(agentConfig.Ssh)
                     .WithComputerName(vmNameBase + Convert.ToString(i))
                     .WithExistingAvailabilitySet(availabilitySet)
                     .WithSize(VmSize);
@@ -199,62 +199,62 @@ namespace ManageVMs
             swConfig.Start();
 
             // modify limit.conf and change sshd port and restart
-            for (int i = 0; i < argsOption.VmCount; i++)
+            for (int i = 0; i < agentConfig.VmCount; i++)
             {
                 Console.WriteLine($"modify limits: {i}th");
 
-                var domain = DomainName(argsOption, rndNum, i);
+                var domain = DomainName(agentConfig, rndNum, i);
 
-                cmd = $"echo '{argsOption.VmPassWord}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, 22, argsOption.VmPassWord, cmd, handleRes: true);
+                cmd = $"echo '{agentConfig.VmPassWord}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak";
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, 22, agentConfig.VmPassWord, cmd, handleRes: true);
 
                 cmd = $"cp /etc/security/limits.conf ~/limits.conf";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, 22, argsOption.VmPassWord, cmd, handleRes: true);
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, 22, agentConfig.VmPassWord, cmd, handleRes: true);
 
                 cmd = $"echo 'wanl    soft    nofile  655350\n' >> ~/limits.conf";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, 22, argsOption.VmPassWord, cmd, handleRes: true);
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, 22, agentConfig.VmPassWord, cmd, handleRes: true);
 
-                cmd = $"echo '{argsOption.VmPassWord}' | sudo -S mv ~/limits.conf /etc/security/limits.conf";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, 22, argsOption.VmPassWord, cmd, handleRes: true);
+                cmd = $"echo '{agentConfig.VmPassWord}' | sudo -S mv ~/limits.conf /etc/security/limits.conf";
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, 22, agentConfig.VmPassWord, cmd, handleRes: true);
             }
 
             // install dotnet
-            for (var i = 0; i < argsOption.VmCount; i++)
+            for (var i = 0; i < agentConfig.VmCount; i++)
             {
                 Console.WriteLine($"install dotnet: {i}th");
                 var port = 22;
-                var domain = DomainName(argsOption, rndNum, i);
+                var domain = DomainName(agentConfig, rndNum, i);
                 cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, port, argsOption.VmPassWord, cmd, handleRes: true);
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, port, agentConfig.VmPassWord, cmd, handleRes: true);
 
                 cmd = $"sudo dpkg -i packages-microsoft-prod.deb";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, port, argsOption.VmPassWord, cmd, handleRes: true);
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, port, agentConfig.VmPassWord, cmd, handleRes: true);
 
                 cmd = $"sudo apt-get -y install apt-transport-https";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, port, argsOption.VmPassWord, cmd, handleRes: true);
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, port, agentConfig.VmPassWord, cmd, handleRes: true);
 
                 cmd = $"sudo apt-get update";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, port, argsOption.VmPassWord, cmd, handleRes: true);
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, port, agentConfig.VmPassWord, cmd, handleRes: true);
 
                 cmd = $"sudo apt-get -y install dotnet-sdk-2.1";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, port, argsOption.VmPassWord, cmd, handleRes: true);
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, port, agentConfig.VmPassWord, cmd, handleRes: true);
             }
 
             // modify sshd.conf and restart sshd
-            for (int i = 0; i < argsOption.VmCount; i++)
+            for (int i = 0; i < agentConfig.VmCount; i++)
             {
                 Console.WriteLine($"modify sshd_config: {i}th");
 
-                var domain = DomainName(argsOption, rndNum, i);
+                var domain = DomainName(agentConfig, rndNum, i);
 
-                cmd = $"echo '{argsOption.VmPassWord}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, 22, argsOption.VmPassWord, cmd, handleRes: true);
+                cmd = $"echo '{agentConfig.VmPassWord}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak";
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, 22, agentConfig.VmPassWord, cmd, handleRes: true);
 
-                cmd = $"echo '{argsOption.VmPassWord}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, 22, argsOption.VmPassWord, cmd, handleRes: true);
+                cmd = $"echo '{agentConfig.VmPassWord}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config";
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, 22, agentConfig.VmPassWord, cmd, handleRes: true);
 
-                cmd = $"echo '{argsOption.VmPassWord}' | sudo -S service sshd restart";
-                (errCode, res) = ShellHelper.RemoteBash(argsOption.VmName, domain, 22, argsOption.VmPassWord, cmd, handleRes: true);
+                cmd = $"echo '{agentConfig.VmPassWord}' | sudo -S service sshd restart";
+                (errCode, res) = ShellHelper.RemoteBash(agentConfig.VmName, domain, 22, agentConfig.VmPassWord, cmd, handleRes: true);
             }
             swConfig.Stop();
             Console.WriteLine($"config elapsed time: {swConfig.Elapsed.TotalMinutes} min");
