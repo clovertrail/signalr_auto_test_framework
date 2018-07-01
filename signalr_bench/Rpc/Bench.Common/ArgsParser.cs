@@ -67,5 +67,8 @@ namespace Bench.Common
 
         [Option("rpcPort", Required = false, HelpText = "Specify Rpc Port")]
         public int RpcPort { get; set; }
+
+        [Option("slaveList", Required = false, HelpText = "Specify Slave List")]
+        public int SlaveList { get; set; }
     }
 }

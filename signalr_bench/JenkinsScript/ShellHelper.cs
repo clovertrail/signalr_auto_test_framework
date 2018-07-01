@@ -193,7 +193,7 @@ namespace JenkinsScript
             cmd += $"dotnet run -- " +
                 $"--connections {connection} --interval {interval} --slaves {slaves} --serverUrl {serverUrl} --pipeLine '{string.Join(";", pipeLine)}' " +
                 $"-v {serviceType} -t {transportType} -p {hubProtocol} -s {scenario} " +
-                $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' " +
+                $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' --slaveList '{string.Join(";", agentConfig.Slaves)}' " +
                 $"-o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{connection}_{bench_type_list}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
 
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");

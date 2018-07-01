@@ -37,23 +37,20 @@ namespace Bench.RpcMaster
                 .WithParsed(options => argsOption = options)
                 .WithNotParsed(error => { });
 
-            // load agents config
-            var agentConfigLoader = new ConfigLoader();
-            var agentConfig = agentConfigLoader.Load<AgentConfig>(argsOption.AgentConfigFile);
 
-            agentConfig.Slaves.ForEach(slv => Util.Log($"slave: {slv}"));
+            var slaveList = new List<string>(argsOption.SlaveList);
 
             // open channel to rpc servers
-            var channels = new List<Channel>(agentConfig.Slaves.Count);
-            for (var i = 0; i < agentConfig.Slaves.Count; i++)
+            var channels = new List<Channel>(slaveList.Count);
+            for (var i = 0; i < slaveList.Count; i++)
             {
-                Util.Log($"add channel: {agentConfig.Slaves[i]}:{agentConfig.RpcPort}");
-                channels.Add(new Channel($"{agentConfig.Slaves[i]}:{agentConfig.RpcPort}", ChannelCredentials.Insecure));
+                Util.Log($"add channel: {slaveList[i]}:{argsOption.RpcPort}");
+                channels.Add(new Channel($"{slaveList[i]}:{argsOption.RpcPort}", ChannelCredentials.Insecure));
             }
 
             // create rpc clients
-            var clients = new List<RpcService.RpcServiceClient>(agentConfig.Slaves.Count);
-            for (var i = 0; i < agentConfig.Slaves.Count; i++)
+            var clients = new List<RpcService.RpcServiceClient>(slaveList.Count);
+            for (var i = 0; i < slaveList.Count; i++)
             {
                 clients.Add(new RpcService.RpcServiceClient(channels[i]));
             }
@@ -65,7 +62,7 @@ namespace Bench.RpcMaster
             // TODO, only for dev
             //var criteria = new Dictionary<string, int>();
             //var allocator = new OneAllocator();
-            //var allocated = allocator.Allocate(agentConfig.Slaves, jobConfig.Connections, criteria);
+            //var allocated = allocator.Allocate(slaveList, jobConfig.Connections, criteria);
 
             // call salves to load job config
             clients.ForEach( client =>
