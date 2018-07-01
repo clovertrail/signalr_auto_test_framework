@@ -7,7 +7,7 @@ namespace JenkinsScript.Config.MixConfigs
     public class MixConfig
     {
         
-        MixCellConfig Echo { get; set; }
-        MixCellConfig Broadcast { get; set; }
+        public MixCellConfig Echo { get; set; }
+        public MixCellConfig Broadcast { get; set; }
     }
 }
