@@ -38,28 +38,28 @@ namespace JenkinsScript
             List<ICreatable<IVirtualMachine>> creatableVirtualMachines = new List<ICreatable<IVirtualMachine>>();
 
             var publicIpTasks = new List<Task<IPublicIPAddress>>();
-            for (var i = 0; i < _agentConfig.VmCount; i++)
+            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
                 publicIpTasks.Add(CreatePublicIpAsync(i));
             }
             var publicIps = Task.WhenAll(publicIpTasks).GetAwaiter().GetResult();
 
             var nsgTasks = new List<Task<INetworkSecurityGroup>>();
-            for (var i = 0; i < _agentConfig.VmCount; i++)
+            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
                 nsgTasks.Add(CreateNetworkSecurityGroup(i));
             }
             var nsgs = Task.WhenAll(nsgTasks).GetAwaiter().GetResult();
 
             var nicTasks = new List<Task<INetworkInterface>>();
-            for (var i = 0; i < _agentConfig.VmCount; i++)
+            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
                 nicTasks.Add(CreateNetworkInterface(i, vNet, publicIps[i], nsgs[i]));
             }
             var nics = Task.WhenAll(nicTasks).GetAwaiter().GetResult();
 
             var vmTasks = new List<Task<IWithCreate>>();
-            for (var i = 0; i < _agentConfig.VmCount; i++)
+            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
                 vmTasks.Add(GenerateVmTempplate(i, nics[i], avSet));
             }
@@ -72,21 +72,21 @@ namespace JenkinsScript
 
             Console.WriteLine($"Setuping vms");
             var modifyLimitTasks = new List<Task>();
-            for (var i = 0; i < _agentConfig.VmCount; i++)
+            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
                 modifyLimitTasks.Add(ModifyLimit(i));
             }
             Task.WhenAll(modifyLimitTasks).Wait();
 
             var installDotnetTasks = new List<Task>();
-            for (var i = 0; i < _agentConfig.VmCount; i++)
+            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
                 installDotnetTasks.Add(InstallDotnet(i));
             }
             Task.WhenAll(installDotnetTasks).Wait();
 
             var sshdTasks = new List<Task>();
-            for (var i = 0; i < _agentConfig.VmCount; i++)
+            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
                 sshdTasks.Add(ModifySshdAndRestart(i));
             }
@@ -212,8 +212,8 @@ namespace JenkinsScript
                     .WithExistingResourceGroup(GroupName)
                     .WithExistingPrimaryNetworkInterface(networkInterface)
                     .WithPopularLinuxImage(KnownLinuxVirtualMachineImage.UbuntuServer16_04_Lts)
-                    .WithRootUsername(_agentConfig.VmName)
-                    .WithRootPassword(_agentConfig.VmPassWord)
+                    .WithRootUsername(_agentConfig.SlaveVmName)
+                    .WithRootPassword(_agentConfig.SlaveVmPassWord)
                     .WithSsh(_agentConfig.Ssh)
                     .WithComputerName(VmNameBase + Convert.ToString(i))
                     .WithExistingAvailabilitySet(availabilitySet)
@@ -232,17 +232,17 @@ namespace JenkinsScript
 
             var domain = DomainName(i);
 
-            cmd = $"echo '{_agentConfig.VmPassWord}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, 22, _agentConfig.VmPassWord, cmd, handleRes: true);
+            cmd = $"echo '{_agentConfig.SlaveVmPassWord}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak";
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, 22, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             cmd = $"cp /etc/security/limits.conf ~/limits.conf";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, 22, _agentConfig.VmPassWord, cmd, handleRes: true);
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, 22, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             cmd = $"echo 'wanl    soft    nofile  655350\n' >> ~/limits.conf";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, 22, _agentConfig.VmPassWord, cmd, handleRes: true);
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, 22, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
-            cmd = $"echo '{_agentConfig.VmPassWord}' | sudo -S mv ~/limits.conf /etc/security/limits.conf";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, 22, _agentConfig.VmPassWord, cmd, handleRes: true);
+            cmd = $"echo '{_agentConfig.SlaveVmPassWord}' | sudo -S mv ~/limits.conf /etc/security/limits.conf";
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, 22, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             return Task.CompletedTask;
         }
@@ -257,19 +257,19 @@ namespace JenkinsScript
             var domain = DomainName(i);
 
             cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, port, _agentConfig.VmPassWord, cmd, handleRes: true);
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, port, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             cmd = $"sudo dpkg -i packages-microsoft-prod.deb";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, port, _agentConfig.VmPassWord, cmd, handleRes: true);
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, port, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             cmd = $"sudo apt-get -y install apt-transport-https";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, port, _agentConfig.VmPassWord, cmd, handleRes: true);
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, port, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             cmd = $"sudo apt-get update";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, port, _agentConfig.VmPassWord, cmd, handleRes: true);
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, port, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             cmd = $"sudo apt-get -y install dotnet-sdk-2.1";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, port, _agentConfig.VmPassWord, cmd, handleRes: true);
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, port, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             return Task.CompletedTask;
         }
@@ -283,14 +283,14 @@ namespace JenkinsScript
             var cmd = "";
             var domain = DomainName(i);
 
-            cmd = $"echo '{_agentConfig.VmPassWord}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, 22, _agentConfig.VmPassWord, cmd, handleRes: true);
+            cmd = $"echo '{_agentConfig.SlaveVmPassWord}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak";
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, 22, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
-            cmd = $"echo '{_agentConfig.VmPassWord}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, 22, _agentConfig.VmPassWord, cmd, handleRes: true);
+            cmd = $"echo '{_agentConfig.SlaveVmPassWord}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config";
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, 22, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
-            cmd = $"echo '{_agentConfig.VmPassWord}' | sudo -S service sshd restart";
-            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.VmName, domain, 22, _agentConfig.VmPassWord, cmd, handleRes: true);
+            cmd = $"echo '{_agentConfig.SlaveVmPassWord}' | sudo -S service sshd restart";
+            (errCode, res) = ShellHelper.RemoteBash(_agentConfig.SlaveVmName, domain, 22, _agentConfig.SlaveVmPassWord, cmd, handleRes: true);
 
             return Task.CompletedTask;
         }
@@ -393,7 +393,7 @@ namespace JenkinsScript
         {
             get
             {
-                switch (_agentConfig.VmSize.ToLower())
+                switch (_agentConfig.SlaveVmSize.ToLower())
                 {
                     case "standardds1":
                         return VirtualMachineSizeTypes.StandardDS1;

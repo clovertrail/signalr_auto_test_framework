@@ -16,10 +16,23 @@ namespace JenkinsScript
         public string Password { get; set; }
         public string Prefix { get; set; }
         public string Location { get; set; }
-        public string VmSize { get; set; }
-        public string VmName { get; set; }
-        public int VmCount { get; set; }
-        public string VmPassWord { get; set; }
+
+        // slave vm
+        public string SlaveVmSize { get; set; }
+        public string SlaveVmName { get; set; }
+        public string SlaveVmPassWord { get; set; }
+        public int SlaveVmCount { get; set; }
+
+        // app server
+        public string AppSvrVmSize { get; set; }
+        public string AppSvrVmName { get; set; }
+        public string AppSvrVmPassWord { get; set; }
+
+        // app server
+        public string SvcVmSize { get; set; }
+        public string SvcVmName { get; set; }
+        public string SvcVmPassWord { get; set; }
+
         public string Ssh { get; set; }
 
         
