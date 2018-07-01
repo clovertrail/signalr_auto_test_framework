@@ -38,7 +38,7 @@ namespace Bench.RpcMaster
                 .WithNotParsed(error => { });
 
 
-            var slaveList = new List<string>(argsOption.SlaveList);
+            var slaveList = new List<string>(argsOption.SlaveList.Split(';'));
 
             // open channel to rpc servers
             var channels = new List<Channel>(slaveList.Count);
