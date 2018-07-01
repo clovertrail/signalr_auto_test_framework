@@ -59,8 +59,7 @@ namespace Bench.RpcMaster
             }
 
             // load job config
-            var jobConfigLoader = new ConfigLoader();
-            var jobConfig = jobConfigLoader.Load<JobConfig>(argsOption.JobConfigFile);
+            var jobConfig = new JobConfig(argsOption);
 
             // allocate connections/protocol/transport type...
             // TODO, only for dev

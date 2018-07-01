@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bench.Common.Config.MixConfigs;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,10 +15,15 @@ namespace Bench.Common.Config
         public string ServerUrl { get; set; }
         public List<string> Pipeline { get; set; }
 
-        // benchmark matrix config
-        public List<string> ServiceTypeList { get; set; }
-        public List<string> HubProtocolList { get; set; }
-        public List<string> TransportTypeList { get; set; }
-        public List<string> ScenarioList { get; set; }
+        public JobConfig(ArgsOption argsOption)
+        {
+            Connections = argsOption.Connections;
+            Slaves = argsOption.Slaves;
+            Interval = argsOption.Interval;
+            Duration = argsOption.Duration;
+            ServerUrl = argsOption.ServerUrl;
+            Pipeline = new List<string>(argsOption.PipeLine.Split(';'));
+        }
+
     }
 }

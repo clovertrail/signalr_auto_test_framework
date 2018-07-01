@@ -40,5 +40,30 @@ namespace Bench.Common
         [Option('s', "scenerio", Required = false, HelpText = "Specify BenchMark Scenario")]
         public string Scenario { get; set; }
 
+
+        [Option('B', "connectionbase", Required = false, HelpText = "Specify Connection Base")]
+        public string ConnectionBase { get; set; }
+
+        [Option('S', "connectionincreasestep", Required = false, HelpText = "Specify Connection Increase Step")]
+        public string ConnectionIncreaseStep { get; set; }
+
+        [Option("connections", Required = false, HelpText = "Specify Connection Increase Step")]
+        public int Connections { get; set; }
+
+        [Option("duration", Required = false, HelpText = "Specify Connection Increase Step")]
+        public int Duration { get; set; }
+
+        [Option("interval", Required = false, HelpText = "Specify Connection Increase Step")]
+        public int Interval { get; set; }
+
+        [Option("slaves", Required = false, HelpText = "Specify Connection Increase Step")]
+        public int Slaves { get; set; }
+
+        [Option("serverUrl", Required = false, HelpText = "Specify Connection Increase Step")]
+        public string ServerUrl { get; set; }
+
+        [Option("pipeLine", Required = false, HelpText = "Specify Connection Increase Step")]
+        public string PipeLine { get; set; }
+
     }
 }

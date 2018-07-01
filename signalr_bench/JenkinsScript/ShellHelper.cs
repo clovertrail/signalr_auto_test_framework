@@ -167,7 +167,8 @@ namespace JenkinsScript
         }
 
         public static (int, string) StartRpcMaster(List<string> hosts, AgentConfig agentConfig, 
-            ArgsOption argsOption, string serviceType, string transportType, string hubProtocol, string scenario)
+            ArgsOption argsOption, string serviceType, string transportType, string hubProtocol, string scenario,
+            int connection, int interval, int slaves, string serverUrl, string pipeLine)
         {
             Util.Log($"service type: {serviceType}, transport type: {transportType}, hub protocol: {hubProtocol}, scenario: {scenario}");
             var errCode = 0;
@@ -177,9 +178,24 @@ namespace JenkinsScript
             var bench_type_list = serviceType;
             var bench_codec_list = hubProtocol;
             var bench_name_list = scenario;
-            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; export bench_type_list='{serviceType}'; export bench_codec_list='{hubProtocol}'; export bench_name_list='{scenario}'; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -- -v {serviceType} -t {transportType} -p {hubProtocol} -s {scenario} -a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' -o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
+
+            cmd += $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; ";
+
+            cmd += $"export bench_type_list='{serviceType}'; " + 
+                $"export bench_codec_list='{hubProtocol}'; " + 
+                $"export bench_name_list='{scenario}'; " + 
+                $"export ConfigBlobContainerName='{argsOption.ContainerName}'; " + 
+                $"export AgentConfigFileName='{argsOption.AgentBlobName}';  " + 
+                $"export JobConfigFileName='{argsOption.JobBlobName}'; ";
+
+            cmd += $"dotnet run -- " +
+                $"--connections {connection} --interval {interval} --slaves {slaves} --serverUrl {serverUrl} --pipeLine {string.Join(";", pipeLine)}" +
+                $"-v {serviceType} -t {transportType} -p {hubProtocol} -s {scenario} " +
+                $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' " +
+                $"-o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{connection}_{bench_type_list}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
+
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
-            var maxRetry = 100;
+            var maxRetry = 10;
             for (var i = 0; i < maxRetry; i++)
             {
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
@@ -220,12 +236,14 @@ namespace JenkinsScript
             return (errCode, result);
 
         }
-        public static (int, string) GenerateSingleReport(List<string> hosts, AgentConfig agentConfig, string serviceType, string transportType, string hubProtocol, string scenario)
+        public static (int, string) GenerateSingleReport(List<string> hosts, AgentConfig agentConfig, 
+            string serviceType, string transportType, string hubProtocol, string scenario, int connections)
         {
             var errCode = 0;
             var result = "";
             var cmd = "";
 
+            serviceType += connections;
             cmd = $"cd /home/{agentConfig.User}/signalr-bench/; export bench_type_list='{serviceType}'; export bench_codec_list='{hubProtocol}'; export bench_name_list='{scenario}'; sh gen_html.sh;";
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
             (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);

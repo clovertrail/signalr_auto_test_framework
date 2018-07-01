@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JenkinsScript.Config.MixConfigs;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,5 +20,12 @@ namespace JenkinsScript
         public List<string> HubProtocolList { get; set; }
         public List<string> TransportTypeList { get; set; }
         public List<string> ScenarioList { get; set; }
+
+        // list 
+        public List<string> SignalrUnit { get; set; }
+        public List<int> ConnectionIncreaseStep { get; set; }
+        public List<int> ConnectionBase { get; set; }
+        public MixConfig Mix { get; set; }
+        public GroupConfig Group { get; set; }
     }
 }
