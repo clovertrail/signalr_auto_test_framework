@@ -151,7 +151,9 @@ namespace JenkinsScript
 
             agentConfig.Slaves.ForEach(host =>
             {
-                cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; dotnet run -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
+                cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; " +
+                    $"export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; " + 
+                    $"dotnet run -- --rpcPort {agentConfig.RpcPort} -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
                 Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
                 if (errCode != 0) return;

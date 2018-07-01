@@ -65,5 +65,7 @@ namespace Bench.Common
         [Option("pipeLine", Required = false, HelpText = "Specify Connection Increase Step")]
         public string PipeLine { get; set; }
 
+        [Option("rpcPort", Required = false, HelpText = "Specify Rpc Port")]
+        public int RpcPort { get; set; }
     }
 }
