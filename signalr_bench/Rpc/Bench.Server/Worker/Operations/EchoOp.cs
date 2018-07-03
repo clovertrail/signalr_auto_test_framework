@@ -92,7 +92,6 @@ namespace Bench.RpcSlave.Worker.Operations
             TimerPerConnection = new List<System.Timers.Timer>(_tk.JobConfig.Connections);
             DelayPerConnection = new List<TimeSpan>(_tk.JobConfig.Connections);
 
-            Util.Log($" duration: {_tk.JobConfig.Duration}, interval: {_tk.JobConfig.Interval}");
 
             for (int i = 0; i < _tk.Connections.Count; i++)
             {
@@ -111,6 +110,7 @@ namespace Bench.RpcSlave.Worker.Operations
 
                     if (_sentMessages[ind] >= _tk.JobConfig.Duration / _tk.JobConfig.Interval)
                     {
+
                         TimerPerConnection[ind].Stop();
                         return;
                     }

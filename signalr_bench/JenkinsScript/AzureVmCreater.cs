@@ -34,12 +34,13 @@ namespace JenkinsScript
         public void CreateAppServerVm()
         {
             var resourceGroup = CreateResourceGroup();
-            var vnet = _azure.Networks.Define(VNet)
+            var vnet = _azure.Networks.Define(AppSvrVnet)
                 .WithRegion(Location)
                 .WithExistingResourceGroup(GroupName)
                 .WithAddressSpace("10.0.0.0/16")
                 .WithSubnet(SubNet, "10.0.0.0/24")
                 .Create();
+
 
         }
 
@@ -320,6 +321,14 @@ namespace JenkinsScript
         public string DomainName(int i)
         {
             return _agentConfig.Prefix + _rndNum + "DNS" + Convert.ToString(i) + "." + _agentConfig.Location.ToLower() + ".cloudapp.azure.com";
+        }
+
+        public string AppSvrVnet
+        {
+            get
+            {
+                return _agentConfig.Prefix + _rndNum + "AppSvrVNet";
+            }
         }
 
         public string VNet

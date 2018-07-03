@@ -35,8 +35,9 @@ namespace Bench.RpcSlave
             //// load job config
             //var jobConfigLoader = new ConfigLoader();
             //var jobConfig = jobConfigLoader.Load<JobConfig>(path.Ppath);
-            Console.WriteLine($"pipeline: {config.Pipeline}");
-            Console.WriteLine($"ServerUrl: {config.ServerUrl}");
+            Console.WriteLine($"@@@pipeline: {config.Pipeline}");
+            Console.WriteLine($"@@@ServerUrl: {config.ServerUrl}");
+            Console.WriteLine($"@@@Duration: {config.Duration}");
             var jobConfig = new JobConfig
             {
                 Connections = config.Connections,
