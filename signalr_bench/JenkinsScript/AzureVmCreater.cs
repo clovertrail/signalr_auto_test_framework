@@ -103,7 +103,7 @@ namespace JenkinsScript
 
         public void LoginAzure()
         {
-            var content = AzureBlobReader.ReadBlob("serviceprincipal.yaml");
+            var content = AzureBlobReader.ReadBlob("ServicePrincipalFileName");
             var sp = AzureBlobReader.ParseYaml<ServicePrincipalConfig>(content);
 
             // auth
