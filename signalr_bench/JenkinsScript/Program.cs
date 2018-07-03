@@ -88,7 +88,7 @@ namespace JenkinsScript
                                     var connectionIncreaseStep = jobConfig.ConnectionIncreaseStep[indType];
 
                                     //for (var connection = connectionBase; ; connection += connectionIncreaseStep)
-                                    for (var connection = connectionBase; connection < connectionBase *2 + 10; connection += connectionIncreaseStep)
+                                    for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
                                     {
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                                         (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
