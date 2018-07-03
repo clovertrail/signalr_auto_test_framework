@@ -41,6 +41,12 @@ namespace JenkinsScript
                 .WithSubnet(SubNet, "10.0.0.0/24")
                 .Create();
 
+            var publicIp = _azure.PublicIPAddresses.Define(AppSvrPublicIpBase)
+                    .WithRegion(Location)
+                    .WithExistingResourceGroup(GroupName)
+                    .WithLeafDomainLabel(AppSvrPublicDnsBase)
+                    .WithDynamicIP()
+                    .Create();
 
         }
 
@@ -380,11 +386,27 @@ namespace JenkinsScript
             }
         }
 
+        public string AppSvrPublicIpBase
+        {
+            get
+            {
+                return _agentConfig.Prefix + _rndNum + "AppSvrPublicIP";
+            }
+        }
+
         public string PublicDnsBase
         {
             get
             {
                 return _agentConfig.Prefix + _rndNum + "DNS";
+            }
+        }
+
+        public string AppSvrPublicDnsBase
+        {
+            get
+            {
+                return _agentConfig.Prefix + _rndNum + "AppSvrDNS";
             }
         }
 

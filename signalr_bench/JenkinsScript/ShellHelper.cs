@@ -170,7 +170,7 @@ namespace JenkinsScript
 
         public static (int, string) StartRpcMaster(List<string> hosts, AgentConfig agentConfig, 
             ArgsOption argsOption, string serviceType, string transportType, string hubProtocol, string scenario,
-            int connection, int duration, int interval, int slaves, string serverUrl, string pipeLine)
+            int connection, int duration, int interval, string serverUrl, string pipeLine)
         {
             Util.Log($"service type: {serviceType}, transport type: {transportType}, hub protocol: {hubProtocol}, scenario: {scenario}");
             var errCode = 0;
@@ -192,7 +192,7 @@ namespace JenkinsScript
 
             cmd += $"dotnet run -- " +
                 $"--rpcPort 5555 " +
-                $"--duration {duration} --connections {connection} --interval {interval} --slaves {slaves} --serverUrl '{serverUrl}' --pipeLine '{string.Join(";", pipeLine)}' " +
+                $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl '{serverUrl}' --pipeLine '{string.Join(";", pipeLine)}' " +
                 $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
                 $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' --slaveList '{string.Join(";", agentConfig.Slaves)}' " +
                 $"-o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}{connection}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";

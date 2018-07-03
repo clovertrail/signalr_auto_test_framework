@@ -97,7 +97,7 @@ namespace JenkinsScript
                                         Task.Delay(20000).Wait();
                                         (errCode, result) = ShellHelper.StartRpcMaster(hosts, agentConfig, argsOption,
                                             serviceType, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
-                                            jobConfig.Interval, jobConfig.Slaves, jobConfig.ServerUrl, string.Join(";", jobConfig.Pipeline));
+                                            jobConfig.Interval, jobConfig.ServerUrl, string.Join(";", jobConfig.Pipeline));
                                         if (errCode != 0) break;
                                         (errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig,
                                             serviceType, transportType, hubProtocol, scenario, connection);
