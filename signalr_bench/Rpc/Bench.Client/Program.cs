@@ -64,15 +64,15 @@ namespace Bench.RpcMaster
             //var allocator = new OneAllocator();
             //var allocated = allocator.Allocate(slaveList, jobConfig.Connections, criteria);
 
-            // call salves to load job config
-            clients.ForEach( client =>
-            {
-                var state = new Stat();
-                state = client.CreateWorker(new Empty());
-                Util.Log($"create worker state: {state.State}");
-                state = client.LoadJobConfig(new Common.Path { Ppath = argsOption.JobConfigFile });
-                Util.Log($"load job config state: {state.State}");
-            });
+            //// call salves to load job config
+            //clients.ForEach( client =>
+            //{
+            //    var state = new Stat();
+            //    state = client.CreateWorker(new Empty());
+            //    Util.Log($"create worker state: {state.State}");
+            //    state = client.LoadJobConfig(new Common.Path { Ppath = argsOption.JobConfigFile });
+            //    Util.Log($"load job config state: {state.State}");
+            //});
 
             // collect counters
             var collectTimer = new System.Timers.Timer(1000);
@@ -170,20 +170,6 @@ namespace Bench.RpcMaster
             Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}");
 
             var indStartJob = 0;
-            //clients.ForEach(client => {
-            //        Util.Log($"client add task ind: {indStartJob}");
-            //        tasks.Add(
-            //            Task.Delay(0).ContinueWith(
-            //                t =>
-            //                {
-            //                    Util.Log($"client start ind: {indStartJob++}");
-            //                    client.RunJob(benchmarkCellConfig);
-            //                }
-            //            )
-            //        );
-            //    }
-            //);
-
             clients.ForEach(client =>
             {
                 Util.Log($"client add task ind: {indStartJob}");
@@ -193,18 +179,6 @@ namespace Bench.RpcMaster
                     client.RunJob(benchmarkCellConfig);
                 }));
             });
-
-            //Action[] actions = new Action[clients.Count];
-            //for (var i = 0; i < clients.Count; i++)
-            //{
-            //    int ind = i;
-            //    actions[i] = () => 
-            //    {
-            //        Util.Log($"client start");
-            //        clients[ind].RunJob(benchmarkCellConfig);
-            //    };
-            //}
-            //Parallel.Invoke(actions);
 
             Util.Log($"wait for tasks");
             Task.WhenAll(tasks).Wait();

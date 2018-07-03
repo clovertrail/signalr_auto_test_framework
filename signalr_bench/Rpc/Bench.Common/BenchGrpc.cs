@@ -17,7 +17,7 @@ namespace Bench.Common {
     static readonly grpc::Marshaller<global::Bench.Common.Timestamp> __Marshaller_Timestamp = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Timestamp.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.Strg> __Marshaller_Strg = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Strg.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.Stat> __Marshaller_Stat = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Stat.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Bench.Common.Path> __Marshaller_Path = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Path.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Bench.Common.CellJobConfig> __Marshaller_CellJobConfig = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.CellJobConfig.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.Force> __Marshaller_Force = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Force.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.CounterDict> __Marshaller_CounterDict = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.CounterDict.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.BenchmarkCellConfig> __Marshaller_BenchmarkCellConfig = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.BenchmarkCellConfig.Parser.ParseFrom);
@@ -43,11 +43,11 @@ namespace Bench.Common {
         __Marshaller_Empty,
         __Marshaller_Stat);
 
-    static readonly grpc::Method<global::Bench.Common.Path, global::Bench.Common.Stat> __Method_LoadJobConfig = new grpc::Method<global::Bench.Common.Path, global::Bench.Common.Stat>(
+    static readonly grpc::Method<global::Bench.Common.CellJobConfig, global::Bench.Common.Stat> __Method_LoadJobConfig = new grpc::Method<global::Bench.Common.CellJobConfig, global::Bench.Common.Stat>(
         grpc::MethodType.Unary,
         __ServiceName,
         "LoadJobConfig",
-        __Marshaller_Path,
+        __Marshaller_CellJobConfig,
         __Marshaller_Stat);
 
     static readonly grpc::Method<global::Bench.Common.Empty, global::Bench.Common.Stat> __Method_CreateWorker = new grpc::Method<global::Bench.Common.Empty, global::Bench.Common.Stat>(
@@ -102,7 +102,7 @@ namespace Bench.Common {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      public virtual global::System.Threading.Tasks.Task<global::Bench.Common.Stat> LoadJobConfig(global::Bench.Common.Path request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::Bench.Common.Stat> LoadJobConfig(global::Bench.Common.CellJobConfig request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -200,19 +200,19 @@ namespace Bench.Common {
       {
         return CallInvoker.AsyncUnaryCall(__Method_GetState, null, options, request);
       }
-      public virtual global::Bench.Common.Stat LoadJobConfig(global::Bench.Common.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::Bench.Common.Stat LoadJobConfig(global::Bench.Common.CellJobConfig request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return LoadJobConfig(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::Bench.Common.Stat LoadJobConfig(global::Bench.Common.Path request, grpc::CallOptions options)
+      public virtual global::Bench.Common.Stat LoadJobConfig(global::Bench.Common.CellJobConfig request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_LoadJobConfig, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Stat> LoadJobConfigAsync(global::Bench.Common.Path request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Stat> LoadJobConfigAsync(global::Bench.Common.CellJobConfig request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return LoadJobConfigAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Stat> LoadJobConfigAsync(global::Bench.Common.Path request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Stat> LoadJobConfigAsync(global::Bench.Common.CellJobConfig request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_LoadJobConfig, null, options, request);
       }

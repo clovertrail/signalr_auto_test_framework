@@ -191,6 +191,7 @@ namespace JenkinsScript
                 $"export JobConfigFileName='{argsOption.JobBlobName}'; ";
 
             cmd += $"dotnet run -- " +
+                $"--rpcPort 5555 " +
                 $"--connections {connection} --interval {interval} --slaves {slaves} --serverUrl '{serverUrl}' --pipeLine '{string.Join(";", pipeLine)}' " +
                 $"-v {serviceType} -t {transportType} -p {hubProtocol} -s {scenario} " +
                 $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' --slaveList '{string.Join(";", agentConfig.Slaves)}' " +

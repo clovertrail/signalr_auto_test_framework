@@ -30,12 +30,20 @@ namespace Bench.RpcSlave
             return Task.FromResult(new Strg { Str = "json string" });
         }
 
-        public override Task<Stat> LoadJobConfig(Path path, ServerCallContext context)
+        public override Task<Stat> LoadJobConfig(CellJobConfig config, ServerCallContext context)
         {
             //// load job config
-            Util.Log($"load job config from path {path.Ppath}");
-            var jobConfigLoader = new ConfigLoader();
-            var jobConfig = jobConfigLoader.Load<JobConfig>(path.Ppath);
+            //var jobConfigLoader = new ConfigLoader();
+            //var jobConfig = jobConfigLoader.Load<JobConfig>(path.Ppath);
+            var jobConfig = new JobConfig
+            {
+                Connections = config.Connections,
+                Slaves = config.Slaves,
+                Interval = config.Interval,
+                Duration = config.Duration,
+                ServerUrl = config.ServerUrl,
+                Pipeline = new List<string>(config.Pipline.Split(';'))
+            };
 
             // TODO: handle exception
             if (_sigWorker == null)
@@ -76,6 +84,7 @@ namespace Bench.RpcSlave
 
         public override Task<Stat> RunJob(Common.BenchmarkCellConfig cellConfig, ServerCallContext context)
         {
+            Console.WriteLine($"Run Job");
             Worker.BenchmarkCellConfig benchmarkCellConfig = new Worker.BenchmarkCellConfig
             {
                 ServiceType = cellConfig.ServiveType,

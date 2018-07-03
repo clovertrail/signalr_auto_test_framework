@@ -6,7 +6,7 @@ service RpcService {
 	rpc GetTimestamp (Empty) returns (Timestamp) {}
 	rpc GetCounterJsonStr(Empty) returns (Strg) {}
 	rpc GetState(Empty) returns (Stat) {}
-	rpc LoadJobConfig (Path) returns (Stat) {}
+	rpc LoadJobConfig (CellJobConfig) returns (Stat) {}
 	rpc CreateWorker(Empty) returns (Stat) {}
 	rpc CollectCounters(Force) returns (CounterDict) {}
 	rpc RunJob(BenchmarkCellConfig) returns (Stat) {}
@@ -35,6 +35,15 @@ message CounterDict {
 
 message Path {
 	string ppath = 1;
+}
+
+message CellJobConfig {
+	int32 connections = 1;
+	int32 slaves = 2;
+	int32 interval = 3;
+	int32 duration = 4;
+	string serverUrl = 5;
+	string pipline = 6;
 }
 
 message Stat {

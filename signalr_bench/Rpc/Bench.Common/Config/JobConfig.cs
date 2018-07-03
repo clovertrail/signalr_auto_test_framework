@@ -25,5 +25,6 @@ namespace Bench.Common.Config
             Pipeline = new List<string>(argsOption.PipeLine.Split(';'));
         }
 
+        public JobConfig() { }
     }
 }

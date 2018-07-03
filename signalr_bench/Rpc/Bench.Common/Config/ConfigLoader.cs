@@ -60,7 +60,7 @@ namespace Bench.Common.Config
             return content;
         }
 
-        private T Parse<T>(string content)
+        public T Parse<T>(string content)
         {
             var input = new StringReader(content);
 

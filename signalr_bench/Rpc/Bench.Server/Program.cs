@@ -28,7 +28,7 @@ namespace Bench.RpcSlave {
                 Ports = { new ServerPort(argsOption.DnsName, argsOption.RpcPort, ServerCredentials.Insecure) }
             };
             server.Start();
-
+            Console.WriteLine($"Server [{argsOption.DnsName}:{argsOption.RpcPort}] started");
             Task.Delay(Timeout.Infinite).Wait();
             
         }

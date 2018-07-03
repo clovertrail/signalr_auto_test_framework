@@ -27,25 +27,28 @@ namespace Bench.Common {
             "IAEoCRITCgtodWJQcm90b2NvbBgDIAEoCRIQCghzY2VuYXJpbxgEIAEoCSIW",
             "CgVGb3JjZRINCgVmb3JjZRgBIAEoCCIiCgRQYWlyEgsKA2tleRgBIAEoCRIN",
             "CgV2YWx1ZRgCIAEoBSIwCgtDb3VudGVyRGljdBIhCgVwYWlycxgBIAMoCzIS",
-            "LkJlbmNoLkNvbW1vbi5QYWlyIhUKBFBhdGgSDQoFcHBhdGgYASABKAki9wMK",
-            "BFN0YXQSJwoFc3RhdGUYASABKA4yGC5CZW5jaC5Db21tb24uU3RhdC5TdGF0",
-            "ZSLFAwoFU3RhdGUSDgoKREVCVUdfVE9ETxAAEhcKE0hVQkNPTk5fVU5DT05O",
-            "RUNURUQQARIWChJIVUJDT05OX0NPTk5FQ1RJTkcQAhIVChFIVUJDT05OX0NP",
-            "Tk5FQ1RFRBADEhkKFUhVQkNPTk5fRElTQ09OTkVDVElORxAEEhgKFEhVQkNP",
-            "Tk5fRElTQ09OTkVDVEVEEAUSFQoRSFVCQ09OTl9ESVNQT1NJTkcQBhIUChBI",
-            "VUJDT05OX0RJU1BPU0VEEAcSEwoPQ09ORklHX1VOTE9BREVEEAgSEgoOQ09O",
-            "RklHX0xPQURJTkcQCRIRCg1DT05GSUdfTE9BREVEEAoSDgoKU0VORF9SRUFE",
-            "WRALEhAKDFNFTkRfUlVOTklORxAMEhEKDVNFTkRfQ09NUExFVEUQDRISCg5X",
-            "T1JLRVJfVU5FWElTVBAOEhMKD1dPUktFUl9DUkVBVElORxAPEhIKDldPUktF",
-            "Ul9DUkVBVEVEEBASEgoOV09SS0VSX0VYSVNURUQQERIVChFIVUJDT05OX1VO",
-            "Q1JFQVRFRBASEhQKEEhVQkNPTk5fQ1JFQVRJTkcQExITCg9IVUJDT05OX0NS",
-            "RUFURUQQFCITCgRTdHJnEgsKA3N0chgBIAEoCSIZCglUaW1lc3RhbXASDAoE",
-            "dGltZRgBIAEoBCIHCgVFbXB0eTLzAwoKUnBjU2VydmljZRI+CgxHZXRUaW1l",
-            "c3RhbXASEy5CZW5jaC5Db21tb24uRW1wdHkaFy5CZW5jaC5Db21tb24uVGlt",
-            "ZXN0YW1wIgASPgoRR2V0Q291bnRlckpzb25TdHISEy5CZW5jaC5Db21tb24u",
-            "RW1wdHkaEi5CZW5jaC5Db21tb24uU3RyZyIAEjUKCEdldFN0YXRlEhMuQmVu",
-            "Y2guQ29tbW9uLkVtcHR5GhIuQmVuY2guQ29tbW9uLlN0YXQiABI5Cg1Mb2Fk",
-            "Sm9iQ29uZmlnEhIuQmVuY2guQ29tbW9uLlBhdGgaEi5CZW5jaC5Db21tb24u",
+            "LkJlbmNoLkNvbW1vbi5QYWlyIhUKBFBhdGgSDQoFcHBhdGgYASABKAkifAoN",
+            "Q2VsbEpvYkNvbmZpZxITCgtjb25uZWN0aW9ucxgBIAEoBRIOCgZzbGF2ZXMY",
+            "AiABKAUSEAoIaW50ZXJ2YWwYAyABKAUSEAoIZHVyYXRpb24YBCABKAUSEQoJ",
+            "c2VydmVyVXJsGAUgASgJEg8KB3BpcGxpbmUYBiABKAki9wMKBFN0YXQSJwoF",
+            "c3RhdGUYASABKA4yGC5CZW5jaC5Db21tb24uU3RhdC5TdGF0ZSLFAwoFU3Rh",
+            "dGUSDgoKREVCVUdfVE9ETxAAEhcKE0hVQkNPTk5fVU5DT05ORUNURUQQARIW",
+            "ChJIVUJDT05OX0NPTk5FQ1RJTkcQAhIVChFIVUJDT05OX0NPTk5FQ1RFRBAD",
+            "EhkKFUhVQkNPTk5fRElTQ09OTkVDVElORxAEEhgKFEhVQkNPTk5fRElTQ09O",
+            "TkVDVEVEEAUSFQoRSFVCQ09OTl9ESVNQT1NJTkcQBhIUChBIVUJDT05OX0RJ",
+            "U1BPU0VEEAcSEwoPQ09ORklHX1VOTE9BREVEEAgSEgoOQ09ORklHX0xPQURJ",
+            "TkcQCRIRCg1DT05GSUdfTE9BREVEEAoSDgoKU0VORF9SRUFEWRALEhAKDFNF",
+            "TkRfUlVOTklORxAMEhEKDVNFTkRfQ09NUExFVEUQDRISCg5XT1JLRVJfVU5F",
+            "WElTVBAOEhMKD1dPUktFUl9DUkVBVElORxAPEhIKDldPUktFUl9DUkVBVEVE",
+            "EBASEgoOV09SS0VSX0VYSVNURUQQERIVChFIVUJDT05OX1VOQ1JFQVRFRBAS",
+            "EhQKEEhVQkNPTk5fQ1JFQVRJTkcQExITCg9IVUJDT05OX0NSRUFURUQQFCIT",
+            "CgRTdHJnEgsKA3N0chgBIAEoCSIZCglUaW1lc3RhbXASDAoEdGltZRgBIAEo",
+            "BCIHCgVFbXB0eTL8AwoKUnBjU2VydmljZRI+CgxHZXRUaW1lc3RhbXASEy5C",
+            "ZW5jaC5Db21tb24uRW1wdHkaFy5CZW5jaC5Db21tb24uVGltZXN0YW1wIgAS",
+            "PgoRR2V0Q291bnRlckpzb25TdHISEy5CZW5jaC5Db21tb24uRW1wdHkaEi5C",
+            "ZW5jaC5Db21tb24uU3RyZyIAEjUKCEdldFN0YXRlEhMuQmVuY2guQ29tbW9u",
+            "LkVtcHR5GhIuQmVuY2guQ29tbW9uLlN0YXQiABJCCg1Mb2FkSm9iQ29uZmln",
+            "EhsuQmVuY2guQ29tbW9uLkNlbGxKb2JDb25maWcaEi5CZW5jaC5Db21tb24u",
             "U3RhdCIAEjkKDENyZWF0ZVdvcmtlchITLkJlbmNoLkNvbW1vbi5FbXB0eRoS",
             "LkJlbmNoLkNvbW1vbi5TdGF0IgASQwoPQ29sbGVjdENvdW50ZXJzEhMuQmVu",
             "Y2guQ29tbW9uLkZvcmNlGhkuQmVuY2guQ29tbW9uLkNvdW50ZXJEaWN0IgAS",
@@ -60,6 +63,7 @@ namespace Bench.Common {
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Pair), global::Bench.Common.Pair.Parser, new[]{ "Key", "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CounterDict), global::Bench.Common.CounterDict.Parser, new[]{ "Pairs" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Path), global::Bench.Common.Path.Parser, new[]{ "Ppath" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CellJobConfig), global::Bench.Common.CellJobConfig.Parser, new[]{ "Connections", "Slaves", "Interval", "Duration", "ServerUrl", "Pipline" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Stat), global::Bench.Common.Stat.Parser, new[]{ "State" }, null, new[]{ typeof(global::Bench.Common.Stat.Types.State) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Strg), global::Bench.Common.Strg.Parser, new[]{ "Str" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Timestamp), global::Bench.Common.Timestamp.Parser, new[]{ "Time" }, null, null, null),
@@ -759,6 +763,263 @@ namespace Bench.Common {
 
   }
 
+  public sealed partial class CellJobConfig : pb::IMessage<CellJobConfig> {
+    private static readonly pb::MessageParser<CellJobConfig> _parser = new pb::MessageParser<CellJobConfig>(() => new CellJobConfig());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<CellJobConfig> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CellJobConfig() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CellJobConfig(CellJobConfig other) : this() {
+      connections_ = other.connections_;
+      slaves_ = other.slaves_;
+      interval_ = other.interval_;
+      duration_ = other.duration_;
+      serverUrl_ = other.serverUrl_;
+      pipline_ = other.pipline_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public CellJobConfig Clone() {
+      return new CellJobConfig(this);
+    }
+
+    /// <summary>Field number for the "connections" field.</summary>
+    public const int ConnectionsFieldNumber = 1;
+    private int connections_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Connections {
+      get { return connections_; }
+      set {
+        connections_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "slaves" field.</summary>
+    public const int SlavesFieldNumber = 2;
+    private int slaves_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Slaves {
+      get { return slaves_; }
+      set {
+        slaves_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "interval" field.</summary>
+    public const int IntervalFieldNumber = 3;
+    private int interval_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Interval {
+      get { return interval_; }
+      set {
+        interval_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "duration" field.</summary>
+    public const int DurationFieldNumber = 4;
+    private int duration_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Duration {
+      get { return duration_; }
+      set {
+        duration_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "serverUrl" field.</summary>
+    public const int ServerUrlFieldNumber = 5;
+    private string serverUrl_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ServerUrl {
+      get { return serverUrl_; }
+      set {
+        serverUrl_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "pipline" field.</summary>
+    public const int PiplineFieldNumber = 6;
+    private string pipline_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Pipline {
+      get { return pipline_; }
+      set {
+        pipline_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as CellJobConfig);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(CellJobConfig other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Connections != other.Connections) return false;
+      if (Slaves != other.Slaves) return false;
+      if (Interval != other.Interval) return false;
+      if (Duration != other.Duration) return false;
+      if (ServerUrl != other.ServerUrl) return false;
+      if (Pipline != other.Pipline) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Connections != 0) hash ^= Connections.GetHashCode();
+      if (Slaves != 0) hash ^= Slaves.GetHashCode();
+      if (Interval != 0) hash ^= Interval.GetHashCode();
+      if (Duration != 0) hash ^= Duration.GetHashCode();
+      if (ServerUrl.Length != 0) hash ^= ServerUrl.GetHashCode();
+      if (Pipline.Length != 0) hash ^= Pipline.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Connections != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Connections);
+      }
+      if (Slaves != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Slaves);
+      }
+      if (Interval != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Interval);
+      }
+      if (Duration != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(Duration);
+      }
+      if (ServerUrl.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ServerUrl);
+      }
+      if (Pipline.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Pipline);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Connections != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Connections);
+      }
+      if (Slaves != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Slaves);
+      }
+      if (Interval != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Interval);
+      }
+      if (Duration != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Duration);
+      }
+      if (ServerUrl.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServerUrl);
+      }
+      if (Pipline.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Pipline);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(CellJobConfig other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Connections != 0) {
+        Connections = other.Connections;
+      }
+      if (other.Slaves != 0) {
+        Slaves = other.Slaves;
+      }
+      if (other.Interval != 0) {
+        Interval = other.Interval;
+      }
+      if (other.Duration != 0) {
+        Duration = other.Duration;
+      }
+      if (other.ServerUrl.Length != 0) {
+        ServerUrl = other.ServerUrl;
+      }
+      if (other.Pipline.Length != 0) {
+        Pipline = other.Pipline;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            Connections = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Slaves = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            Interval = input.ReadInt32();
+            break;
+          }
+          case 32: {
+            Duration = input.ReadInt32();
+            break;
+          }
+          case 42: {
+            ServerUrl = input.ReadString();
+            break;
+          }
+          case 50: {
+            Pipline = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class Stat : pb::IMessage<Stat> {
     private static readonly pb::MessageParser<Stat> _parser = new pb::MessageParser<Stat>(() => new Stat());
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -766,7 +1027,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -914,7 +1175,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1031,7 +1292,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1148,7 +1409,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Bench.Common.BenchReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
