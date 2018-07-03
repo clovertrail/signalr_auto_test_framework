@@ -246,7 +246,10 @@ namespace JenkinsScript
             var result = "";
             var cmd = "";
 
-            cmd = $"cd /home/{agentConfig.User}/signalr-bench/; export bench_type_list='{serviceType}{connections}'; export bench_codec_list='{hubProtocol}'; export bench_name_list='{scenario}'; sh gen_html.sh;";
+            cmd = $"cd /home/{agentConfig.User}/signalr-bench/; " +
+                $"export bench_type_list='{serviceType}{connections}'; export bench_codec_list='{hubProtocol}'; export bench_name_list='{scenario}'; " + 
+                $"export OnlineConnections={connections}; export ActiveConnections=1000; " +
+                $"sh gen_html.sh;";
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
             (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
 

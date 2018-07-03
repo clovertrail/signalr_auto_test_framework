@@ -34,6 +34,12 @@ namespace JenkinsScript
         public void CreateAppServerVm()
         {
             var resourceGroup = CreateResourceGroup();
+            var vnet = _azure.Networks.Define(VNet)
+                .WithRegion(Location)
+                .WithExistingResourceGroup(GroupName)
+                .WithAddressSpace("10.0.0.0/16")
+                .WithSubnet(SubNet, "10.0.0.0/24")
+                .Create();
 
         }
 
