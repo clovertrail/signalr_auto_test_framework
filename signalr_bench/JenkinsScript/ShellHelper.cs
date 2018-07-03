@@ -193,7 +193,7 @@ namespace JenkinsScript
             cmd += $"dotnet run -- " +
                 $"--rpcPort 5555 " +
                 $"--connections {connection} --interval {interval} --slaves {slaves} --serverUrl '{serverUrl}' --pipeLine '{string.Join(";", pipeLine)}' " +
-                $"-v {serviceType} -t {transportType} -p {hubProtocol} -s {scenario} " +
+                $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
                 $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' --slaveList '{string.Join(";", agentConfig.Slaves)}' " +
                 $"-o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}{connection}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
 
@@ -246,8 +246,7 @@ namespace JenkinsScript
             var result = "";
             var cmd = "";
 
-            serviceType += connections;
-            cmd = $"cd /home/{agentConfig.User}/signalr-bench/; export bench_type_list='{serviceType}'; export bench_codec_list='{hubProtocol}'; export bench_name_list='{scenario}'; sh gen_html.sh;";
+            cmd = $"cd /home/{agentConfig.User}/signalr-bench/; export bench_type_list='{serviceType}{connections}'; export bench_codec_list='{hubProtocol}'; export bench_name_list='{scenario}'; sh gen_html.sh;";
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
             (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
 

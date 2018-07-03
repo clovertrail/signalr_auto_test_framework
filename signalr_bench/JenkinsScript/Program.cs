@@ -60,7 +60,7 @@ namespace JenkinsScript
                     (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
                     break;
                 case "CreateAllAgentVMs":
-                    vmBuilder.Build();
+                    vmBuilder.CreateAgentVms();
                     break;
                 case "DeleteAllAgentVMs":
                     azureManager.DeleteResourceGroup(vmBuilder.GroupName);

@@ -21,6 +21,8 @@ namespace JenkinsScript
 
         public BenchmarkVmBuilder(AgentConfig agentConfig)
         {
+            LoginAzure();
+
             _agentConfig = agentConfig;
 
             var rnd = new Random();
@@ -28,9 +30,15 @@ namespace JenkinsScript
 
         }
 
-        public void Build()
+
+        public void CreateAppServerVm()
         {
-            LoginAzure();
+            var resourceGroup = CreateResourceGroup();
+
+        }
+
+        public void CreateAgentVms()
+        {
             var resourceGroup = CreateResourceGroup();
             var avSet = CreateAvailabilitySet();
             var vNet = CreateVirtualNetwork();
@@ -112,6 +120,13 @@ namespace JenkinsScript
         public IResourceGroup CreateResourceGroup()
         {
             Console.WriteLine("Creating resource group...");
+            var rg = _azure.ResourceGroups.GetByName(GroupName);
+            if (rg != null)
+            {
+                Console.WriteLine($"Resource group {GroupName} existed");
+                return rg;
+            }
+
             return _azure.ResourceGroups.Define(GroupName)
                 .WithRegion(Location)
                 .Create();
