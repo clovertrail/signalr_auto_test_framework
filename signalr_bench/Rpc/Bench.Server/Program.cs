@@ -21,7 +21,6 @@ namespace Bench.RpcSlave {
                 .WithParsed(options => argsOption = options)
                 .WithNotParsed(error => { });
 
-
             Grpc.Core.Server server = new Grpc.Core.Server
             {
                 Services = { RpcService.BindService(new RpcServiceImpl()) },

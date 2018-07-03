@@ -40,6 +40,7 @@ namespace Bench.RpcSlave.Worker
 
         public List<string> GetPipeline()
         {
+            Console.WriteLine($"pipeline: {_tk.JobConfig.Pipeline}");
             return _tk.JobConfig.Pipeline;
         }
 

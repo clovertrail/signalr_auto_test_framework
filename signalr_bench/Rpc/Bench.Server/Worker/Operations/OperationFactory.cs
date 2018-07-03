@@ -38,7 +38,7 @@ namespace Bench.RpcSlave.Worker.Operations
 
             if (type == typeof(object))
             {
-                Util.Log($"cannot find Operation.");
+                Util.Log($"cannot find Operation {opName}.");
             }
 
             return new Tuple<object, Type>(obj, type);

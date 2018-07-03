@@ -64,15 +64,24 @@ namespace Bench.RpcMaster
             //var allocator = new OneAllocator();
             //var allocated = allocator.Allocate(slaveList, jobConfig.Connections, criteria);
 
-            //// call salves to load job config
-            //clients.ForEach( client =>
-            //{
-            //    var state = new Stat();
-            //    state = client.CreateWorker(new Empty());
-            //    Util.Log($"create worker state: {state.State}");
-            //    state = client.LoadJobConfig(new Common.Path { Ppath = argsOption.JobConfigFile });
-            //    Util.Log($"load job config state: {state.State}");
-            //});
+            // call salves to load job config
+            clients.ForEach( client =>
+            {
+               var state = new Stat();
+               state = client.CreateWorker(new Empty());
+               var config = new CellJobConfig 
+               {
+                    Connections = argsOption.Connections,
+                    Slaves = argsOption.Slaves,
+                    Interval = argsOption.Interval,
+                    Duration = argsOption.Duration,
+                    ServerUrl = argsOption.ServerUrl,
+                    Pipeline = argsOption.PipeLine
+               };
+               Util.Log($"create worker state: {state.State}");
+               state = client.LoadJobConfig(config);
+               Util.Log($"load job config state: {state.State}");
+            });
 
             // collect counters
             var collectTimer = new System.Timers.Timer(1000);

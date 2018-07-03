@@ -43,7 +43,7 @@ message CellJobConfig {
 	int32 interval = 3;
 	int32 duration = 4;
 	string serverUrl = 5;
-	string pipline = 6;
+	string pipeline = 6;
 }
 
 message Stat {

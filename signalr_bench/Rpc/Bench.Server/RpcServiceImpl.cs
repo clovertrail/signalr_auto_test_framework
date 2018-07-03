@@ -35,6 +35,8 @@ namespace Bench.RpcSlave
             //// load job config
             //var jobConfigLoader = new ConfigLoader();
             //var jobConfig = jobConfigLoader.Load<JobConfig>(path.Ppath);
+            Console.WriteLine($"pipeline: {config.Pipeline}");
+            Console.WriteLine($"ServerUrl: {config.ServerUrl}");
             var jobConfig = new JobConfig
             {
                 Connections = config.Connections,
@@ -42,7 +44,7 @@ namespace Bench.RpcSlave
                 Interval = config.Interval,
                 Duration = config.Duration,
                 ServerUrl = config.ServerUrl,
-                Pipeline = new List<string>(config.Pipline.Split(';'))
+                Pipeline = new List<string>(config.Pipeline.Split(';'))
             };
 
             // TODO: handle exception
@@ -92,7 +94,10 @@ namespace Bench.RpcSlave
                 TransportType = cellConfig.TransportType,
                 Scenario = cellConfig.Scenario
             };
+            Console.WriteLine($"LoadBenchmarkCellConfig");
             _sigWorker.LoadBenchmarkCellConfig(benchmarkCellConfig);
+            
+            Console.WriteLine($"ProcessJob");
             _sigWorker.ProcessJob();
 
             return Task.FromResult(new Stat { State = Stat.Types.State.DebugTodo });

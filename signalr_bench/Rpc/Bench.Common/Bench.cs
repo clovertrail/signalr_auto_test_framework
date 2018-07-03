@@ -27,34 +27,34 @@ namespace Bench.Common {
             "IAEoCRITCgtodWJQcm90b2NvbBgDIAEoCRIQCghzY2VuYXJpbxgEIAEoCSIW",
             "CgVGb3JjZRINCgVmb3JjZRgBIAEoCCIiCgRQYWlyEgsKA2tleRgBIAEoCRIN",
             "CgV2YWx1ZRgCIAEoBSIwCgtDb3VudGVyRGljdBIhCgVwYWlycxgBIAMoCzIS",
-            "LkJlbmNoLkNvbW1vbi5QYWlyIhUKBFBhdGgSDQoFcHBhdGgYASABKAkifAoN",
+            "LkJlbmNoLkNvbW1vbi5QYWlyIhUKBFBhdGgSDQoFcHBhdGgYASABKAkifQoN",
             "Q2VsbEpvYkNvbmZpZxITCgtjb25uZWN0aW9ucxgBIAEoBRIOCgZzbGF2ZXMY",
             "AiABKAUSEAoIaW50ZXJ2YWwYAyABKAUSEAoIZHVyYXRpb24YBCABKAUSEQoJ",
-            "c2VydmVyVXJsGAUgASgJEg8KB3BpcGxpbmUYBiABKAki9wMKBFN0YXQSJwoF",
-            "c3RhdGUYASABKA4yGC5CZW5jaC5Db21tb24uU3RhdC5TdGF0ZSLFAwoFU3Rh",
-            "dGUSDgoKREVCVUdfVE9ETxAAEhcKE0hVQkNPTk5fVU5DT05ORUNURUQQARIW",
-            "ChJIVUJDT05OX0NPTk5FQ1RJTkcQAhIVChFIVUJDT05OX0NPTk5FQ1RFRBAD",
-            "EhkKFUhVQkNPTk5fRElTQ09OTkVDVElORxAEEhgKFEhVQkNPTk5fRElTQ09O",
-            "TkVDVEVEEAUSFQoRSFVCQ09OTl9ESVNQT1NJTkcQBhIUChBIVUJDT05OX0RJ",
-            "U1BPU0VEEAcSEwoPQ09ORklHX1VOTE9BREVEEAgSEgoOQ09ORklHX0xPQURJ",
-            "TkcQCRIRCg1DT05GSUdfTE9BREVEEAoSDgoKU0VORF9SRUFEWRALEhAKDFNF",
-            "TkRfUlVOTklORxAMEhEKDVNFTkRfQ09NUExFVEUQDRISCg5XT1JLRVJfVU5F",
-            "WElTVBAOEhMKD1dPUktFUl9DUkVBVElORxAPEhIKDldPUktFUl9DUkVBVEVE",
-            "EBASEgoOV09SS0VSX0VYSVNURUQQERIVChFIVUJDT05OX1VOQ1JFQVRFRBAS",
-            "EhQKEEhVQkNPTk5fQ1JFQVRJTkcQExITCg9IVUJDT05OX0NSRUFURUQQFCIT",
-            "CgRTdHJnEgsKA3N0chgBIAEoCSIZCglUaW1lc3RhbXASDAoEdGltZRgBIAEo",
-            "BCIHCgVFbXB0eTL8AwoKUnBjU2VydmljZRI+CgxHZXRUaW1lc3RhbXASEy5C",
-            "ZW5jaC5Db21tb24uRW1wdHkaFy5CZW5jaC5Db21tb24uVGltZXN0YW1wIgAS",
-            "PgoRR2V0Q291bnRlckpzb25TdHISEy5CZW5jaC5Db21tb24uRW1wdHkaEi5C",
-            "ZW5jaC5Db21tb24uU3RyZyIAEjUKCEdldFN0YXRlEhMuQmVuY2guQ29tbW9u",
-            "LkVtcHR5GhIuQmVuY2guQ29tbW9uLlN0YXQiABJCCg1Mb2FkSm9iQ29uZmln",
-            "EhsuQmVuY2guQ29tbW9uLkNlbGxKb2JDb25maWcaEi5CZW5jaC5Db21tb24u",
-            "U3RhdCIAEjkKDENyZWF0ZVdvcmtlchITLkJlbmNoLkNvbW1vbi5FbXB0eRoS",
-            "LkJlbmNoLkNvbW1vbi5TdGF0IgASQwoPQ29sbGVjdENvdW50ZXJzEhMuQmVu",
-            "Y2guQ29tbW9uLkZvcmNlGhkuQmVuY2guQ29tbW9uLkNvdW50ZXJEaWN0IgAS",
-            "QQoGUnVuSm9iEiEuQmVuY2guQ29tbW9uLkJlbmNobWFya0NlbGxDb25maWca",
-            "Ei5CZW5jaC5Db21tb24uU3RhdCIAEjAKBFRlc3QSEi5CZW5jaC5Db21tb24u",
-            "U3RyZxoSLkJlbmNoLkNvbW1vbi5TdGF0IgBiBnByb3RvMw=="));
+            "c2VydmVyVXJsGAUgASgJEhAKCHBpcGVsaW5lGAYgASgJIvcDCgRTdGF0EicK",
+            "BXN0YXRlGAEgASgOMhguQmVuY2guQ29tbW9uLlN0YXQuU3RhdGUixQMKBVN0",
+            "YXRlEg4KCkRFQlVHX1RPRE8QABIXChNIVUJDT05OX1VOQ09OTkVDVEVEEAES",
+            "FgoSSFVCQ09OTl9DT05ORUNUSU5HEAISFQoRSFVCQ09OTl9DT05ORUNURUQQ",
+            "AxIZChVIVUJDT05OX0RJU0NPTk5FQ1RJTkcQBBIYChRIVUJDT05OX0RJU0NP",
+            "Tk5FQ1RFRBAFEhUKEUhVQkNPTk5fRElTUE9TSU5HEAYSFAoQSFVCQ09OTl9E",
+            "SVNQT1NFRBAHEhMKD0NPTkZJR19VTkxPQURFRBAIEhIKDkNPTkZJR19MT0FE",
+            "SU5HEAkSEQoNQ09ORklHX0xPQURFRBAKEg4KClNFTkRfUkVBRFkQCxIQCgxT",
+            "RU5EX1JVTk5JTkcQDBIRCg1TRU5EX0NPTVBMRVRFEA0SEgoOV09SS0VSX1VO",
+            "RVhJU1QQDhITCg9XT1JLRVJfQ1JFQVRJTkcQDxISCg5XT1JLRVJfQ1JFQVRF",
+            "RBAQEhIKDldPUktFUl9FWElTVEVEEBESFQoRSFVCQ09OTl9VTkNSRUFURUQQ",
+            "EhIUChBIVUJDT05OX0NSRUFUSU5HEBMSEwoPSFVCQ09OTl9DUkVBVEVEEBQi",
+            "EwoEU3RyZxILCgNzdHIYASABKAkiGQoJVGltZXN0YW1wEgwKBHRpbWUYASAB",
+            "KAQiBwoFRW1wdHky/AMKClJwY1NlcnZpY2USPgoMR2V0VGltZXN0YW1wEhMu",
+            "QmVuY2guQ29tbW9uLkVtcHR5GhcuQmVuY2guQ29tbW9uLlRpbWVzdGFtcCIA",
+            "Ej4KEUdldENvdW50ZXJKc29uU3RyEhMuQmVuY2guQ29tbW9uLkVtcHR5GhIu",
+            "QmVuY2guQ29tbW9uLlN0cmciABI1CghHZXRTdGF0ZRITLkJlbmNoLkNvbW1v",
+            "bi5FbXB0eRoSLkJlbmNoLkNvbW1vbi5TdGF0IgASQgoNTG9hZEpvYkNvbmZp",
+            "ZxIbLkJlbmNoLkNvbW1vbi5DZWxsSm9iQ29uZmlnGhIuQmVuY2guQ29tbW9u",
+            "LlN0YXQiABI5CgxDcmVhdGVXb3JrZXISEy5CZW5jaC5Db21tb24uRW1wdHka",
+            "Ei5CZW5jaC5Db21tb24uU3RhdCIAEkMKD0NvbGxlY3RDb3VudGVycxITLkJl",
+            "bmNoLkNvbW1vbi5Gb3JjZRoZLkJlbmNoLkNvbW1vbi5Db3VudGVyRGljdCIA",
+            "EkEKBlJ1bkpvYhIhLkJlbmNoLkNvbW1vbi5CZW5jaG1hcmtDZWxsQ29uZmln",
+            "GhIuQmVuY2guQ29tbW9uLlN0YXQiABIwCgRUZXN0EhIuQmVuY2guQ29tbW9u",
+            "LlN0cmcaEi5CZW5jaC5Db21tb24uU3RhdCIAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -63,7 +63,7 @@ namespace Bench.Common {
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Pair), global::Bench.Common.Pair.Parser, new[]{ "Key", "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CounterDict), global::Bench.Common.CounterDict.Parser, new[]{ "Pairs" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Path), global::Bench.Common.Path.Parser, new[]{ "Ppath" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CellJobConfig), global::Bench.Common.CellJobConfig.Parser, new[]{ "Connections", "Slaves", "Interval", "Duration", "ServerUrl", "Pipline" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CellJobConfig), global::Bench.Common.CellJobConfig.Parser, new[]{ "Connections", "Slaves", "Interval", "Duration", "ServerUrl", "Pipeline" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Stat), global::Bench.Common.Stat.Parser, new[]{ "State" }, null, new[]{ typeof(global::Bench.Common.Stat.Types.State) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Strg), global::Bench.Common.Strg.Parser, new[]{ "Str" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Timestamp), global::Bench.Common.Timestamp.Parser, new[]{ "Time" }, null, null, null),
@@ -792,7 +792,7 @@ namespace Bench.Common {
       interval_ = other.interval_;
       duration_ = other.duration_;
       serverUrl_ = other.serverUrl_;
-      pipline_ = other.pipline_;
+      pipeline_ = other.pipeline_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -855,14 +855,14 @@ namespace Bench.Common {
       }
     }
 
-    /// <summary>Field number for the "pipline" field.</summary>
-    public const int PiplineFieldNumber = 6;
-    private string pipline_ = "";
+    /// <summary>Field number for the "pipeline" field.</summary>
+    public const int PipelineFieldNumber = 6;
+    private string pipeline_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Pipline {
-      get { return pipline_; }
+    public string Pipeline {
+      get { return pipeline_; }
       set {
-        pipline_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        pipeline_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -884,7 +884,7 @@ namespace Bench.Common {
       if (Interval != other.Interval) return false;
       if (Duration != other.Duration) return false;
       if (ServerUrl != other.ServerUrl) return false;
-      if (Pipline != other.Pipline) return false;
+      if (Pipeline != other.Pipeline) return false;
       return true;
     }
 
@@ -896,7 +896,7 @@ namespace Bench.Common {
       if (Interval != 0) hash ^= Interval.GetHashCode();
       if (Duration != 0) hash ^= Duration.GetHashCode();
       if (ServerUrl.Length != 0) hash ^= ServerUrl.GetHashCode();
-      if (Pipline.Length != 0) hash ^= Pipline.GetHashCode();
+      if (Pipeline.Length != 0) hash ^= Pipeline.GetHashCode();
       return hash;
     }
 
@@ -927,9 +927,9 @@ namespace Bench.Common {
         output.WriteRawTag(42);
         output.WriteString(ServerUrl);
       }
-      if (Pipline.Length != 0) {
+      if (Pipeline.Length != 0) {
         output.WriteRawTag(50);
-        output.WriteString(Pipline);
+        output.WriteString(Pipeline);
       }
     }
 
@@ -951,8 +951,8 @@ namespace Bench.Common {
       if (ServerUrl.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ServerUrl);
       }
-      if (Pipline.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Pipline);
+      if (Pipeline.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Pipeline);
       }
       return size;
     }
@@ -977,8 +977,8 @@ namespace Bench.Common {
       if (other.ServerUrl.Length != 0) {
         ServerUrl = other.ServerUrl;
       }
-      if (other.Pipline.Length != 0) {
-        Pipline = other.Pipline;
+      if (other.Pipeline.Length != 0) {
+        Pipeline = other.Pipeline;
       }
     }
 
@@ -1011,7 +1011,7 @@ namespace Bench.Common {
             break;
           }
           case 50: {
-            Pipline = input.ReadString();
+            Pipeline = input.ReadString();
             break;
           }
         }
