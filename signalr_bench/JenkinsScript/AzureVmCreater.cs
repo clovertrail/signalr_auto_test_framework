@@ -49,9 +49,9 @@ namespace JenkinsScript
             vmTemp.Create();
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
-            ModifyLimit(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord);
-            InstallDotnetAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord);
-            ModifySshdAndRestart(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord);
+            ModifyLimit(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
+            InstallDotnetAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
+            ModifySshdAndRestart(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
         }
         public Task CreateAgentVms()
         {
@@ -272,7 +272,7 @@ namespace JenkinsScript
         {
             return Task.Run(() =>
             {
-                Console.WriteLine($"modify limits: {i}th");
+                Console.WriteLine($"modify limits: {domain}");
 
                 var errCode = 0;
                 var res = "";
@@ -300,7 +300,7 @@ namespace JenkinsScript
         {
             return Task.Run(() =>
             {
-                Console.WriteLine($"install dotnet: {i}th");
+                Console.WriteLine($"install dotnet: {domain}");
                 var errCode = 0;
                 var res = "";
                 var cmd = "";
@@ -329,7 +329,7 @@ namespace JenkinsScript
         {
             return Task.Run(() =>
             {
-                Console.WriteLine($"modify sshd_config: {i}th");
+                Console.WriteLine($"modify sshd_config: {domain}");
 
                 var errCode = 0;
                 var res = "";

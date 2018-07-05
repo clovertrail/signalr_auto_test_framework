@@ -70,14 +70,16 @@ namespace JenkinsScript
                     break;
                 case "All": 
                 default:
-                    (errCode, result) = ShellHelper.CreateSignalrService(argsOption);
+                    var createSignalrR = Task.Run(()=> { (errCode, result) = ShellHelper.CreateSignalrService(argsOption); });
+
                     argsOption.AzureSignalrConnectionString = result;
+                    Util.Log($"signalr connection string {argsOption.AzureSignalrConnectionString}");
+                    var createResourceTasks = new List<Task>();
+                    createResourceTasks.Add(vmBuilder.CreateAgentVms());
+                    createResourceTasks.Add(vmBuilder.CreateAppServerVm());
+                    createResourceTasks.Add(createSignalrR);
 
-                    var createVmTasks = new List<Task>();
-                    createVmTasks.Add(vmBuilder.CreateAgentVms());
-                    createVmTasks.Add(vmBuilder.CreateAppServerVm());
-
-                    Task.WhenAll(createVmTasks).Wait();
+                    Task.WhenAll(createResourceTasks).Wait();
 
                     (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                     (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
