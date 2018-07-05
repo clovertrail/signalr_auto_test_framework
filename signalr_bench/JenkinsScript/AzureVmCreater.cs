@@ -49,7 +49,7 @@ namespace JenkinsScript
             vmTemp.Create();
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
-            Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+            //Task.Delay(TimeSpan.FromSeconds(10)).Wait();
             ModifyLimitAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
             InstallDotnetAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
             ModifySshdAndRestart(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
@@ -107,7 +107,7 @@ namespace JenkinsScript
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
 
             Console.WriteLine($"Setuping vms");
-            Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+            //Task.Delay(TimeSpan.FromSeconds(30)).Wait();
             var modifyLimitTasks = new List<Task>();
             for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {

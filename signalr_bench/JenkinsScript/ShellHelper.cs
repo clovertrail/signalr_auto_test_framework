@@ -59,7 +59,7 @@ namespace JenkinsScript
             return (errCode, result);
         }
 
-        public static (int, string) RemoteBash(string user, string host, int port, string password, string cmd, bool wait = true, bool handleRes = false, int retry = 0)
+        public static (int, string) RemoteBash(string user, string host, int port, string password, string cmd, bool wait = true, bool handleRes = false, int retry = 1)
         {
 
             int errCode = 0;
@@ -73,7 +73,7 @@ namespace JenkinsScript
                 Util.Log($"cmd: {cmd}");
                 string sshPassCmd = $"sshpass -p {password} ssh -p {port} -o StrictHostKeyChecking=no {user}@{host} \"{cmd}\"";
                 Util.Log($"SSH Pass Cmd: {sshPassCmd}");
-                (errCode, result) = Bash(sshPassCmd, wait: wait, handleRes: retry > 0 && i < retry - 1? false: handleRes);
+                (errCode, result) = Bash(sshPassCmd, wait: wait, handleRes: retry > 1 && i < retry - 1? false: handleRes);
                 if (errCode == 0) break;
                 Util.Log($"retry {i+1}th time");
                 Task.Delay(TimeSpan.FromSeconds(1)).Wait();
