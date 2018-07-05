@@ -51,7 +51,7 @@ namespace JenkinsScript
                     (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                     break;
                 case "StartRpcServer":
-                    (errCode, result) = ShellHelper.StartRpcSlaves(hosts, agentConfig, argsOption);
+                    (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
                     break;
                 case "CreateSignalr":
                     (errCode, result) = ShellHelper.CreateSignalrService(argsOption);
