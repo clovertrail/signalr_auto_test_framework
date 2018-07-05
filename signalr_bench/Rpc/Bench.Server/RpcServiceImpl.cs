@@ -120,8 +120,6 @@ namespace Bench.RpcSlave
             try
             {
                 Console.WriteLine($"Run Job");
-                var y = 0;
-                var x = 1 / y;
                 Worker.BenchmarkCellConfig benchmarkCellConfig = new Worker.BenchmarkCellConfig
                 {
                     ServiceType = cellConfig.ServiveType,

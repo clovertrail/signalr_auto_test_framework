@@ -123,6 +123,7 @@ namespace JenkinsScript
                                     //for (var connection = connectionBase; ; connection += connectionIncreaseStep)
                                     for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
                                     {
+                                        Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                                         (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                                         Task.Delay(5000).Wait();
