@@ -538,7 +538,7 @@ namespace JenkinsScript
         {
             get
             {
-                return _agentConfig.Prefix + "AppSvrResourceGroup";
+                return _agentConfig.Prefix + "AppSvrResourceGroup" + _rndNum;
 
             }
         }
@@ -546,7 +546,7 @@ namespace JenkinsScript
         {
             get
             {
-                return _agentConfig.Prefix + "ResourceGroup";
+                return _agentConfig.Prefix + "ResourceGroup" + _rndNum;
 
             }
         }
