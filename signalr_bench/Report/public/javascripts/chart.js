@@ -182,7 +182,7 @@ function createLatencyLineChart(results) {
                 borderColor: backgroundColor[i],
                 data: percentageLines[name],
                 label: name,
-                fill: '-1'
+                fill: name == "message:lt:100" ? true : '-1'
             };
             datasets.push(dataset);
             i++;

@@ -13,7 +13,7 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            useLocalSignalR = false;
+            useLocalSignalR = true;
             useMessagePack = true;
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -22,7 +22,7 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         }
 
         public IConfiguration Configuration { get; }
-        private bool useLocalSignalR = false;
+        private bool useLocalSignalR = true;
         private bool useMessagePack = false;
         
         public void ConfigureServices(IServiceCollection services)

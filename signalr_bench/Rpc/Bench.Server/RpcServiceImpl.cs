@@ -22,7 +22,15 @@ namespace Bench.RpcSlave
 
         public override Task<Stat> GetState(Empty empty, ServerCallContext context)
         {
-            return Task.FromResult(new Stat { State = _sigWorker.GetState() });
+            try
+            {
+                return Task.FromResult(new Stat { State = _sigWorker.GetState() });
+            }
+            catch (Exception ex)
+            {
+                Util.Log($"Exception: {ex}");
+                throw;
+            }
         }
 
         public override Task<Strg> GetCounterJsonStr(Empty empty, ServerCallContext context)
@@ -32,74 +40,109 @@ namespace Bench.RpcSlave
 
         public override Task<Stat> LoadJobConfig(CellJobConfig config, ServerCallContext context)
         {
-            //// load job config
-            //var jobConfigLoader = new ConfigLoader();
-            //var jobConfig = jobConfigLoader.Load<JobConfig>(path.Ppath);
-
-            var jobConfig = new JobConfig
+            try
             {
-                Connections = config.Connections,
-                Slaves = config.Slaves,
-                Interval = config.Interval,
-                Duration = config.Duration,
-                ServerUrl = config.ServerUrl,
-                Pipeline = new List<string>(config.Pipeline.Split(';'))
-            };
+                var jobConfig = new JobConfig
+                {
+                    Connections = config.Connections,
+                    Slaves = config.Slaves,
+                    Interval = config.Interval,
+                    Duration = config.Duration,
+                    ServerUrl = config.ServerUrl,
+                    Pipeline = new List<string>(config.Pipeline.Split(';'))
+                };
 
-            // TODO: handle exception
-            if (_sigWorker == null)
+                // TODO: handle exception
+                if (_sigWorker == null)
+                {
+                    _sigWorker = new SigWorker();
+                }
+
+                _sigWorker.LoadJobs(jobConfig);
+                _sigWorker.UpdateState(Stat.Types.State.ConfigLoaded);
+                return Task.FromResult(new Stat { State = Stat.Types.State.ConfigLoaded });
+            }
+            catch (Exception ex)
             {
-                _sigWorker = new SigWorker();
+                Util.Log($"Exception: {ex}");
+                throw;
             }
 
-            _sigWorker.LoadJobs(jobConfig);
-            _sigWorker.UpdateState(Stat.Types.State.ConfigLoaded);
-            return Task.FromResult(new Stat { State = Stat.Types.State.ConfigLoaded});
+            
         }
 
         public override Task<Stat> CreateWorker(Empty empty, ServerCallContext context)
         {
-            if (_sigWorker != null)
+            try
             {
-                _sigWorker.UpdateState(Stat.Types.State.WorkerExisted);   
-                return Task.FromResult(new Stat { State = Stat.Types.State.WorkerExisted });
-            }
+                if (_sigWorker != null)
+                {
+                    _sigWorker.UpdateState(Stat.Types.State.WorkerExisted);
+                    return Task.FromResult(new Stat { State = Stat.Types.State.WorkerExisted });
+                }
 
-            _sigWorker = new SigWorker();
-            _sigWorker.UpdateState(Stat.Types.State.WorkerCreated);   
-            return Task.FromResult(new Stat { State = Stat.Types.State.WorkerCreated });
+                _sigWorker = new SigWorker();
+                _sigWorker.UpdateState(Stat.Types.State.WorkerCreated);
+                return Task.FromResult(new Stat { State = Stat.Types.State.WorkerCreated });
+            }
+            catch (Exception ex)
+            {
+                Util.Log($"Exception: {ex}");
+                throw;
+            }
+            
         }
 
         public override Task<CounterDict> CollectCounters(Force force, ServerCallContext context)
         {
-            var dict = new CounterDict();
-            if (force.Force_ != true && (int)_sigWorker.GetState() < (int)Stat.Types.State.SendRunning)
+            try
             {
+                var dict = new CounterDict();
+                if (force.Force_ != true && (int)_sigWorker.GetState() < (int)Stat.Types.State.SendRunning)
+                {
+                    return Task.FromResult(dict);
+                }
+
+                var list = _sigWorker.GetCounters();
+                list.ForEach(pair => dict.Pairs.Add(new Pair { Key = pair.Item1, Value = pair.Item2 }));
                 return Task.FromResult(dict);
             }
-
-            var list = _sigWorker.GetCounters();
-            list.ForEach(pair => dict.Pairs.Add(new Pair { Key = pair.Item1, Value = pair.Item2 }));
-            return Task.FromResult(dict);
+            catch (Exception ex)
+            {
+                Util.Log($"Exception: {ex}");
+                throw;
+            }
+            
         }
 
         public override Task<Stat> RunJob(Common.BenchmarkCellConfig cellConfig, ServerCallContext context)
         {
-            Console.WriteLine($"Run Job");
-            Worker.BenchmarkCellConfig benchmarkCellConfig = new Worker.BenchmarkCellConfig
+            try
             {
-                ServiceType = cellConfig.ServiveType,
-                HubProtocol = cellConfig.HubProtocol,
-                TransportType = cellConfig.TransportType,
-                Scenario = cellConfig.Scenario
-            };
-            Console.WriteLine($"LoadBenchmarkCellConfig");
-            _sigWorker.LoadBenchmarkCellConfig(benchmarkCellConfig);
-            
-            Console.WriteLine($"ProcessJob");
-            _sigWorker.ProcessJob();
+                Console.WriteLine($"Run Job");
+                var y = 0;
+                var x = 1 / y;
+                Worker.BenchmarkCellConfig benchmarkCellConfig = new Worker.BenchmarkCellConfig
+                {
+                    ServiceType = cellConfig.ServiveType,
+                    HubProtocol = cellConfig.HubProtocol,
+                    TransportType = cellConfig.TransportType,
+                    Scenario = cellConfig.Scenario
+                };
+                Console.WriteLine($"LoadBenchmarkCellConfig");
+                _sigWorker.LoadBenchmarkCellConfig(benchmarkCellConfig);
 
-            return Task.FromResult(new Stat { State = Stat.Types.State.DebugTodo });
+                Console.WriteLine($"ProcessJob");
+                _sigWorker.ProcessJob();
+
+                return Task.FromResult(new Stat { State = Stat.Types.State.DebugTodo });
+            }
+            catch (Exception ex)
+            {
+                Util.Log($"Exception: {ex}");
+                throw;
+            }
+            
 
         }
 
