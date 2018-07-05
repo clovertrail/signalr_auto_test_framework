@@ -13,7 +13,7 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            useLocalSignalR = true;
+            useLocalSignalR = false;
             useMessagePack = true;
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
