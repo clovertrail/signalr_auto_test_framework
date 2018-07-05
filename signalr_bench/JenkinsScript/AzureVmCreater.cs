@@ -40,7 +40,7 @@ namespace JenkinsScript
         {
             var sw = new Stopwatch();
             sw.Start();
-            var resourceGroup = CreateResourceGroup();
+            var resourceGroup = CreateResourceGroup(AppSvrGroupName);
             var vnet = CreateVirtualNetwork(AppSvrVnet, Location, GroupName, AppSvrSubNet);
             var publicIp = CreatePublicIpAsync(AppSvrPublicIpBase, Location, GroupName, AppSvrPublicDnsBase).GetAwaiter().GetResult();
             var nsg = CreateNetworkSecurityGroupAsync(AppSvrNsgBase, Location, GroupName, _agentConfig.SshPort).GetAwaiter().GetResult();
@@ -63,7 +63,7 @@ namespace JenkinsScript
             var sw = new Stopwatch();
             sw.Start();
 
-            var resourceGroup = CreateResourceGroup();
+            var resourceGroup = CreateResourceGroup(GroupName);
             var avSet = CreateAvailabilitySet(AVSet, Location, GroupName);
             var vNet = CreateVirtualNetwork(VNet, Location, GroupName, SubNet);
 
@@ -144,16 +144,16 @@ namespace JenkinsScript
                 .WithDefaultSubscription();
         }
 
-        public IResourceGroup CreateResourceGroup()
+        public IResourceGroup CreateResourceGroup(string groupName)
         {
             Console.WriteLine("Creating resource group...");
-            if (_azure.ResourceGroups.Contain(GroupName))
+            if (_azure.ResourceGroups.Contain(groupName))
             {
-                Console.WriteLine($"Resource group {GroupName} existed");
+                Console.WriteLine($"Resource group {groupName} existed");
                 return null;
             }
 
-            return _azure.ResourceGroups.Define(GroupName)
+            return _azure.ResourceGroups.Define(groupName)
                 .WithRegion(Location)
                 .Create();
         }
@@ -534,7 +534,14 @@ namespace JenkinsScript
             }
         }
 
+        public string AppSvrGroupName
+        {
+            get
+            {
+                return _agentConfig.Prefix + "AppSvrResourceGroup";
 
+            }
+        }
         public string GroupName
         {
             get
