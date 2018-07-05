@@ -41,11 +41,11 @@ namespace JenkinsScript
             var sw = new Stopwatch();
             sw.Start();
             var resourceGroup = CreateResourceGroup(AppSvrGroupName);
-            var vnet = CreateVirtualNetwork(AppSvrVnet, Location, GroupName, AppSvrSubNet);
-            var publicIp = CreatePublicIpAsync(AppSvrPublicIpBase, Location, GroupName, AppSvrPublicDnsBase).GetAwaiter().GetResult();
-            var nsg = CreateNetworkSecurityGroupAsync(AppSvrNsgBase, Location, GroupName, _agentConfig.SshPort).GetAwaiter().GetResult();
-            var nic = CreateNetworkInterfaceAsync(AppSvrNicBase, Location, GroupName, AppSvrSubNet, vnet, publicIp, nsg).GetAwaiter().GetResult();
-            var vmTemp = GenerateVmTemplateAsync(AppSvrVmNameBase, Location, GroupName, _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord, _agentConfig.Ssh, AppSvrVmSize, nic).GetAwaiter().GetResult();
+            var vnet = CreateVirtualNetwork(AppSvrVnet, Location, AppSvrGroupName, AppSvrSubNet);
+            var publicIp = CreatePublicIpAsync(AppSvrPublicIpBase, Location, AppSvrGroupName, AppSvrPublicDnsBase).GetAwaiter().GetResult();
+            var nsg = CreateNetworkSecurityGroupAsync(AppSvrNsgBase, Location, AppSvrGroupName, _agentConfig.SshPort).GetAwaiter().GetResult();
+            var nic = CreateNetworkInterfaceAsync(AppSvrNicBase, Location, AppSvrGroupName, AppSvrSubNet, vnet, publicIp, nsg).GetAwaiter().GetResult();
+            var vmTemp = GenerateVmTemplateAsync(AppSvrVmNameBase, Location, AppSvrGroupName, _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord, _agentConfig.Ssh, AppSvrVmSize, nic).GetAwaiter().GetResult();
             vmTemp.Create();
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
