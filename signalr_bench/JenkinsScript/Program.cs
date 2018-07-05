@@ -75,8 +75,9 @@ namespace JenkinsScript
                     argsOption.AzureSignalrConnectionString = result;
                     Util.Log($"signalr connection string {argsOption.AzureSignalrConnectionString}");
                     var createResourceTasks = new List<Task>();
+                    //createResourceTasks.Add(vmBuilder.CreateAppServerVm());
+                    vmBuilder.CreateAppServerVm().Wait();
                     createResourceTasks.Add(vmBuilder.CreateAgentVms());
-                    createResourceTasks.Add(vmBuilder.CreateAppServerVm());
                     createResourceTasks.Add(createSignalrR);
 
                     Task.WhenAll(createResourceTasks).Wait();
