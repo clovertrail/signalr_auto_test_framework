@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace JenkinsScript
@@ -77,6 +78,7 @@ namespace JenkinsScript
                     //var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption); });
                     //createResourceTasks.Add(createSignalrR);
 
+                    // todo: debug
                     argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsignalrautosvcxxx7771346sr.service.signalr.net;AccessKey=ncPRZAXZGR3GsNIPONOX2Q353VJrsTTW6OxrDQ5q0pM=;";
 
                     Task.WhenAll(createResourceTasks).Wait();
@@ -111,11 +113,14 @@ namespace JenkinsScript
                             {
                                 foreach (var scenario in jobConfig.ScenarioList)
                                 {
-                                    var connectionBase = jobConfig.ConnectionBase[indType];
-                                    var connectionIncreaseStep = jobConfig.ConnectionIncreaseStep[indType];
+                                    var propName = scenario.First().ToString().ToUpper() + scenario.Substring(1); ;
+                                    var connectionBase = (jobConfig.ConnectionBase.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionBase) as List<int>)[indType];
+                                    var connectionIncreaseStep = (jobConfig.ConnectionIncreaseStep.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionIncreaseStep) as List<int>)[indType];
+                                    //var connectionBase = jobConfig.ConnectionBase.[indType];
+                                    //var connectionIncreaseStep = jobConfig.ConnectionIncreaseStep[indType];
 
-                                    //for (var connection = connectionBase; ; connection += connectionIncreaseStep)
                                     // TODO: debug
+                                    //for (var connection = connectionBase; ; connection += connectionIncreaseStep)
                                     for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
                                     {
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);

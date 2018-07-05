@@ -1,4 +1,5 @@
-﻿using JenkinsScript.Config.MixConfigs;
+﻿using JenkinsScript.Config.FinerConfigs;
+using JenkinsScript.FinerConfigs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,8 +24,8 @@ namespace JenkinsScript
 
         // list 
         public List<string> SignalrUnit { get; set; }
-        public List<int> ConnectionIncreaseStep { get; set; }
-        public List<int> ConnectionBase { get; set; }
+        public ConnectionIncreaseStepConfig ConnectionIncreaseStep { get; set; }
+        public ConnectionBaseConfig ConnectionBase { get; set; }
         public MixConfig Mix { get; set; }
         public GroupConfig Group { get; set; }
     }

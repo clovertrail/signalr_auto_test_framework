@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JenkinsScript.Config.MixConfigs
+namespace JenkinsScript.Config.FinerConfigs
 {
     public class MixCellConfig
     {
