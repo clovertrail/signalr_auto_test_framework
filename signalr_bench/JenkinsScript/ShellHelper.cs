@@ -218,7 +218,7 @@ namespace JenkinsScript
 
             cmd += $"dotnet run -- " +
                 $"--rpcPort 5555 " +
-                $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl '{serverUrl}' --pipeLine '{string.Join(";", pipeLine)}' " +
+                $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5000/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
                 $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
                 $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' --slaveList '{slaveList}' " +
                 $"-o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}{connection}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
