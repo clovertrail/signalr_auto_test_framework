@@ -18,7 +18,7 @@ namespace JenkinsScript
             // parse agent config file
             AgentConfig agentConfig = new AgentConfig();
             JobConfig jobConfig = new JobConfig();
-            List<string> hosts = new List<string>();
+            //List<string> hosts = new List<string>();
 
             if (argsOption.AgentConfigFile != null && argsOption.JobConfigFile != null)
             {
@@ -27,10 +27,10 @@ namespace JenkinsScript
                 jobConfig = configLoader.Load<JobConfig>(argsOption.JobConfigFile);
                 Util.Log("finish loading config");
 
-                hosts = new List<string>();
-                hosts.Add(agentConfig.AppServer);
-                agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
-                hosts.Add(agentConfig.Master);
+                //hosts = new List<string>();
+                //hosts.Add(agentConfig.AppServer);
+                //agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
+                //hosts.Add(agentConfig.Master);
             }
             
 
@@ -41,15 +41,15 @@ namespace JenkinsScript
 
             switch (argsOption.Step)
             {
-                case "KillAllDotnet":
-                    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
-                    break;
-                case "CloneRepo":
-                    (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
-                    break;
-                case "StartAppServer":
-                    (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
-                    break;
+                //case "KillAllDotnet":
+                //    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
+                //    break;
+                //case "CloneRepo":
+                //    (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
+                //    break;
+                //case "StartAppServer":
+                //    (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
+                //    break;
                 case "StartRpcServer":
                     (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
                     break;
@@ -88,6 +88,10 @@ namespace JenkinsScript
                         agentConfig.Slaves.Add(vmBuilder.SlaveDomainName(i));
                     }
 
+                    var hosts = new List<string>();
+                    hosts.Add(agentConfig.AppServer);
+                    agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
+                    hosts.Add(agentConfig.Master);
 
                     (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                     (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
