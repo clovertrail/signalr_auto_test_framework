@@ -186,7 +186,7 @@ namespace JenkinsScript
         }
 
         public static (int, string) StartRpcMaster(AgentConfig agentConfig, 
-            ArgsOption argsOption, string serviceType, string transportType, string hubProtocol, string scenario,
+            ArgsOption argsOption, string serviceType, bool isSelfHost, string transportType, string hubProtocol, string scenario,
             int connection, int duration, int interval, string pipeLine, BenchmarkVmBuilder vmCreator)
         {
             Util.Log($"service type: {serviceType}, transport type: {transportType}, hub protocol: {hubProtocol}, scenario: {scenario}");
@@ -288,7 +288,7 @@ namespace JenkinsScript
             return (errCode, result);
         }
 
-        public static (int, string) CreateSignalrService(ArgsOption argsOption)
+        public static (int, string) CreateSignalrService(ArgsOption argsOption, int unitCount)
         {
             var errCode = 0;
             var result = "";
@@ -320,7 +320,7 @@ namespace JenkinsScript
             
 
             //create signalr service
-            cmd = $"az signalr create --name {srName} --resource-group {groupName}  --sku {config.Sku} --unit-count {config.UnitCount} --query hostName -o tsv";
+            cmd = $"az signalr create --name {srName} --resource-group {groupName}  --sku {config.Sku} --unit-count {unitCount} --query hostName -o tsv";
             Util.Log($"CMD: signalr service: {cmd}");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 

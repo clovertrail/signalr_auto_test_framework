@@ -55,7 +55,7 @@ namespace JenkinsScript
                     (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
                     break;
                 case "CreateSignalr":
-                    (errCode, result) = ShellHelper.CreateSignalrService(argsOption);
+                    (errCode, result) = ShellHelper.CreateSignalrService(argsOption, 10);
                     break;
                 case "DeleteSignalr":
                     (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
@@ -75,14 +75,8 @@ namespace JenkinsScript
                     createResourceTasks.Add(vmBuilder.CreateAppServerVm());
                     createResourceTasks.Add(vmBuilder.CreateAgentVms());
 
-                    //var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption); });
-                    //createResourceTasks.Add(createSignalrR);
-
-                    // todo: debug
-                    argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsignalrautosvcxxx7771346sr.service.signalr.net;AccessKey=ncPRZAXZGR3GsNIPONOX2Q353VJrsTTW6OxrDQ5q0pM=;";
-
+                    
                     Task.WhenAll(createResourceTasks).Wait();
-                    Util.Log($"signalr connection string {argsOption.AzureSignalrConnectionString}");
 
                     agentConfig.AppServer = vmBuilder.AppSvrDomainName();
                     agentConfig.Slaves = new List<string>();
@@ -101,27 +95,37 @@ namespace JenkinsScript
 
 
                     var types = jobConfig.ServiceTypeList;
+                    var isSelfHost = true;
                     if (jobConfig.ServiceTypeList == null || jobConfig.ServiceTypeList.Count == 0)
+                    {
                         types = jobConfig.SignalrUnit;
+                        isSelfHost = false;
+                    }
 
                     int indType = 0;
                     foreach (var serviceType in types)
                     {
+                        //var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, ??); });
+                        //Task.WhenAll(createSignalrR).Wait();
+
+                        // todo: debug
+                        argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsignalrautosvcxxx7771346sr.service.signalr.net;AccessKey=ncPRZAXZGR3GsNIPONOX2Q353VJrsTTW6OxrDQ5q0pM=;";
+
                         foreach (var transportType in jobConfig.TransportTypeList)
                         {
                             foreach (var hubProtocol in jobConfig.HubProtocolList)
                             {
                                 foreach (var scenario in jobConfig.ScenarioList)
                                 {
-                                    var propName = scenario.First().ToString().ToUpper() + scenario.Substring(1); ;
+                                    var propName = scenario.First().ToString().ToUpper() + scenario.Substring(1); 
                                     var connectionBase = (jobConfig.ConnectionBase.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionBase) as List<int>)[indType];
                                     var connectionIncreaseStep = (jobConfig.ConnectionIncreaseStep.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionIncreaseStep) as List<int>)[indType];
                                     //var connectionBase = jobConfig.ConnectionBase.[indType];
                                     //var connectionIncreaseStep = jobConfig.ConnectionIncreaseStep[indType];
 
                                     // TODO: debug
-                                    //for (var connection = connectionBase; ; connection += connectionIncreaseStep)
-                                    for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
+                                    for (var connection = connectionBase; ; connection += connectionIncreaseStep)
+                                    //for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
                                     {
                                         Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
@@ -130,7 +134,7 @@ namespace JenkinsScript
                                         (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
                                         Task.Delay(20000).Wait();
                                         (errCode, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
-                                            serviceType, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
+                                            serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                             jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
                                         if (errCode != 0) break;
                                         (errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig,
