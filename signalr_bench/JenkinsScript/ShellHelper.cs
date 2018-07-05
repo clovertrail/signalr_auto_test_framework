@@ -291,7 +291,11 @@ namespace JenkinsScript
 
             var groupName = config.BaseName + "Group";
             var srName = config.BaseName + SrRndNum + "SR";
-
+            
+            cmd = $"  az extension add -n signalr";
+            Util.Log($"CMD: signalr service: {cmd}");
+            (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
+            
             // create resource group
             cmd = $"  az group create --name {groupName} --location {config.Location}";
             Util.Log($"CMD: signalr service: {cmd}");
