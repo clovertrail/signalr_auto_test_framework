@@ -139,8 +139,8 @@ namespace JenkinsScript
                                             serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                             jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
                                         if (errCode != 0) break;
-                                        (errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig,
-                                            serviceType, transportType, hubProtocol, scenario, connection);
+                                        //(errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig,
+                                        //    serviceType, transportType, hubProtocol, scenario, connection);
                                     }
                                 }
                             }
@@ -148,7 +148,7 @@ namespace JenkinsScript
                         indType++;
                         (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
                     }
-                    (errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
+                    //(errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
 
                     azureManager.DeleteResourceGroup(vmBuilder.GroupName);
                     azureManager.DeleteResourceGroup(vmBuilder.AppSvrGroupName);
