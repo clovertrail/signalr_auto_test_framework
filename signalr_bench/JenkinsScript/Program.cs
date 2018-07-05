@@ -105,11 +105,13 @@ namespace JenkinsScript
                     int indType = 0;
                     foreach (var serviceType in types)
                     {
-                        //var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, ??); });
-                        //Task.WhenAll(createSignalrR).Wait();
+                        var unit = 1;
+                        unit = Convert.ToInt32(serviceType.Substring(4));
+                        var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
+                        Task.WhenAll(createSignalrR).Wait();
 
                         // todo: debug
-                        argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsignalrautosvcxxx7771346sr.service.signalr.net;AccessKey=ncPRZAXZGR3GsNIPONOX2Q353VJrsTTW6OxrDQ5q0pM=;";
+                        //argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsignalrautosvcxxx7771346sr.service.signalr.net;AccessKey=ncPRZAXZGR3GsNIPONOX2Q353VJrsTTW6OxrDQ5q0pM=;";
 
                         foreach (var transportType in jobConfig.TransportTypeList)
                         {
@@ -147,9 +149,9 @@ namespace JenkinsScript
                     }
                     (errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
 
-                    //(errCode, result) = ShellHelper.DeleteSignalr(argsOption);
-                    //azureManager.DeleteResourceGroup(vmBuilder.GroupName);
-                    //azureManager.DeleteResourceGroup(vmBuilder.AppSvrGroupName);
+                    (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
+                    azureManager.DeleteResourceGroup(vmBuilder.GroupName);
+                    azureManager.DeleteResourceGroup(vmBuilder.AppSvrGroupName);
                     break;
             }
 
