@@ -27,7 +27,7 @@ namespace JenkinsScript
             _agentConfig = agentConfig;
 
             var rnd = new Random();
-            _rndNum = Convert.ToString(rnd.Next(0, 100000) * rnd.Next(0, 100000));
+            _rndNum = Convert.ToString(rnd.Next(0, 100000) * rnd.Next(0, 10000));
 
         }
 
@@ -49,7 +49,7 @@ namespace JenkinsScript
             vmTemp.Create();
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
-            ModifyLimit(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
+            ModifyLimitAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
             InstallDotnetAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
             ModifySshdAndRestart(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
         }
@@ -109,7 +109,7 @@ namespace JenkinsScript
             var modifyLimitTasks = new List<Task>();
             for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
-                modifyLimitTasks.Add(ModifyLimit(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
+                modifyLimitTasks.Add(ModifyLimitAsync(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
             }
             Task.WhenAll(modifyLimitTasks).Wait();
 
@@ -146,7 +146,7 @@ namespace JenkinsScript
 
         public IResourceGroup CreateResourceGroup(string groupName)
         {
-            Console.WriteLine("Creating resource group...");
+            Console.WriteLine($"Creating resource group: {groupName}");
             if (_azure.ResourceGroups.Contain(groupName))
             {
                 Console.WriteLine($"Resource group {groupName} existed");
@@ -189,7 +189,7 @@ namespace JenkinsScript
 
         public Task<INetworkSecurityGroup> CreateNetworkSecurityGroupAsync(string nsgBase, Region location, string groupName, int sshPort, int i=0)
         {
-            Console.WriteLine($"Creating network security group...");
+            Console.WriteLine($"Creating {i}th network security group in resource group {groupName}");
             return _azure.NetworkSecurityGroups.Define(nsgBase + Convert.ToString(i))
                 .WithRegion(location)
                 .WithExistingResourceGroup(groupName)
@@ -234,7 +234,7 @@ namespace JenkinsScript
 
         public Task<INetworkInterface> CreateNetworkInterfaceAsync(string nicBase, Region location, string groupName, string subNet,  INetwork network, IPublicIPAddress publicIPAddress, INetworkSecurityGroup nsg, int i = 0)
         {
-            Console.WriteLine("Creating network interface...");
+            Console.WriteLine($"Creating {i}th network interface in resource group {groupName}");
             return _azure.NetworkInterfaces.Define(nicBase + Convert.ToString(i))
                 .WithRegion(location)
                 .WithExistingResourceGroup(groupName)
@@ -248,7 +248,7 @@ namespace JenkinsScript
 
         public Task<IWithCreate> GenerateVmTemplateAsync(string vmNameBase, Region location, string groupName, string user, string password, string ssh, VirtualMachineSizeTypes vmSize, INetworkInterface networkInterface, IAvailabilitySet availabilitySet = null, int i = 0)
         {
-            Console.WriteLine($"Create Vm Teamlate");
+            Console.WriteLine($"Create Vm Teamlate: {vmNameBase + Convert.ToString(i)}");
             var option = _azure.VirtualMachines.Define(vmNameBase + Convert.ToString(i))
                     .WithRegion(location)
                     .WithExistingResourceGroup(groupName)
@@ -268,7 +268,7 @@ namespace JenkinsScript
             return Task.FromResult(vm);
         }
 
-        public Task ModifyLimit(string domain, string user, string password, int i = 0)
+        public Task ModifyLimitAsync(string domain, string user, string password, int i = 0)
         {
             return Task.Run(() =>
             {
@@ -280,16 +280,16 @@ namespace JenkinsScript
 
                 //var domain = SlaveDomainName(i);
 
-                cmd = $"echo '{password}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak";
+                cmd = $"echo '{password}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-                cmd = $"cp /etc/security/limits.conf ~/limits.conf";
+                cmd = $"cp /etc/security/limits.conf ~/limits.conf; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-                cmd = $"echo 'wanl    soft    nofile  655350\n' >> ~/limits.conf";
+                cmd = $"echo 'wanl    soft    nofile  655350\n' >> ~/limits.conf; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-                cmd = $"echo '{password}' | sudo -S mv ~/limits.conf /etc/security/limits.conf";
+                cmd = $"echo '{password}' | sudo -S mv ~/limits.conf /etc/security/limits.conf; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
             });
@@ -306,19 +306,19 @@ namespace JenkinsScript
                 var cmd = "";
                 var port = 22;
 
-                cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb";
+                cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
 
-                cmd = $"sudo dpkg -i packages-microsoft-prod.deb";
+                cmd = $"sudo dpkg -i packages-microsoft-prod.deb; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
 
-                cmd = $"sudo apt-get -y install apt-transport-https";
+                cmd = $"sudo apt-get -y install apt-transport-https; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
 
-                cmd = $"sudo apt-get update";
+                cmd = $"sudo apt-get update; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
 
-                cmd = $"sudo apt-get -y install dotnet-sdk-2.1";
+                cmd = $"sudo apt-get -y install dotnet-sdk-2.1; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
             });
             
@@ -335,13 +335,13 @@ namespace JenkinsScript
                 var res = "";
                 var cmd = "";
 
-                cmd = $"echo '{password}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak";
+                cmd = $"echo '{password}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-                cmd = $"echo '{password}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config";
+                cmd = $"echo '{password}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-                cmd = $"echo '{password}' | sudo -S service sshd restart";
+                cmd = $"echo '{password}' | sudo -S service sshd restart; logout;";
                 (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
             });
