@@ -27,10 +27,10 @@ namespace JenkinsScript
                 jobConfig = configLoader.Load<JobConfig>(argsOption.JobConfigFile);
                 Util.Log("finish loading config");
 
-                //hosts = new List<string>();
-                //hosts.Add(agentConfig.AppServer);
-                //agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
-                //hosts.Add(agentConfig.Master);
+                hosts = new List<string>();
+                hosts.Add(agentConfig.AppServer);
+                agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
+                hosts.Add(agentConfig.Master);
             }
             
 
@@ -80,7 +80,14 @@ namespace JenkinsScript
 
                     Task.WhenAll(createResourceTasks).Wait();
                     Util.Log($"signalr connection string {argsOption.AzureSignalrConnectionString}");
+
                     agentConfig.AppServer = vmBuilder.AppSvrDomainName();
+                    agentConfig.Slaves = new List<string>();
+                    for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                    {
+                        agentConfig.Slaves.Add(vmBuilder.SlaveDomainName(i));
+                    }
+
 
                     (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                     (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
@@ -109,9 +116,9 @@ namespace JenkinsScript
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                                         (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                                         Task.Delay(5000).Wait();
-                                        (errCode, result) = ShellHelper.StartRpcSlaves(hosts, agentConfig, argsOption);
+                                        (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
                                         Task.Delay(20000).Wait();
-                                        (errCode, result) = ShellHelper.StartRpcMaster(hosts, agentConfig, argsOption,
+                                        (errCode, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
                                             serviceType, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                             jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
                                         if (errCode != 0) break;

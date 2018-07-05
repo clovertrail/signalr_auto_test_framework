@@ -41,6 +41,13 @@ var labels = [
 ];
 
 
+function getXLabel(counters) {
+    var xLabels = [];
+    counters.forEach((counter) => {
+        xLabels.push(parseTime(counter['Time']));
+    });
+    return xLabels;
+}
 
 function createPieChart(results) {
     // pie charts
@@ -64,7 +71,7 @@ function createPieChart(results) {
                 },
                 title: {
                     display: true,
-                    text: 'Latency Distribution'
+                    text: 'Total Latency Distribution'
                 }
 
             }
@@ -107,7 +114,7 @@ function createLatencyLineChart(results) {
                 },
                 title: {
                     display: true,
-                    text: 'Latency Distribution'
+                    text: 'Latency Distribution In Time'
                 },
                 //- maintainAspectRatio: false,
                 //- spanGaps: false,
@@ -136,10 +143,8 @@ function createLatencyLineChart(results) {
             }
         };
 
-        var xLabels = [];
-        counters.forEach((counter) => {
-            xLabels.push(counter['Time']);
-        });
+        var xLabels = getXLabel(counters);
+        
 
         var lines = {};
         var percentageLines = {};
@@ -198,10 +203,7 @@ function createMessageRateLineChart(results) {
     for (var scenario in results) {
         var counters = results[scenario];
 
-        var xLabels = [];
-        counters.forEach((counter) => {
-            xLabels.push(counter['Time']);
-        });
+        var xLabels = getXLabel(counters);
 
         var lines = {};
         var messageRateLines = { "message:sent": [], "message:received": [] };
@@ -238,7 +240,7 @@ function createMessageRateLineChart(results) {
                 },
                 title: {
                     display: true,
-                    text: 'Message Rate'
+                    text: 'Message Rate In Time'
                 },
                 elements: {
                     line: {

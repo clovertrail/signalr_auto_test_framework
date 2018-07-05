@@ -160,7 +160,7 @@ namespace JenkinsScript
 
         }
 
-        public static (int, string) StartRpcSlaves(List<string> hosts, AgentConfig agentConfig, ArgsOption argsOption)
+        public static (int, string) StartRpcSlaves(AgentConfig agentConfig, ArgsOption argsOption)
         {
             var errCode = 0;
             var result = "";
@@ -185,7 +185,7 @@ namespace JenkinsScript
 
         }
 
-        public static (int, string) StartRpcMaster(List<string> hosts, AgentConfig agentConfig, 
+        public static (int, string) StartRpcMaster(AgentConfig agentConfig, 
             ArgsOption argsOption, string serviceType, string transportType, string hubProtocol, string scenario,
             int connection, int duration, int interval, string pipeLine, BenchmarkVmBuilder vmCreator)
         {
@@ -198,10 +198,10 @@ namespace JenkinsScript
             var bench_codec_list = hubProtocol;
             var bench_name_list = scenario;
             var slaveList = "";
-            for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+            for (var i = 0; i < agentConfig.Slaves.Count; i++)
             {
-                slaveList += vmCreator.SlaveDomainName(i);
-                if (i < agentConfig.SlaveVmCount - 1)
+                slaveList += agentConfig.Slaves[i];
+                if (i < agentConfig.Slaves.Count - 1)
                     slaveList += ";";
             }
 
