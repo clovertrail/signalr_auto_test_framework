@@ -59,11 +59,23 @@ namespace JenkinsScript
             return (errCode, result);
         }
 
-        public static (int, string) RemoteBash(string user, string host, int port, string password, string cmd, bool wait = true, bool handleRes = false)
+        public static (int, string) RemoteBash(string user, string host, int port, string password, string cmd, bool wait = true, bool handleRes = false, int retry = 0)
         {
-            if (host.IndexOf("localhost") >= 0 || host.IndexOf("127.0.0.1") >= 0) return Bash(cmd, wait);
-            string sshPassCmd = $"sshpass -p {password} ssh -p {port} -o StrictHostKeyChecking=no {user}@{host} \"{cmd}\"";
-            return Bash(sshPassCmd, wait: wait, handleRes: handleRes);
+
+            int errCode = 0;
+            string result = "";
+            for (var i = 0; i < retry; i++)
+            {
+                if (host.IndexOf("localhost") >= 0 || host.IndexOf("127.0.0.1") >= 0) return Bash(cmd, wait);
+                string sshPassCmd = $"sshpass -p {password} ssh -p {port} -o StrictHostKeyChecking=no {user}@{host} \"{cmd}\"";
+                (errCode, result) = Bash(sshPassCmd, wait: wait, handleRes: retry > 0 && i < retry - 1? false: handleRes);
+                if (errCode == 0) break;
+                Util.Log($"retry {i+1}th time");
+                Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+            }
+
+
+            return (errCode, result);
         }
 
         public static (int, string) KillAllDotnetProcess(List<string> hosts, AgentConfig agentConfig)

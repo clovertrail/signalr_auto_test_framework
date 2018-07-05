@@ -49,6 +49,7 @@ namespace JenkinsScript
             vmTemp.Create();
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
+            Task.Delay(TimeSpan.FromSeconds(30)).Wait();
             ModifyLimitAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
             InstallDotnetAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
             ModifySshdAndRestart(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
@@ -106,6 +107,7 @@ namespace JenkinsScript
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
 
             Console.WriteLine($"Setuping vms");
+            Task.Delay(TimeSpan.FromSeconds(30)).Wait();
             var modifyLimitTasks = new List<Task>();
             for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
@@ -280,17 +282,17 @@ namespace JenkinsScript
 
                 //var domain = SlaveDomainName(i);
 
-                cmd = $"echo '{password}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"cp /etc/security/limits.conf ~/limits.conf; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"cp /etc/security/limits.conf ~/limits.conf";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"echo 'wanl    soft    nofile  655350\n' >> ~/limits.conf; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo 'wanl    soft    nofile  655350\n' >> ~/limits.conf";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"echo '{password}' | sudo -S mv ~/limits.conf /etc/security/limits.conf; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S mv ~/limits.conf /etc/security/limits.conf";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true, retry: 5);
 
             });
             
@@ -306,20 +308,20 @@ namespace JenkinsScript
                 var cmd = "";
                 var port = 22;
 
-                cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"sudo dpkg -i packages-microsoft-prod.deb; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"sudo dpkg -i packages-microsoft-prod.deb";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"sudo apt-get -y install apt-transport-https; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"sudo apt-get -y install apt-transport-https";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"sudo apt-get update; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"sudo apt-get update";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"sudo apt-get -y install dotnet-sdk-2.1; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"sudo apt-get -y install dotnet-sdk-2.1";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true, retry: 5);
             });
             
 
@@ -335,14 +337,14 @@ namespace JenkinsScript
                 var res = "";
                 var cmd = "";
 
-                cmd = $"echo '{password}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"echo '{password}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true, retry: 5);
 
-                cmd = $"echo '{password}' | sudo -S service sshd restart; logout;";
-                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S service sshd restart";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true, retry: 5);
 
             });
         }
