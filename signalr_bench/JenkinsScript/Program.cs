@@ -74,10 +74,10 @@ namespace JenkinsScript
                     createResourceTasks.Add(vmBuilder.CreateAppServerVm());
                     createResourceTasks.Add(vmBuilder.CreateAgentVms());
 
-                    var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption); });
-                    createResourceTasks.Add(createSignalrR);
+                    //var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption); });
+                    //createResourceTasks.Add(createSignalrR);
 
-                    //argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsignalrautosvcxxx12292560sr.service.signalr.net;AccessKey=kNUsTkP+p78qqlHiaaJwW4JI1fehiuz6gIiRo1LB2lw=;";
+                    argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsignalrautosvcxxx7771346sr.service.signalr.net;AccessKey=ncPRZAXZGR3GsNIPONOX2Q353VJrsTTW6OxrDQ5q0pM=;";
 
                     Task.WhenAll(createResourceTasks).Wait();
                     Util.Log($"signalr connection string {argsOption.AzureSignalrConnectionString}");
