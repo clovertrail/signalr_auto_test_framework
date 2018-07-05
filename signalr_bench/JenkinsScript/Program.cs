@@ -137,7 +137,8 @@ namespace JenkinsScript
                     (errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
 
                     (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
-                    azureManager.DeleteResourceGroup(vmBuilder.GroupName);
+                    //azureManager.DeleteResourceGroup(vmBuilder.GroupName);
+                    //azureManager.DeleteResourceGroup(vmBuilder.AppSvrGroupName);
                     break;
             }
 

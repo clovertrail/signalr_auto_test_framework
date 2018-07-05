@@ -289,3 +289,28 @@ function createMessageRateLineChart(results) {
 
     }
 }
+
+function createLatencyDistributionTable(counters) {
+    
+    var headCell = name => `<th scope="col"> ${name} </th>`;
+    var headCol = "";
+    headCol += headCell("Latency");
+    labels.forEach(l => headCol += headCell(l.split(":").slice(-1)[0]));
+    
+    var rowCell = val => `<td>${val}</td>`; 
+    var row = "";
+    row += rowCell("%");
+    var lastLine =  counters[counters.length - 1]["Counters"];
+    var sum = 0;
+    console.log("lastLine", lastLine);
+    labels.forEach(l => sum += lastLine[l] || 0);
+    console.log("sum", sum);
+    var percentageLine = labels.map(l => (lastLine[l] || 0) / sum * 100);
+    percentageLine.forEach(l => row += rowCell(Number.parseFloat(l).toFixed(1)));
+    var rows = `<tr>${row}</tr>`;
+
+    var head = `<thead class="thead-striped"><tr>${headCol}</tr></thead>`;
+    var body = `<tbody>${rows}</tbody>`;
+    var table = `<table class="table">${head}${body}</table>`;
+    return table;
+}

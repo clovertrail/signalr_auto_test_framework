@@ -31,7 +31,8 @@ block content
           var tabName = parseScenarioLabel(scenario);
           $("#tab").append(`<li class="${active}"><a data-toggle="tab" href="#${scenario}-content" id="${scenario}-navitem">${tabName}</a></li>`);
           $("#tab-content").append(`<div id="${scenario}-content" class="tab-pane fade ${contentActive}">`);
-          $(`#${scenario}-content`).append(`<div id="canvas-holder-${scenario}" style='width:60%; position: absolute'></div>`);
+          $(`#${scenario}-content`).append(`<div id="canvas-holder-${scenario}" style='width:40%; position: absolute'></div>`);
+          $(`#canvas-holder-${scenario}`).append(createLatencyDistributionTable(results[scenario]));
           $(`#canvas-holder-${scenario}`).append(`<canvas id="chart-area-${scenario}-pie"></canvas>`);
           $(`#canvas-holder-${scenario}`).append(`<canvas id="chart-area-${scenario}-line-percentage"></canvas>`);
           $(`#canvas-holder-${scenario}`).append(`<canvas id="chart-area-${scenario}-line-messageRate"></canvas>`);
