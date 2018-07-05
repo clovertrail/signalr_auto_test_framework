@@ -27,10 +27,10 @@ namespace JenkinsScript
                 jobConfig = configLoader.Load<JobConfig>(argsOption.JobConfigFile);
                 Util.Log("finish loading config");
 
-                hosts = new List<string>();
-                hosts.Add(agentConfig.AppServer);
-                agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
-                hosts.Add(agentConfig.Master);
+                //hosts = new List<string>();
+                //hosts.Add(agentConfig.AppServer);
+                //agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
+                //hosts.Add(agentConfig.Master);
             }
             
 
@@ -60,13 +60,25 @@ namespace JenkinsScript
                     (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
                     break;
                 case "CreateAllAgentVMs":
-                    vmBuilder.CreateAgentVms();
+                    vmBuilder.CreateAgentVmsCore();
                     break;
                 case "DeleteAllAgentVMs":
                     azureManager.DeleteResourceGroup(vmBuilder.GroupName);
                     break;
+                case "CreateAppServerVm":
+                    vmBuilder.CreateAppServerVmCore();
+                    break;
                 case "All": 
                 default:
+                    (errCode, result) = ShellHelper.CreateSignalrService(argsOption);
+                    argsOption.AzureSignalrConnectionString = result;
+
+                    var createVmTasks = new List<Task>();
+                    createVmTasks.Add(vmBuilder.CreateAgentVms());
+                    createVmTasks.Add(vmBuilder.CreateAppServerVm());
+
+                    Task.WhenAll(createVmTasks).Wait();
+
                     (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                     (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
 
@@ -88,6 +100,7 @@ namespace JenkinsScript
                                     var connectionIncreaseStep = jobConfig.ConnectionIncreaseStep[indType];
 
                                     //for (var connection = connectionBase; ; connection += connectionIncreaseStep)
+                                    // TODO: debug
                                     for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
                                     {
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
@@ -97,19 +110,20 @@ namespace JenkinsScript
                                         Task.Delay(20000).Wait();
                                         (errCode, result) = ShellHelper.StartRpcMaster(hosts, agentConfig, argsOption,
                                             serviceType, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
-                                            jobConfig.Interval, jobConfig.ServerUrl, string.Join(";", jobConfig.Pipeline));
+                                            jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
                                         if (errCode != 0) break;
                                         (errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig,
                                             serviceType, transportType, hubProtocol, scenario, connection);
                                     }
-
-                                    
                                 }
                             }
                         }
                         indType++;
                     }
                     (errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
+
+                    (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
+                    azureManager.DeleteResourceGroup(vmBuilder.GroupName);
                     break;
             }
 

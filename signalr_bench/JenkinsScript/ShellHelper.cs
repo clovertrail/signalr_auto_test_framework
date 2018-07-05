@@ -62,7 +62,7 @@ namespace JenkinsScript
         public static (int, string) RemoteBash(string user, string host, int port, string password, string cmd, bool wait = true, bool handleRes = false)
         {
             if (host.IndexOf("localhost") >= 0 || host.IndexOf("127.0.0.1") >= 0) return Bash(cmd, wait);
-            string sshPassCmd = $"ssh -p {port} -o StrictHostKeyChecking=no {user}@{host} \"{cmd}\"";
+            string sshPassCmd = $"sshpass -p {password} ssh -p {port} -o StrictHostKeyChecking=no {user}@{host} \"{cmd}\"";
             return Bash(sshPassCmd, wait: wait, handleRes: handleRes);
         }
 
@@ -170,7 +170,7 @@ namespace JenkinsScript
 
         public static (int, string) StartRpcMaster(List<string> hosts, AgentConfig agentConfig, 
             ArgsOption argsOption, string serviceType, string transportType, string hubProtocol, string scenario,
-            int connection, int duration, int interval, string serverUrl, string pipeLine)
+            int connection, int duration, int interval, string pipeLine, BenchmarkVmBuilder vmCreator)
         {
             Util.Log($"service type: {serviceType}, transport type: {transportType}, hub protocol: {hubProtocol}, scenario: {scenario}");
             var errCode = 0;
@@ -180,6 +180,15 @@ namespace JenkinsScript
             var bench_type_list = serviceType;
             var bench_codec_list = hubProtocol;
             var bench_name_list = scenario;
+            var slaveList = "";
+            for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+            {
+                slaveList += vmCreator.SlaveDomainName(i);
+                if (i < agentConfig.SlaveVmCount - 1)
+                    slaveList += ";";
+            }
+
+            var serverUrl = vmCreator.AppSvrDomainName();
 
             cmd += $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; ";
 
@@ -194,7 +203,7 @@ namespace JenkinsScript
                 $"--rpcPort 5555 " +
                 $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl '{serverUrl}' --pipeLine '{string.Join(";", pipeLine)}' " +
                 $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
-                $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' --slaveList '{string.Join(";", agentConfig.Slaves)}' " +
+                $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' --slaveList '{slaveList}' " +
                 $"-o '/home/{agentConfig.User}/signalr-bench/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}{connection}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
 
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
@@ -310,7 +319,7 @@ namespace JenkinsScript
             var connectionString = $"Endpoint=https://{signalrHostName};AccessKey={signalrPrimaryKey};";
             Console.WriteLine($"connection string: {connectionString}");
             ShellHelper.Bash($"export AzureSignalRConnectionString='{connectionString}'", handleRes: true);
-            return (errCode, result);
+            return (errCode, connectionString);
         }
 
         public static (int, string) DeleteSignalr(ArgsOption args)

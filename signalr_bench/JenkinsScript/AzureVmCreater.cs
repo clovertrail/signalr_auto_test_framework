@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core.ResourceActions;
+using System.Diagnostics;
 
 namespace JenkinsScript
 {
@@ -30,17 +31,38 @@ namespace JenkinsScript
 
         }
 
-
-        public void CreateAppServerVm()
+        public Task CreateAppServerVm()
         {
+            return Task.Run(() => CreateAppServerVmCore());
+        }
+
+        public void CreateAppServerVmCore()
+        {
+            var sw = new Stopwatch();
+            sw.Start();
             var resourceGroup = CreateResourceGroup();
             var vnet = CreateVirtualNetwork(AppSvrVnet, Location, GroupName, AppSvrSubNet);
             var publicIp = CreatePublicIpAsync(AppSvrPublicIpBase, Location, GroupName, AppSvrPublicDnsBase).GetAwaiter().GetResult();
             var nsg = CreateNetworkSecurityGroupAsync(AppSvrNsgBase, Location, GroupName, _agentConfig.SshPort).GetAwaiter().GetResult();
+            var nic = CreateNetworkInterfaceAsync(AppSvrNicBase, Location, GroupName, AppSvrSubNet, vnet, publicIp, nsg).GetAwaiter().GetResult();
+            var vmTemp = GenerateVmTemplateAsync(AppSvrVmNameBase, Location, GroupName, _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord, _agentConfig.Ssh, AppSvrVmSize, nic).GetAwaiter().GetResult();
+            vmTemp.Create();
+            sw.Stop();
+            Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
+            ModifyLimit(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord);
+            InstallDotnetAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord);
+            ModifySshdAndRestart(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord);
+        }
+        public Task CreateAgentVms()
+        {
+            return Task.Run(() => CreateAgentVmsCore());
         }
 
-        public void CreateAgentVms()
+        public void CreateAgentVmsCore()
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             var resourceGroup = CreateResourceGroup();
             var avSet = CreateAvailabilitySet(AVSet, Location, GroupName);
             var vNet = CreateVirtualNetwork(VNet, Location, GroupName, SubNet);
@@ -64,14 +86,14 @@ namespace JenkinsScript
             var nicTasks = new List<Task<INetworkInterface>>();
             for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
-                nicTasks.Add(CreateNetworkInterface(NicBase, Location, GroupName, SubNet, i, vNet, publicIps[i], nsgs[i]));
+                nicTasks.Add(CreateNetworkInterfaceAsync(NicBase, Location, GroupName, SubNet, vNet, publicIps[i], nsgs[i], i));
             }
             var nics = Task.WhenAll(nicTasks).GetAwaiter().GetResult();
 
             var vmTasks = new List<Task<IWithCreate>>();
             for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
-                vmTasks.Add(GenerateVmTempplate(VmNameBase, Location, GroupName, _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, _agentConfig.Ssh, VmSize, i, nics[i], avSet));
+                vmTasks.Add(GenerateVmTemplateAsync(VmNameBase, Location, GroupName, _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, _agentConfig.Ssh, SlaveVmSize, nics[i], avSet, i));
             }
 
             var vms = Task.WhenAll(vmTasks).GetAwaiter().GetResult();
@@ -79,6 +101,9 @@ namespace JenkinsScript
 
             Console.WriteLine($"creating vms");
             var virtualMachines = _azure.VirtualMachines.Create(creatableVirtualMachines.ToArray());
+
+            sw.Stop();
+            Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
 
             Console.WriteLine($"Setuping vms");
             var modifyLimitTasks = new List<Task>();
@@ -91,7 +116,7 @@ namespace JenkinsScript
             var installDotnetTasks = new List<Task>();
             for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
-                installDotnetTasks.Add(InstallDotnet(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
+                installDotnetTasks.Add(InstallDotnetAsync(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
             }
             Task.WhenAll(installDotnetTasks).Wait();
 
@@ -122,11 +147,10 @@ namespace JenkinsScript
         public IResourceGroup CreateResourceGroup()
         {
             Console.WriteLine("Creating resource group...");
-            var rg = _azure.ResourceGroups.GetByName(GroupName);
-            if (rg != null)
+            if (_azure.ResourceGroups.Contain(GroupName))
             {
                 Console.WriteLine($"Resource group {GroupName} existed");
-                return rg;
+                return null;
             }
 
             return _azure.ResourceGroups.Define(GroupName)
@@ -208,7 +232,7 @@ namespace JenkinsScript
                 .CreateAsync();
         }
 
-        public Task<INetworkInterface> CreateNetworkInterface(string nicBase, Region location, string groupName, string subNet, int i,  INetwork network, IPublicIPAddress publicIPAddress, INetworkSecurityGroup nsg)
+        public Task<INetworkInterface> CreateNetworkInterfaceAsync(string nicBase, Region location, string groupName, string subNet,  INetwork network, IPublicIPAddress publicIPAddress, INetworkSecurityGroup nsg, int i = 0)
         {
             Console.WriteLine("Creating network interface...");
             return _azure.NetworkInterfaces.Define(nicBase + Convert.ToString(i))
@@ -222,9 +246,10 @@ namespace JenkinsScript
                 .CreateAsync();
         }
 
-        public Task<IWithCreate> GenerateVmTempplate(string vmNameBase, Region location, string groupName, string user, string password, string ssh, VirtualMachineSizeTypes vmSize, int i, INetworkInterface networkInterface, IAvailabilitySet availabilitySet)
+        public Task<IWithCreate> GenerateVmTemplateAsync(string vmNameBase, Region location, string groupName, string user, string password, string ssh, VirtualMachineSizeTypes vmSize, INetworkInterface networkInterface, IAvailabilitySet availabilitySet = null, int i = 0)
         {
-            var vm = _azure.VirtualMachines.Define(vmNameBase + Convert.ToString(i))
+            Console.WriteLine($"Create Vm Teamlate");
+            var option = _azure.VirtualMachines.Define(vmNameBase + Convert.ToString(i))
                     .WithRegion(location)
                     .WithExistingResourceGroup(groupName)
                     .WithExistingPrimaryNetworkInterface(networkInterface)
@@ -232,90 +257,107 @@ namespace JenkinsScript
                     .WithRootUsername(user)
                     .WithRootPassword(password)
                     .WithSsh(ssh)
-                    .WithComputerName(vmNameBase + Convert.ToString(i))
-                    .WithExistingAvailabilitySet(availabilitySet)
-                    .WithSize(vmSize);
+                    .WithComputerName(vmNameBase + Convert.ToString(i));
 
+            IWithCreate creator = null;
+            if (availabilitySet != null)
+                creator = option.WithExistingAvailabilitySet(availabilitySet);
+            else
+                creator = option;
+            var vm = creator.WithSize(vmSize);
             return Task.FromResult(vm);
         }
 
-        public Task ModifyLimit(string domain, string user, string password, int i)
+        public Task ModifyLimit(string domain, string user, string password, int i = 0)
         {
-            Console.WriteLine($"modify limits: {i}th");
+            return Task.Run(() =>
+            {
+                Console.WriteLine($"modify limits: {i}th");
 
-            var errCode = 0;
-            var res = "";
-            var cmd = "";
+                var errCode = 0;
+                var res = "";
+                var cmd = "";
 
-            //var domain = SlaveDomainName(i);
+                //var domain = SlaveDomainName(i);
 
-            cmd = $"echo '{password}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S cp /etc/security/limits.conf /etc/security/limits.conf.bak";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-            cmd = $"cp /etc/security/limits.conf ~/limits.conf";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"cp /etc/security/limits.conf ~/limits.conf";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-            cmd = $"echo 'wanl    soft    nofile  655350\n' >> ~/limits.conf";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo 'wanl    soft    nofile  655350\n' >> ~/limits.conf";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-            cmd = $"echo '{password}' | sudo -S mv ~/limits.conf /etc/security/limits.conf";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S mv ~/limits.conf /etc/security/limits.conf";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-            return Task.CompletedTask;
+            });
+            
         }
 
-        public Task InstallDotnet(string domain, string user, string password, int i)
+        public Task InstallDotnetAsync(string domain, string user, string password, int i = 0)
         {
-            Console.WriteLine($"install dotnet: {i}th");
-            var errCode = 0;
-            var res = "";
-            var cmd = "";
-            var port = 22;
+            return Task.Run(() =>
+            {
+                Console.WriteLine($"install dotnet: {i}th");
+                var errCode = 0;
+                var res = "";
+                var cmd = "";
+                var port = 22;
 
-            cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
 
-            cmd = $"sudo dpkg -i packages-microsoft-prod.deb";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"sudo dpkg -i packages-microsoft-prod.deb";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
 
-            cmd = $"sudo apt-get -y install apt-transport-https";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"sudo apt-get -y install apt-transport-https";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
 
-            cmd = $"sudo apt-get update";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"sudo apt-get update";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
 
-            cmd = $"sudo apt-get -y install dotnet-sdk-2.1";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+                cmd = $"sudo apt-get -y install dotnet-sdk-2.1";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, port, password, cmd, handleRes: true);
+            });
+            
 
-            return Task.CompletedTask;
         }
 
-        public Task ModifySshdAndRestart(string domain, string user, string password, int i)
+        public Task ModifySshdAndRestart(string domain, string user, string password, int i = 0)
         {
-            Console.WriteLine($"modify sshd_config: {i}th");
+            return Task.Run(() =>
+            {
+                Console.WriteLine($"modify sshd_config: {i}th");
 
-            var errCode = 0;
-            var res = "";
-            var cmd = "";
+                var errCode = 0;
+                var res = "";
+                var cmd = "";
 
-            cmd = $"echo '{password}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S cp   /etc/ssh/sshd_config  /etc/ssh/sshd_config.bak";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-            cmd = $"echo '{password}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S sed -i 's/22/22222/g' /etc/ssh/sshd_config";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-            cmd = $"echo '{password}' | sudo -S service sshd restart";
-            (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
+                cmd = $"echo '{password}' | sudo -S service sshd restart";
+                (errCode, res) = ShellHelper.RemoteBash(user, domain, 22, password, cmd, handleRes: true);
 
-            return Task.CompletedTask;
+            });
         }
 
 
         public string SlaveDomainName(int i)
         {
-            return _agentConfig.Prefix + _rndNum + "DNS" + Convert.ToString(i) + "." + _agentConfig.Location.ToLower() + ".cloudapp.azure.com";
+            return PublicDnsBase + Convert.ToString(i) + "." + _agentConfig.Location.ToLower() + ".cloudapp.azure.com";
         }
 
+        public string AppSvrDomainName(int i=0)
+        {
+            return AppSvrPublicDnsBase + Convert.ToString(i) + "." + _agentConfig.Location.ToLower() + ".cloudapp.azure.com";
+
+        }
         public string AppSvrVnet
         {
             get
@@ -332,6 +374,14 @@ namespace JenkinsScript
             }
         }
 
+        public string AppSvrVmNameBase
+        {
+            get
+            {
+                return _agentConfig.Prefix.ToLower() + _rndNum + "appsvrvm";
+            }
+
+        }
         public string VmNameBase
         {
             get
@@ -453,22 +503,37 @@ namespace JenkinsScript
             
         }
 
-        public VirtualMachineSizeTypes VmSize
+        public VirtualMachineSizeTypes SlaveVmSize
         {
             get
             {
-                switch (_agentConfig.SlaveVmSize.ToLower())
-                {
-                    case "standardds1":
-                        return VirtualMachineSizeTypes.StandardDS1;
-                    case "d2v2":
-                        return VirtualMachineSizeTypes.StandardD2V2;
-                    default:
-                        return VirtualMachineSizeTypes.StandardDS1;
-                }
+                return GetVmSize(_agentConfig.SlaveVmSize);
             }
             
         }
+
+        public VirtualMachineSizeTypes AppSvrVmSize
+        {
+            get
+            {
+                return GetVmSize(_agentConfig.SlaveVmSize);
+            }
+
+        }
+
+        private VirtualMachineSizeTypes GetVmSize(string vmSizeName)
+        {
+            switch (vmSizeName.ToLower())
+            {
+                case "standardds1":
+                    return VirtualMachineSizeTypes.StandardDS1;
+                case "d2v2":
+                    return VirtualMachineSizeTypes.StandardD2V2;
+                default:
+                    return VirtualMachineSizeTypes.StandardDS1;
+            }
+        }
+
 
         public string GroupName
         {
