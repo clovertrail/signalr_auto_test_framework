@@ -247,7 +247,7 @@ namespace JenkinsScript
                     .ToAnyAddress()
                     .ToPort(3000)
                     .WithAnyProtocol()
-                    .WithPriority(104)
+                    .WithPriority(105)
                     .Attach()
                 .CreateAsync();
         }
