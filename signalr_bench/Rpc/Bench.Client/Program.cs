@@ -168,15 +168,15 @@ namespace Bench.RpcMaster
                 File.AppendAllText(argsOption.OutputCounterFile, oneLineRecord);
                 Util.Log("per second: " + oneLineRecord);
 
-                var flagDir = System.IO.Path.GetDirectoryName(_flagFile);
-                if (!Directory.Exists(flagDir))
-                {
-                    Directory.CreateDirectory(flagDir);
-                }
-                if (!File.Exists(_flagFile))
-                {
-                    StreamWriter sw = File.CreateText(flagDir);
-                }
+                //var flagDir = System.IO.Path.GetDirectoryName(_flagFile);
+                //if (!Directory.Exists(flagDir))
+                //{
+                //    Directory.CreateDirectory(flagDir);
+                //}
+                //if (!File.Exists(_flagFile))
+                //{
+                //    StreamWriter sw = File.CreateText(flagDir);
+                //}
 
 
             };
