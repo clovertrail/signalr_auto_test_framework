@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
     });
     results[scenario] = counters;
   });
-  console.log(results);
+  // console.log(results);
   // var pieConfigs = [];
   // var datasets = [];
   // scenarios.forEach( scenario => {

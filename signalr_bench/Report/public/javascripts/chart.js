@@ -62,7 +62,7 @@ function createPieChart(results) {
                     backgroundColor: [],
                     label: 'Latency'
                 }],
-                labels: labels
+                labels: []
             },
             options: {
                 responsive: true,
@@ -83,12 +83,15 @@ function createPieChart(results) {
         var datasets = [];
         var counters = results[scenario];
         var counter = counters[counters.length - 1]['Counters'];
-        pieConfig.data.labels.forEach(label => {
+        labels.forEach(label => {
             data.push(counter[label]);
         });
+        data.push(counter["message:sent"] - counter["message:received"]);
         dataset.data = data;
         datasets.push(dataset);
         pieConfig.data.datasets = datasets;
+        pieConfig.data.labels = labels;
+        pieConfig.data.labels = labels.concat("not received");
         var ctx = document.getElementById(`chart-area-${scenario}-pie`).getContext('2d');
         var pieChart = new Chart(ctx, pieConfig);
         pieCharts.push(pieChart);
@@ -114,7 +117,7 @@ function createLatencyLineChart(results) {
                 },
                 title: {
                     display: true,
-                    text: 'Latency Distribution In Time'
+                    text: 'Latency Distribution Of Received Massages In Time'
                 },
                 //- maintainAspectRatio: false,
                 //- spanGaps: false,
@@ -295,18 +298,18 @@ function createLatencyDistributionTable(counters) {
     var headCell = name => `<th scope="col"> ${name} </th>`;
     var headCol = "";
     headCol += headCell("Latency");
-    labels.forEach(l => headCol += headCell(l.split(":").slice(-1)[0]));
+    labels.forEach(l => headCol += headCell(l.split(":").slice(-2).join(" ")));
+    headCol += headCell("not received");
     
     var rowCell = val => `<td>${val}</td>`; 
     var row = "";
     row += rowCell("%");
     var lastLine =  counters[counters.length - 1]["Counters"];
     var sum = 0;
-    console.log("lastLine", lastLine);
-    labels.forEach(l => sum += lastLine[l] || 0);
-    console.log("sum", sum);
+    sum = lastLine["message:sent"];
     var percentageLine = labels.map(l => (lastLine[l] || 0) / sum * 100);
     percentageLine.forEach(l => row += rowCell(Number.parseFloat(l).toFixed(1)));
+    row += rowCell(Number.parseFloat((lastLine["message:sent"] - lastLine["message:received"])/sum*100).toFixed(1));
     var rows = `<tr>${row}</tr>`;
 
     var head = `<thead class="thead-striped"><tr>${headCol}</tr></thead>`;

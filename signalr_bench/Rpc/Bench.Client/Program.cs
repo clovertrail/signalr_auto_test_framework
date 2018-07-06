@@ -130,12 +130,17 @@ namespace Bench.RpcMaster
 
                 var jobj = new JObject();
                 var received = 0;
+                var sent = 0;
                 foreach (var item in allClientCounters)
                 {
                     jobj.Add(item.Key, item.Value);
                     if (!item.Key.Contains("sent"))
                     {
                         received += item.Value;
+                    }
+                    if (item.Key.Contains("sent"))
+                    {
+                        sent += item.Value;
                     }
                 }
 
@@ -162,6 +167,17 @@ namespace Bench.RpcMaster
 
                 File.AppendAllText(argsOption.OutputCounterFile, oneLineRecord);
                 Util.Log("per second: " + oneLineRecord);
+
+                var flagDir = System.IO.Path.GetDirectoryName(_flagFile);
+                if (!Directory.Exists(flagDir))
+                {
+                    Directory.CreateDirectory(flagDir);
+                }
+                if (!File.Exists(_flagFile))
+                {
+                    StreamWriter sw = File.CreateText(flagDir);
+                }
+
 
             };
             collectTimer.Start();

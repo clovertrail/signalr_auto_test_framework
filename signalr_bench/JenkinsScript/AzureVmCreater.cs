@@ -240,6 +240,15 @@ namespace JenkinsScript
                     .WithAnyProtocol()
                     .WithPriority(104)
                     .Attach()
+                .DefineRule("Report")
+                    .AllowInbound()
+                    .FromAnyAddress()
+                    .FromAnyPort()
+                    .ToAnyAddress()
+                    .ToPort(3000)
+                    .WithAnyProtocol()
+                    .WithPriority(104)
+                    .Attach()
                 .CreateAsync();
         }
 

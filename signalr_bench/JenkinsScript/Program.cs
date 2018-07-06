@@ -105,13 +105,13 @@ namespace JenkinsScript
                     int indType = 0;
                     foreach (var serviceType in types)
                     {
-                        var unit = 1;
-                        unit = Convert.ToInt32(serviceType.Substring(4));
-                        var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
-                        Task.WhenAll(createSignalrR).Wait();
+                        //var unit = 1;
+                        //unit = Convert.ToInt32(serviceType.Substring(4));
+                        //var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
+                        //Task.WhenAll(createSignalrR).Wait();
 
                         // todo: debug
-                        //argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsignalrautosvcxxx7771346sr.service.signalr.net;AccessKey=ncPRZAXZGR3GsNIPONOX2Q353VJrsTTW6OxrDQ5q0pM=;";
+                        argsOption.AzureSignalrConnectionString = "Endpoint=wanlasrsselfhost.eastus.cloudapp.azure.com;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;";
 
                         foreach (var transportType in jobConfig.TransportTypeList)
                         {
@@ -146,7 +146,7 @@ namespace JenkinsScript
                             }
                         }
                         indType++;
-                        (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
+                        //(errCode, result) = ShellHelper.DeleteSignalr(argsOption);
                     }
                     //(errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);
 
