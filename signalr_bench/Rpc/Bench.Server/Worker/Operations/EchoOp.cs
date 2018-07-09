@@ -71,6 +71,12 @@ namespace Bench.RpcSlave.Worker.Operations
                     _tk.Counters.CountLatency(sendTimestamp, receiveTimestamp);
                     if (ind == 0) Util.Log($"#### echocallback");
                 });
+
+                _tk.Connections[i].On("count", (int count) =>
+                {
+                    _tk.ServerCount = Math.Max(count, _tk.ServerCount);
+                    _tk.Counters.SetServerCounter(_tk.ServerCount);
+                });
             }
         }
 
@@ -110,17 +116,14 @@ namespace Bench.RpcSlave.Worker.Operations
 
                     if (_sentMessages[ind] >= _tk.JobConfig.Duration / _tk.JobConfig.Interval)
                     {
-
+                        if (_sentMessages[ind] == _tk.JobConfig.Duration / _tk.JobConfig.Interval)
+                        {
+                            _tk.Connections[0].SendAsync("count", "echo");
+                        }
                         TimerPerConnection[ind].Stop();
                         return;
                     }
 
-                    //if (TimerPerConnection[ind].Interval != _tk.JobConfig.Interval * 1000)
-                    //{
-                    //    TimerPerConnection[ind].Stop();
-                    //    TimerPerConnection[ind].Interval = _tk.JobConfig.Interval * 1000;
-                    //    TimerPerConnection[ind].Start();
-                    //}
 
                     if (ind == 0)
                     {

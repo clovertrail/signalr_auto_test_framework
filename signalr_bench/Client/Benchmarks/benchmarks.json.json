@@ -2,7 +2,8 @@
   "Default": {
     "Client": "SignalRCoreEcho",
     "State": "Waiting",
-    "ServerBenchmarkUri": "http://localhost:5000/signalrbench",
+    "ServerBenchmarkUri": "http://wanlauto5c56132064AppSvrDNS0.eastus.cloudapp.azure.com:5000/signalrbench",
+    "ServerBenchmarkUriBak2": "http://localhost:5000/signalrbench",
     "ServerBenchmarkUriBak": "http://wanlsignalrautotestappserver.eastus.cloudapp.azure.com:5000/signalrbench",
     "Duration": 5,
     "Interval": 1,
@@ -12,5 +13,8 @@
     "Scenarios": "Echo",
     "CallbackName": "echo"
   },
-  "Echo1": {"Id": 0,"Connections": 900}
+  "Echo1": {
+    "Id": 0,
+    "Connections": 900
+  }
 }

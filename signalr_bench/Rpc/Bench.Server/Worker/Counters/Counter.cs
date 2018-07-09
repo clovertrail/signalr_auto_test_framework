@@ -44,6 +44,7 @@ namespace Bench.RpcSlave.Worker.Counters
             {
                 InnerCounters.AddOrUpdate(MsgKey(i * LatencyStep), 0, (k, v) => 0);
             }
+            InnerCounters.AddOrUpdate("server:received", 0, (k, v) => 0);
             InnerCounters.AddOrUpdate("message:sent", 0, (k, v) => 0);
             InnerCounters.AddOrUpdate($"message:ge:{LatencyLength * LatencyStep}", 0, (k, v) => 0);
         }
@@ -66,6 +67,11 @@ namespace Bench.RpcSlave.Worker.Counters
         public void IncreseSentMsg()
         {
             InnerCounters.AddOrUpdate("message:sent", 0, (k, v) => v + 1);
+        }
+
+        public void SetServerCounter(int count)
+        {
+            InnerCounters.AddOrUpdate("server:received", count, (k, v) => count);
         }
 
         private string MsgKey(int latency)

@@ -21,7 +21,7 @@ namespace Bench.RpcSlave.Worker.Savers
             var totalReceive = 0;
             foreach (var c in counters)
             {
-                if (c.Key != "message:sent")
+                if (c.Key != "message:sent" && !c.Key.Contains("received"))
                 {
                     totalReceive += c.Value;
                 }
@@ -31,6 +31,7 @@ namespace Bench.RpcSlave.Worker.Savers
             {
                 { "Time", Util.Timestamp2DateTimeStr(timestamp) },
                 { "Counters", jCounters },
+                { "totalReceivedOnServer", counters["server:received"]},
                 {"totalSent", counters["message:sent"]},
                 {"totalReceive", totalReceive }
             };

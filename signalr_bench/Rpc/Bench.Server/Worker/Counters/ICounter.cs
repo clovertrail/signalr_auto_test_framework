@@ -16,5 +16,6 @@ namespace Bench.RpcSlave.Worker.Counters
         void CountLatency(long sendTimestamp, long receiveTimestamp);
         void IncreseSentMsg();
         void SaveCounters();
+        void SetServerCounter(int count);
     }
 }

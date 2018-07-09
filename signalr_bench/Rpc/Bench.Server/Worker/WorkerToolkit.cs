@@ -14,5 +14,8 @@ namespace Bench.RpcSlave.Worker
         public Stat.Types.State State { get; set; } = Stat.Types.State.WorkerUnexist;
         public ICounters Counters { get; set; } = new Counter(new LocalFileSaver());
         public BenchmarkCellConfig BenchmarkCellConfig { get; set; }
+
+        public int ServerCount { get; set; }
+
     }
 }
