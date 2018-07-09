@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Client.ClientJobNs;
 using Client.StartTimeOffsetGenerator;
 using Client.Statistics.Savers;
-
+using Interlocked = System.Threading.Interlocked;
 namespace Client.Workers.OperationsNs
 {
     class BaseOp
@@ -24,6 +24,8 @@ namespace Client.Workers.OperationsNs
         public List<TimeSpan> DelayPerConnection;
         private BaseTool _pkg;
         public IStartTimeOffsetGenerator StartTimeOffsetGenerator;
+        public int totalSentMsg = 0;
+        public int totalReceivedMsg = 0;
 
         public EchoOp(BaseTool pkg)
         {
@@ -58,7 +60,8 @@ namespace Client.Workers.OperationsNs
                     var receiveTimestamp = Util.Timestamp();
                     var sendTimestamp = Convert.ToInt64(time);
                     //Util.Log($"diff time: {receiveTimestamp - sendTimestamp}");
-                    Counters.CountLatency(sendTimestamp, receiveTimestamp);
+                    //Counters.CountLatency(sendTimestamp, receiveTimestamp);
+                    Interlocked.Increment(ref totalReceivedMsg);
                     if (ind == 0) Util.Log($"#### echocallback");
                 });
             }
@@ -106,11 +109,12 @@ namespace Client.Workers.OperationsNs
 
                     if (ind == 0)
                     {
-                        Util.Log($"Sending Message: {ind}th epoach");
+                        Util.Log($"Sending Message");
                     }
                     _pkg.Connections[ind].SendAsync("echo", $"{GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+                    Interlocked.Increment(ref totalSentMsg);
                     _pkg.SentMassage[ind]++;
-                    Counters.IncreseSentMsg();
+                    //Counters.IncreseSentMsg();
 
                 };
             }

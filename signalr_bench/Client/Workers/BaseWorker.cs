@@ -86,14 +86,16 @@ namespace Client.WorkerNs
 
                 string scenario = scenarios[ind++];
                 Util.Log($"scenario: {scenario}");
-                IOperation op = OperationFactory.CreateOperation(scenario, _pkg);
+                EchoOp op = (EchoOp)OperationFactory.CreateOperation(scenario, _pkg);
                 op.Setup();
                 op.Process();
                 Util.Log($"statistics delay time: {(_pkg.Job.Duration + laterTime / 2)}s");
-                Task.Delay((_pkg.Job.Duration + laterTime / 2 + 20) * 1000).ContinueWith(_ =>
+                Task.Delay((_pkg.Job.Duration + laterTime / 2 + 5) * 1000).ContinueWith(_ =>
                 {
                     Util.Log($"Show statistics");
-                    op.SaveCounters();
+                    //op.SaveCounters();
+                    Util.Log($"msg send: {op.totalSentMsg}, receive: {op.totalReceivedMsg}");
+
                 });
             };
             timer.Start();
@@ -237,60 +239,61 @@ namespace Client.WorkerNs
             {
                 connection.ServerTimeout = TimeSpan.FromMinutes(100);
                 connection.HandshakeTimeout = TimeSpan.FromMinutes(100);
+                
             }
 
 
-            ///* connection method 1:*/
-            //var tasks = new List<Task>();
+            /* connection method 1:*/
+            var tasks = new List<Task>();
 
-            //for (var i = 0; i < _pkg.Connections.Count; i++)
+            for (var i = 0; i < _pkg.Connections.Count; i++)
+            {
+                // TODO: bug in signal client
+                //tasks.Add((_pkg.Connections[i].StartAsync()));
+                //if (i > 0 && i % 100 == 0)
+                //{
+                //    Task.WhenAll(tasks).Wait();
+                //    Util.Log($"wait {i} connections start");
+                //}
+                int ind = i;
+                tasks.Add(Task.Delay(ind / 100 * 1000).ContinueWith(_ => _pkg.Connections[ind].StartAsync()));
+            }
+
+            // foreach (var conn in _pkg.Connections)
+            // {
+            //    tasks.Add(conn.StartAsync());
+            // }
+
+            await Task.WhenAll(tasks);
+            //Util.Log("Wait more time");
+            //Task.Delay(TimeSpan.FromSeconds(0)).Wait();
+
+            /* end method 1 */
+
+
+            ///* connection method 2:*/
+            //var total = _pkg.Connections.Count;
+            //var inner = 100;
+            //var outer = total / inner;
+            //var taskMatrix = new List<List<Task>>();
+            //for (var i = 0; i < outer; i++)
             //{
-            //    // TODO: bug in signal client
-            //    //tasks.Add((_pkg.Connections[i].StartAsync()));
-            //    //if (i > 0 && i % 100 == 0)
-            //    //{
-            //    //    Task.WhenAll(tasks).Wait();
-            //    //    Util.Log($"wait {i} connections start");
-            //    //}
-            //    int ind = i;
-            //    tasks.Add(Task.Delay(ind / 100 * 2000).ContinueWith(_ => _pkg.Connections[ind].StartAsync()));
+            //    var sw = new Stopwatch();
+            //    sw.Start();
+            //    taskMatrix.Add(new List<Task>());
+            //    for (var j = 0; j < inner; j++)
+            //    {
+            //        var ind = i * inner + j;
+            //        taskMatrix[i].Add(_pkg.Connections[ind].StartAsync());
+            //    }
+            //    Task.WhenAll(taskMatrix[i]).Wait();
+            //    sw.Stop();
+            //    Util.Log($"finish epoach: {i}, elapsed time: {sw.Elapsed.TotalSeconds}");
             //}
 
-            //// foreach (var conn in _pkg.Connections)
-            //// {
-            ////    tasks.Add(conn.StartAsync());
-            //// }
-
-            //await Task.WhenAll(tasks);
             //Util.Log("Wait more time");
-            //Task.Delay(TimeSpan.FromMinutes(3)).Wait();
-
-            ///* end method 1 */
-
-
-            /* connection method 2:*/
-            var total = _pkg.Connections.Count;
-            var inner = 100;
-            var outer = total / inner;
-            var taskMatrix = new List<List<Task>>();
-            for (var i = 0; i < outer; i++)
-            {
-                var sw = new Stopwatch();
-                sw.Start();
-                taskMatrix.Add(new List<Task>());
-                for (var j = 0; j < inner; j++)
-                {
-                    var ind = i * inner + j;
-                    taskMatrix[i].Add(_pkg.Connections[ind].StartAsync());
-                }
-                Task.WhenAll(taskMatrix[i]).Wait();
-                sw.Stop();
-                Util.Log($"finish epoach: {i}, elapsed time: {sw.Elapsed.TotalSeconds}");
-            }
-
-            Util.Log("Wait more time");
-            Task.Delay(TimeSpan.FromSeconds(30)).Wait();
-            /* end method 2 */
+            //Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+            ///* end method 2 */
 
 
             /* connection method 3:*/

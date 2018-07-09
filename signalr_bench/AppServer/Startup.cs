@@ -22,11 +22,13 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         }
 
         public IConfiguration Configuration { get; }
-        private bool useLocalSignalR = true;
-        private bool useMessagePack = false;
+        private bool useLocalSignalR = false;
+        private bool useMessagePack = true;
         
         public void ConfigureServices(IServiceCollection services)
         {
+            string connectionStr = Environment.GetEnvironmentVariable("AzureSignalRConnectionString");
+            Console.WriteLine($"@@@ connection string: {connectionStr}");
             services.AddMvc();
             if (useLocalSignalR)
                 if (useMessagePack)
@@ -35,9 +37,9 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
                     services.AddSignalR();
             else
                 if (useMessagePack)
-                    services.AddSignalR().AddMessagePackProtocol().AddAzureSignalR(Environment.GetEnvironmentVariable("AzureSignalRConnectionString"));
+                    services.AddSignalR().AddMessagePackProtocol().AddAzureSignalR(connectionStr);
                 else
-                   services.AddSignalR().AddAzureSignalR(Environment.GetEnvironmentVariable("AzureSignalRConnectionString"));
+                   services.AddSignalR().AddAzureSignalR(connectionStr);
         }
 
         public void Configure(IApplicationBuilder app)

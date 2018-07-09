@@ -9,9 +9,9 @@ router.get('/', function(req, res, next) {
 
   const resDir = fs.readdirSync(rootFolder);
 
-  res.render('index', { 
+  res.render('new/index', { 
     title: 'SignalR Benchmark Report', 
-    results: resDir
+    timestampList: resDir
   });
 });
 
