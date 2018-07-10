@@ -23,7 +23,9 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            Task.Delay(15000).Wait();
+            var waitTime = 0 * 1000;
+            Console.WriteLine($"wait time: {waitTime/1000}s");
+            Task.Delay(waitTime).Wait();
 
             // setup
             _tk = tk;
@@ -118,6 +120,7 @@ namespace Bench.RpcSlave.Worker.Operations
                     {
                         if (_sentMessages[ind] == _tk.JobConfig.Duration / _tk.JobConfig.Interval)
                         {
+                            if (ind == 0) Util.Log($"Get Server Count");
                             _tk.Connections[0].SendAsync("count", "echo");
                         }
                         TimerPerConnection[ind].Stop();

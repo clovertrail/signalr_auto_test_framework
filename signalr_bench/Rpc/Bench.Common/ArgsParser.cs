@@ -7,7 +7,7 @@ namespace Bench.Common
 {
     public class ArgsOption
     {
-        [Option('a', "agentconfig", Required = true, HelpText = "Specify Agent Config File")]
+        [Option('a', "agentconfig", Required = false, HelpText = "Specify Agent Config File")]
         public string AgentConfigFile { get; set; }
 
         [Option('j', "jobconfig", Required = false, HelpText = "Specify Job Config File")]

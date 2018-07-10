@@ -169,8 +169,7 @@ namespace JenkinsScript
             agentConfig.Slaves.ForEach(host =>
             {
                 cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; " +
-                    $"export ConfigBlobContainerName='{argsOption.ContainerName}'; export AgentConfigFileName='{argsOption.AgentBlobName}';  export JobConfigFileName='{argsOption.JobBlobName}'; " + 
-                    $"dotnet run -- --rpcPort {agentConfig.RpcPort} -a '{argsOption.AgentConfigFile}' -d 0.0.0.0 > log.txt";
+                    $"dotnet run -- --rpcPort {agentConfig.RpcPort} -d 0.0.0.0 > log.txt";
                 Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
                 if (errCode != 0) return;
@@ -209,18 +208,15 @@ namespace JenkinsScript
 
             cmd += $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; ";
 
-            cmd += $"export bench_type_list='{serviceType}{connection}'; " + 
-                $"export bench_codec_list='{hubProtocol}'; " + 
-                $"export bench_name_list='{scenario}'; " + 
-                $"export ConfigBlobContainerName='{argsOption.ContainerName}'; " + 
-                $"export AgentConfigFileName='{argsOption.AgentBlobName}';  " + 
-                $"export JobConfigFileName='{argsOption.JobBlobName}'; ";
+            cmd += $"export bench_type_list='{serviceType}{connection}'; " +
+                $"export bench_codec_list='{hubProtocol}'; " +
+                $"export bench_name_list='{scenario}'; ";
 
             cmd += $"dotnet run -- " +
                 $"--rpcPort 5555 " +
                 $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5000/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
                 $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
-                $"-a '{argsOption.AgentConfigFile}' -j '{argsOption.JobConfigFile}' --slaveList '{slaveList}' " +
+                $" --slaveList '{slaveList}' " +
                 $"-o '/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}c{connection}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
 
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
