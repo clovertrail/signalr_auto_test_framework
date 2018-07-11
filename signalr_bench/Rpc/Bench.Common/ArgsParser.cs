@@ -70,5 +70,12 @@ namespace Bench.Common
 
         [Option("slaveList", Required = false, HelpText = "Specify Slave List")]
         public string SlaveList { get; set; }
+
+        [Option("clear", Required = false, HelpText = "Clear Result File Or Not")]
+        public string Clear { get; set; }
+
+        [Option("retry", Required = false, HelpText = "Set Max Retry Time")]
+        public int Retry { get; set; }
+
     }
 }

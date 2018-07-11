@@ -122,8 +122,6 @@ namespace JenkinsScript
                                     var propName = scenario.First().ToString().ToUpper() + scenario.Substring(1); 
                                     var connectionBase = (jobConfig.ConnectionBase.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionBase) as List<int>)[indType];
                                     var connectionIncreaseStep = (jobConfig.ConnectionIncreaseStep.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionIncreaseStep) as List<int>)[indType];
-                                    //var connectionBase = jobConfig.ConnectionBase.[indType];
-                                    //var connectionIncreaseStep = jobConfig.ConnectionIncreaseStep[indType];
 
                                     // TODO: debug
                                     for (var connection = connectionBase; ; connection += connectionIncreaseStep)
@@ -137,7 +135,7 @@ namespace JenkinsScript
                                         Task.Delay(20000).Wait();
                                         (errCode, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
                                             serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
-                                            jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
+                                            jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder, clear: true);
                                         if (errCode != 0) break;
                                         //(errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig,
                                         //    serviceType, transportType, hubProtocol, scenario, connection);

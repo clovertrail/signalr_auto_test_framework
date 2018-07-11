@@ -7,7 +7,7 @@ using Bench.RpcSlave.Worker.Savers;
 
 namespace Bench.RpcSlave.Worker.Counters
 {
-    public class Counter: ICounters
+    public class Counter : ICounters
     {
         private ConcurrentDictionary<string, int> InnerCounters { get; set; }
         public int LatencyStep { get; set; }
@@ -15,7 +15,7 @@ namespace Bench.RpcSlave.Worker.Counters
         private ISaver _counterSaver;
 
 
-        public Counter(ISaver saver, int latencyStep=100, int latencyLength=10)
+        public Counter(ISaver saver, int latencyStep = 100, int latencyLength = 10)
         {
             LatencyStep = latencyStep;
             LatencyLength = latencyLength;
@@ -34,7 +34,7 @@ namespace Bench.RpcSlave.Worker.Counters
                     list.Add(new Tuple<string, int>(counter.Key, counter.Value));
                 }
             }
-            
+
             return list;
         }
 
@@ -45,6 +45,7 @@ namespace Bench.RpcSlave.Worker.Counters
                 InnerCounters.AddOrUpdate(MsgKey(i * LatencyStep), 0, (k, v) => 0);
             }
             InnerCounters.AddOrUpdate("server:received", 0, (k, v) => 0);
+            InnerCounters.AddOrUpdate("message:notSentFromClient", 0, (k, v) => 0);
             InnerCounters.AddOrUpdate("message:sent", 0, (k, v) => 0);
             InnerCounters.AddOrUpdate($"message:ge:{LatencyLength * LatencyStep}", 0, (k, v) => 0);
         }
@@ -67,6 +68,11 @@ namespace Bench.RpcSlave.Worker.Counters
         public void IncreseSentMsg()
         {
             InnerCounters.AddOrUpdate("message:sent", 0, (k, v) => v + 1);
+        }
+
+        public void IncreseNotSentFromClientMsg()
+        {
+            InnerCounters.AddOrUpdate("message:notSentFromClient", 0, (k, v) => v + 1);
         }
 
         public void SetServerCounter(int count)

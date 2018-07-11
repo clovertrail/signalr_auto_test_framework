@@ -196,7 +196,9 @@ namespace JenkinsScript
             var bench_type_list = serviceType;
             var bench_codec_list = hubProtocol;
             var bench_name_list = scenario;
+            var maxRetry = 10;
             var slaveList = "";
+
             for (var i = 0; i < agentConfig.Slaves.Count; i++)
             {
                 slaveList += agentConfig.Slaves[i];
@@ -206,27 +208,29 @@ namespace JenkinsScript
 
             var serverUrl = vmCreator.AppSvrDomainName();
 
-            cmd += $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; ";
-
-            cmd += $"export bench_type_list='{serviceType}{connection}'; " +
-                $"export bench_codec_list='{hubProtocol}'; " +
-                $"export bench_name_list='{scenario}'; ";
-
-            cmd += $"dotnet run -- " +
-                $"--rpcPort 5555 " +
-                $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5000/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
-                $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
-                $" --slaveList '{slaveList}' " +
-                $"-o '/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}c{connection}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
-
+            
             Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
-            var maxRetry = 10;
             for (var i = 0; i < maxRetry; i++)
             {
+                var clear = i == 0 ? "true" : "false";
+                cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; ";
+
+                cmd += $"export bench_type_list='{serviceType}{connection}'; " +
+                    $"export bench_codec_list='{hubProtocol}'; " +
+                    $"export bench_name_list='{scenario}'; ";
+
+                cmd += $"dotnet run -- " +
+                    $"--rpcPort 5555 " +
+                    $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5000/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
+                    $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
+                    $" --slaveList '{slaveList}' " +
+                    $" --retry {maxRetry}" +
+                    $" --clear {clear}" +
+                    $"-o '/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}c{connection}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
+
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
                 if (errCode == 0) break;
                 Util.Log($"retry {i}th time");
-                Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
                 Task.Delay(2000).Wait();
 
                 if (errCode != 0)

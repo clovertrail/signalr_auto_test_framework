@@ -29,6 +29,8 @@ namespace Bench.RpcMaster
 {
     class Program
     {
+        private static JObject _counters;
+        private static string _jobResultFile = "./jobResult.txt";
         public static void Main (string[] args)
         {
             // parse args
@@ -37,6 +39,22 @@ namespace Bench.RpcMaster
                 .WithParsed(options => argsOption = options)
                 .WithNotParsed(error => { });
 
+            if (argsOption.Clear == "true")
+            {
+                if (File.Exists(_jobResultFile))
+                {
+                    File.Delete(_jobResultFile);
+                }
+            } 
+            else
+            {
+                if (File.Exists(_jobResultFile))
+                {
+                    CheckLastJobResults(_jobResultFile, argsOption.Retry, argsOption.Connections,
+                        argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+                }
+                
+            }
 
             var slaveList = new List<string>(argsOption.SlaveList.Split(';'));
 
@@ -134,7 +152,7 @@ namespace Bench.RpcMaster
                 foreach (var item in allClientCounters)
                 {
                     jobj.Add(item.Key, item.Value);
-                    if (!item.Key.Contains("sent"))
+                    if (!item.Key.Contains("sent") && !item.Key.Contains("Sent"))
                     {
                         received += item.Value;
                     }
@@ -145,15 +163,15 @@ namespace Bench.RpcMaster
                 }
 
                 jobj.Add("message:received", received);
-                var sortedCounters = Util.Sort(jobj);
+                _counters = Util.Sort(jobj);
                 var finalRec = new JObject
                 {
                     { "Time", Util.Timestamp2DateTimeStr(Util.Timestamp()) },
-                    { "Counters", sortedCounters}
+                    { "Counters", _counters}
                 };
-                string oneLineRecord = Regex.Replace(finalRec.ToString(), @"\s+", "");
-                oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "");
-                oneLineRecord += "," + Environment.NewLine;
+                string onelineRecord = Regex.Replace(finalRec.ToString(), @"\s+", "");
+                onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
+                onelineRecord += "," + Environment.NewLine;
 
                 var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
                 if (!Directory.Exists(dir))
@@ -165,18 +183,10 @@ namespace Bench.RpcMaster
                     StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
                 }
 
-                File.AppendAllText(argsOption.OutputCounterFile, oneLineRecord);
-                Util.Log("per second: " + oneLineRecord);
+                File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
+                Util.Log("per second: " + onelineRecord);
 
-                //var flagDir = System.IO.Path.GetDirectoryName(_flagFile);
-                //if (!Directory.Exists(flagDir))
-                //{
-                //    Directory.CreateDirectory(flagDir);
-                //}
-                //if (!File.Exists(_flagFile))
-                //{
-                //    StreamWriter sw = File.CreateText(flagDir);
-                //}
+                
 
 
             };
@@ -194,19 +204,33 @@ namespace Bench.RpcMaster
             };
             Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}");
 
-            var indStartJob = 0;
-            clients.ForEach(client =>
+            try
             {
-                Util.Log($"client add task ind: {indStartJob}");
-                tasks.Add(Task.Run(() =>
+                var indStartJob = 0;
+                clients.ForEach(client =>
                 {
-                    Util.Log($"client start ind: {indStartJob++}");
-                    client.RunJob(benchmarkCellConfig);
-                }));
-            });
+                    Util.Log($"client add task ind: {indStartJob}");
+                    tasks.Add(Task.Run(() =>
+                    {
+                        Util.Log($"client start ind: {indStartJob++}");
+                        client.RunJob(benchmarkCellConfig);
+                        SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+                    }));
+                });
 
-            Util.Log($"wait for tasks");
-            Task.WhenAll(tasks).Wait();
+                Util.Log($"wait for tasks");
+                Task.WhenAll(tasks).Wait();
+            }
+            catch (Exception ex)
+            {
+                Util.Log($"Exception from RPC master: {ex}");
+                var counters = new JObject(_counters);
+                counters["message:received"] = 0;
+                SaveJobResult(_jobResultFile, counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+                throw;
+            }
+            
+            
 
             for (var i = 0; i < channels.Count; i++)
             {
@@ -214,6 +238,66 @@ namespace Bench.RpcMaster
             }
 
             Console.WriteLine ("Exit client...");
+        }
+
+        private static void SaveJobResult(string path, JObject counters, int connection, string serviceType, string transportType, string protocol, string scenario)
+        {
+            var resDir = System.IO.Path.GetDirectoryName(path);
+            if (!Directory.Exists(resDir))
+            {
+                Directory.CreateDirectory(resDir);
+            }
+            if (!File.Exists(path))
+            {
+                StreamWriter sw = File.CreateText(path);
+            }
+
+            var sent = (int)counters["message:sent"];
+            var received = (int)counters["message:received"];
+            var percentage = (double)received / sent;
+            Util.Log($"sent: {sent}, received: {received}");
+
+            var res = new JObject
+            {
+                { "connection", connection},
+                { "serviceType", serviceType},
+                { "transportType", transportType},
+                { "protocol", protocol},
+                { "scenario", scenario},
+                {"result",  percentage > 0.5 ? "SUCCESS" : "FAIL"}
+            };
+
+            string onelineRecord = Regex.Replace(res.ToString(), @"\s+", "");
+            onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
+            onelineRecord += Environment.NewLine;
+            File.AppendAllText(path, onelineRecord);
+        }
+
+        private static void CheckLastJobResults(string path, int maxRetryCount, int connection, string serviceType, 
+            string transportType, string protocol, string scenario)
+        {
+            var failCount = 0;
+            var lines = new List<string>(File.ReadAllLines(path));
+            for (var i = lines.Count - 1; i > lines.Count - 1 - maxRetryCount && i >= 0; i--)
+            {
+                var res = JObject.Parse(lines[i]);
+                if ((int)res["connection"] == connection && (string)res["serviceType"] == serviceType &&
+                    (string)res["transportType"] == transportType && (string)res["protocol"] == protocol &&
+                    (string)res["scenario"] == scenario && (string)res["result"] == "FAIL")
+                {
+                    failCount++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            Util.Log($"fail count: {failCount}");
+            if (failCount == maxRetryCount)
+            {
+                throw new Exception();
+            }
+            
         }
     }
 }
