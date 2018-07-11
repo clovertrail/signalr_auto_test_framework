@@ -117,6 +117,7 @@ namespace Bench.RpcMaster
                         Task.Delay(0).ContinueWith(t =>
                             {
                                 var state = client.GetState(new Empty { });
+                                Util.Log($"ind: {ind}, state: {state.State}");
                                 if ((int)state.State >= (int)Stat.Types.State.SendComplete || (int)state.State < (int)Stat.Types.State.SendRunning)
                                 {
                                     isComplete = true;
@@ -143,9 +144,11 @@ namespace Bench.RpcMaster
 
                 if (isSend == false || isComplete == true)
                 {
+                    Util.Log($"counters return ... issend: {isSend}; iscomplete: {isComplete}");
                     return;
                 }
 
+                Util.Log($"@@@save counters");
                 var jobj = new JObject();
                 var received = 0;
                 var sent = 0;
@@ -172,19 +175,30 @@ namespace Bench.RpcMaster
                 string onelineRecord = Regex.Replace(finalRec.ToString(), @"\s+", "");
                 onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
                 onelineRecord += "," + Environment.NewLine;
-
-                var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
-                if (!File.Exists(argsOption.OutputCounterFile))
-                {
-                    StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
-                }
-
-                File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
                 Util.Log("per second: " + onelineRecord);
+
+                try
+                {
+                    var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
+                    if (!Directory.Exists(dir))
+                    {
+                        if (dir != null && dir != "")
+                        {
+                            Directory.CreateDirectory(dir);
+                        }
+                    }
+                    if (!File.Exists(argsOption.OutputCounterFile))
+                    {
+                        StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
+                    }
+
+                    File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
+                }
+                catch (Exception ex)
+                {
+                    Util.Log($"Cannot save file: {ex}");
+                }
+                
 
                 
 
