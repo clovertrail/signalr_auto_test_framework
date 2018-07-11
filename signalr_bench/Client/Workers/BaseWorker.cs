@@ -48,8 +48,8 @@ namespace Client.WorkerNs
 
 
             // start jobs
-            //Util.Log("start jobs");
-            //Task.Delay(10 * 1000).Wait();
+            Task.Delay(60 * 1000).Wait();
+            Util.Log("start jobs");
             StartJob();
 
             // stop job
@@ -90,10 +90,10 @@ namespace Client.WorkerNs
                 op.Setup();
                 op.Process();
                 Util.Log($"statistics delay time: {(_pkg.Job.Duration + laterTime / 2)}s");
-                Task.Delay((_pkg.Job.Duration + laterTime / 2 + 5) * 1000).ContinueWith(_ =>
+                Task.Delay((_pkg.Job.Duration + laterTime / 2 + 5) * 1000 + 120 *1000).ContinueWith(_ =>
                 {
                     Util.Log($"Show statistics");
-                    //op.SaveCounters();
+                    op.SaveCounters();
                     Util.Log($"msg send: {op.totalSentMsg}, receive: {op.totalReceivedMsg}");
 
                 });
@@ -225,89 +225,96 @@ namespace Client.WorkerNs
 
         protected async Task StartConnections()
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            Util.Log($"Start connecting");
-            //foreach (var connection in _pkg.Connections)
-            //{
-            //    connection.ServerTimeout = TimeSpan.FromMinutes(10);
-            //}
-
-
-            foreach (var connection in _pkg.Connections)
+            try
             {
-                connection.ServerTimeout = TimeSpan.FromMinutes(100);
-                connection.HandshakeTimeout = TimeSpan.FromMinutes(100);
-                
-            }
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
 
-
-            /* connection method 1:*/
-            var tasks = new List<Task>();
-
-            for (var i = 0; i < _pkg.Connections.Count; i++)
-            {
-                // TODO: bug in signal client
-                //tasks.Add((_pkg.Connections[i].StartAsync()));
-                //if (i > 0 && i % 100 == 0)
+                Util.Log($"Start connecting");
+                //foreach (var connection in _pkg.Connections)
                 //{
-                //    Task.WhenAll(tasks).Wait();
-                //    Util.Log($"wait {i} connections start");
+                //    connection.ServerTimeout = TimeSpan.FromMinutes(10);
                 //}
-                int ind = i;
-                tasks.Add(Task.Delay(ind / 100 * 1000).ContinueWith(_ => _pkg.Connections[ind].StartAsync()));
+
+
+                foreach (var connection in _pkg.Connections)
+                {
+                    connection.ServerTimeout = TimeSpan.FromMinutes(100);
+                    connection.HandshakeTimeout = TimeSpan.FromMinutes(100);
+
+                }
+
+
+                /* connection method 1:*/
+                var tasks = new List<Task>();
+
+                for (var i = 0; i < _pkg.Connections.Count; i++)
+                {
+                    // TODO: bug in signal client
+                    //tasks.Add((_pkg.Connections[i].StartAsync()));
+                    //if (i > 0 && i % 100 == 0)
+                    //{
+                    //    Task.WhenAll(tasks).Wait();
+                    //    Util.Log($"wait {i} connections start");
+                    //}
+                    int ind = i;
+                    tasks.Add(Task.Delay(ind / 100 * 1000).ContinueWith(_ => _pkg.Connections[ind].StartAsync()));
+                }
+
+                // foreach (var conn in _pkg.Connections)
+                // {
+                //    tasks.Add(conn.StartAsync());
+                // }
+
+                await Task.WhenAll(tasks);
+                //Util.Log("Wait more time");
+                //Task.Delay(TimeSpan.FromSeconds(0)).Wait();
+
+                /* end method 1 */
+
+
+                ///* connection method 2:*/
+                //var total = _pkg.Connections.Count;
+                //var inner = 100;
+                //var outer = total / inner;
+                //var taskMatrix = new List<List<Task>>();
+                //for (var i = 0; i < outer; i++)
+                //{
+                //    var sw = new Stopwatch();
+                //    sw.Start();
+                //    taskMatrix.Add(new List<Task>());
+                //    for (var j = 0; j < inner; j++)
+                //    {
+                //        var ind = i * inner + j;
+                //        taskMatrix[i].Add(_pkg.Connections[ind].StartAsync());
+                //    }
+                //    Task.WhenAll(taskMatrix[i]).Wait();
+                //    sw.Stop();
+                //    Util.Log($"finish epoach: {i}, elapsed time: {sw.Elapsed.TotalSeconds}");
+                //}
+
+                //Util.Log("Wait more time");
+                //Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+                ///* end method 2 */
+
+
+                /* connection method 3:*/
+                /* end method 3 */
+
+
+
+
+
+
+                stopWatch.Stop();
+                Util.Log($"Successfully connect with {_pkg.Connections.Count} connetions, connection elapsed time: {stopWatch.Elapsed}");
+
+                _pkg.Job.State = ClientState.Running;
             }
-
-            // foreach (var conn in _pkg.Connections)
-            // {
-            //    tasks.Add(conn.StartAsync());
-            // }
-
-            await Task.WhenAll(tasks);
-            //Util.Log("Wait more time");
-            //Task.Delay(TimeSpan.FromSeconds(0)).Wait();
-
-            /* end method 1 */
-
-
-            ///* connection method 2:*/
-            //var total = _pkg.Connections.Count;
-            //var inner = 100;
-            //var outer = total / inner;
-            //var taskMatrix = new List<List<Task>>();
-            //for (var i = 0; i < outer; i++)
-            //{
-            //    var sw = new Stopwatch();
-            //    sw.Start();
-            //    taskMatrix.Add(new List<Task>());
-            //    for (var j = 0; j < inner; j++)
-            //    {
-            //        var ind = i * inner + j;
-            //        taskMatrix[i].Add(_pkg.Connections[ind].StartAsync());
-            //    }
-            //    Task.WhenAll(taskMatrix[i]).Wait();
-            //    sw.Stop();
-            //    Util.Log($"finish epoach: {i}, elapsed time: {sw.Elapsed.TotalSeconds}");
-            //}
-
-            //Util.Log("Wait more time");
-            //Task.Delay(TimeSpan.FromSeconds(30)).Wait();
-            ///* end method 2 */
-
-
-            /* connection method 3:*/
-            /* end method 3 */
-
-
-
-
-
-
-            stopWatch.Stop();
-            Util.Log($"Successfully connect with {_pkg.Connections.Count} connetions, connection elapsed time: {stopWatch.Elapsed}");
-
-            _pkg.Job.State = ClientState.Running;
+            catch (Exception ex)
+            {
+                Util.Log($"exception in starting connection: {ex}");
+            }
         }
     }
 }

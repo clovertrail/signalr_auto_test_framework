@@ -8,6 +8,7 @@ using Bench.RpcSlave.Worker.Savers;
 using Bench.RpcSlave.Worker.StartTimeOffsetGenerator;
 using Bench.Common.Config;
 using Bench.Common;
+using System.Collections.Concurrent;
 
 namespace Bench.RpcSlave.Worker.Operations
 {
@@ -23,7 +24,7 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            var waitTime = 0 * 1000;
+            var waitTime = 15 * 1000;
             Console.WriteLine($"wait time: {waitTime/1000}s");
             Task.Delay(waitTime).Wait();
 
@@ -39,6 +40,12 @@ namespace Bench.RpcSlave.Worker.Operations
             // wait to stop
             Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + 30)).ContinueWith(t => {
                 SaveCounters();
+                int sum = 0;
+                foreach (var c in cnt)
+                {
+                    sum++;
+                }
+                Util.Log($"in active connection: {sum}");
             }).Wait();
 
             _tk.State = Stat.Types.State.SendComplete;
@@ -121,7 +128,16 @@ namespace Bench.RpcSlave.Worker.Operations
                         if (_sentMessages[ind] == _tk.JobConfig.Duration / _tk.JobConfig.Interval)
                         {
                             if (ind == 0) Util.Log($"Get Server Count");
-                            _tk.Connections[0].SendAsync("count", "echo");
+                            //_tk.Connections[0].SendAsync("count", "echo");
+                            try
+                            {
+                                _tk.Connections[0].SendAsync("count", "echo").Wait();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Util.Log($"exception while sending message: {ex}");
+                            }
                         }
                         TimerPerConnection[ind].Stop();
                         return;
@@ -134,11 +150,20 @@ namespace Bench.RpcSlave.Worker.Operations
                     }
                     _sentMessages[ind]++;
                     _tk.Counters.IncreseSentMsg();
-                    _tk.Connections[ind].SendAsync(_tk.BenchmarkCellConfig.Scenario, $"{Util.GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+                    try
+                    {
+                        _tk.Connections[ind].SendAsync(_tk.BenchmarkCellConfig.Scenario, $"{Util.GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}").Wait();
+                        cnt.AddOrUpdate(ind, 0, (k, v) => v + 1);
+                    }
+                    catch (Exception ex)
+                    {
+                        Util.Log($"exception while sending message: {ex}");
+                    }
                 };
             }
         }
 
+        private ConcurrentDictionary<int, int> cnt = new ConcurrentDictionary<int, int>();
         private void SaveCounters()
         {
             _tk.Counters.SaveCounters();

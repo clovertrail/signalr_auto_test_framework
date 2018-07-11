@@ -26,14 +26,23 @@ namespace Bench.RpcSlave.Worker.Operations
             var tasks = new List<Task>(connections.Count);
 
             int i = 0;
-            foreach (var conn in connections)
+
+            try
             {
-                i += 1;
-                int ind = i;
-                tasks.Add(Task.Delay(ind/100 * 2000).ContinueWith(_ => conn.StartAsync()));
-                //conn.StartAsync();
+                foreach (var conn in connections)
+                {
+                    i += 1;
+                    int ind = i;
+                    tasks.Add(Task.Delay(ind / 100 * 2000).ContinueWith(_ => conn.StartAsync()));
+                    //conn.StartAsync();
+                }
+                Task.WhenAll(tasks).Wait();
             }
-            Task.WhenAll(tasks).Wait();
+            catch (Exception ex)
+            {
+                Util.Log($"start connection exception: {ex}");
+            }
+            
             _tk.State = Stat.Types.State.HubconnConnected;
         }
     }

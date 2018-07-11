@@ -59,8 +59,8 @@ namespace Client.Workers.OperationsNs
                 {
                     var receiveTimestamp = Util.Timestamp();
                     var sendTimestamp = Convert.ToInt64(time);
-                    //Util.Log($"diff time: {receiveTimestamp - sendTimestamp}");
-                    //Counters.CountLatency(sendTimestamp, receiveTimestamp);
+                    Util.Log($"diff time: {receiveTimestamp - sendTimestamp}");
+                    Counters.CountLatency(sendTimestamp, receiveTimestamp);
                     Interlocked.Increment(ref totalReceivedMsg);
                     if (ind == 0) Util.Log($"#### echocallback");
                 });
@@ -111,10 +111,18 @@ namespace Client.Workers.OperationsNs
                     {
                         Util.Log($"Sending Message");
                     }
-                    _pkg.Connections[ind].SendAsync("echo", $"{GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
+
+                    try
+                    {
+                        _pkg.Connections[ind].SendAsync("echo", $"{GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}").Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to send massage: {ex} \n");
+                    }
                     Interlocked.Increment(ref totalSentMsg);
                     _pkg.SentMassage[ind]++;
-                    //Counters.IncreseSentMsg();
+                    Counters.IncreseSentMsg();
 
                 };
             }

@@ -96,32 +96,32 @@
                     messageBox.scrollTop = messageBox.scrollHeight;
                 };
                 // Create a function that the hub can call to broadcast messages.
-                connection.on('broadcastMessage', messageCallback);
+                // connection.on('broadcastMessage', messageCallback);
                 connection.on('echo', messageCallback);
                 connection.onclose(onConnectionError);
             }
 
             function onConnected(connection) {
                 console.log('connection started');
-                connection.send('broadcastMessage', '_SYSTEM_', username + ' JOINED');
-                document.getElementById('sendmessage').addEventListener('click', function (event) {
-                    // Call the broadcastMessage method on the hub.
-                    if (messageInput.value) {
-                        connection.send('broadcastMessage', username, messageInput.value);
-                    }
+                // connection.send('broadcast', '_SYSTEM_', username + ' JOINED');
+                // document.getElementById('sendmessage').addEventListener('click', function (event) {
+                //     // Call the broadcastMessage method on the hub.
+                //     if (messageInput.value) {
+                //         connection.send('broadcast', username, messageInput.value);
+                //     }
 
-                    // Clear text box and reset focus for next comment.
-                    messageInput.value = '';
-                    messageInput.focus();
-                    event.preventDefault();
-                });
-                document.getElementById('message').addEventListener('keypress', function (event) {
-                    if (event.keyCode === 13) {
-                        event.preventDefault();
-                        document.getElementById('sendmessage').click();
-                        return false;
-                    }
-                });
+                //     // Clear text box and reset focus for next comment.
+                //     messageInput.value = '';
+                //     messageInput.focus();
+                //     event.preventDefault();
+                // });
+                // document.getElementById('message').addEventListener('keypress', function (event) {
+                //     if (event.keyCode === 13) {
+                //         event.preventDefault();
+                //         document.getElementById('sendmessage').click();
+                //         return false;
+                //     }
+                // });
                 document.getElementById('echo').addEventListener('click', function (event) {
                     // Call the echo method on the hub.
                     connection.send('echo', username, messageInput.value);
@@ -142,24 +142,17 @@
                 modal.style = 'display: block;';
             }
 
-            i = 0;
-            for (i = 0; i < 1; i++) 
-            {
-                var connection = new signalR.HubConnectionBuilder()
-                            .withUrl('/signalrbench')
-                            .build();
-                        // bindConnectionMessage(connection);
-                        connection.start()
-                            .then(function () {
-                                // onConnected(connection);
-                            })
-                            .catch(function (error) {
-                                console.error(error.message);
-                            });
-            }
-            
-                
-
+            var connection = new signalR.HubConnectionBuilder()
+                                        .withUrl('http://localhost:5000/signalrbench')
+                                        .build();
+            bindConnectionMessage(connection);
+            connection.start()
+                .then(function () {
+                    onConnected(connection);
+                })
+                .catch(function (error) {
+                    console.error(error.message);
+                });
         });
     </script>
 </body>
