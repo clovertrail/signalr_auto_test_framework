@@ -56,6 +56,9 @@ namespace Client.WorkerNs
             Util.Log($"wait {(_pkg.Job.Duration * 2 + _pkg.Job.Interval + laterTime) + 40}s to stop");
             var stopTask = Task.Delay(TimeSpan.FromSeconds((_pkg.Job.Duration + _pkg.Job.Interval + laterTime)  + 40)).ContinueWith(async _ =>
             {
+                Util.Log($"Show statistics");
+                op.SaveCounters();
+                Util.Log($"msg send: {op.totalSentMsg}, receive: {op.totalReceivedMsg}");
                 await StopJobAsync();
             });
 
@@ -92,9 +95,7 @@ namespace Client.WorkerNs
                 Util.Log($"statistics delay time: {(_pkg.Job.Duration + laterTime / 2)}s");
                 Task.Delay((_pkg.Job.Duration + laterTime / 2 + 5) * 1000 + 120 *1000).ContinueWith(_ =>
                 {
-                    Util.Log($"Show statistics");
-                    op.SaveCounters();
-                    Util.Log($"msg send: {op.totalSentMsg}, receive: {op.totalReceivedMsg}");
+                    
 
                 });
             };
