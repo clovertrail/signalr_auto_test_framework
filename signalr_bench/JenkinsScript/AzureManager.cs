@@ -30,7 +30,7 @@ namespace JenkinsScript
                 .Configure()
                 .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
                 .Authenticate(credentials)
-                .WithSubscription(sp.Subsctiption);
+                .WithSubscription(sp.Subscription);
         }
 
         public void DeleteResourceGroup(string name)
