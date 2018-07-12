@@ -35,6 +35,8 @@ namespace JenkinsScript
 
         public string Ssh { get; set; }
 
-        
+        public string ImageId { get; set; }
+
+
     }
 }

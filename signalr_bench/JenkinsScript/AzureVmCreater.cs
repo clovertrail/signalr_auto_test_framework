@@ -45,7 +45,7 @@ namespace JenkinsScript
             var publicIp = CreatePublicIpAsync(AppSvrPublicIpBase, Location, AppSvrGroupName, AppSvrPublicDnsBase).GetAwaiter().GetResult();
             var nsg = CreateNetworkSecurityGroupAsync(AppSvrNsgBase, Location, AppSvrGroupName, _agentConfig.SshPort).GetAwaiter().GetResult();
             var nic = CreateNetworkInterfaceAsync(AppSvrNicBase, Location, AppSvrGroupName, AppSvrSubNet, vnet, publicIp, nsg).GetAwaiter().GetResult();
-            var vmTemp = GenerateVmTemplateAsync(AppSvrVmNameBase, Location, AppSvrGroupName, _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord, _agentConfig.Ssh, AppSvrVmSize, nic).GetAwaiter().GetResult();
+            var vmTemp = GenerateVmTemplateAsync(AppSvrVmNameBase, Location, AppSvrGroupName, _agentConfig.ImageId, _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord, _agentConfig.Ssh, AppSvrVmSize, nic).GetAwaiter().GetResult();
             vmTemp.Create();
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
@@ -94,7 +94,7 @@ namespace JenkinsScript
             var vmTasks = new List<Task<IWithCreate>>();
             for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
-                vmTasks.Add(GenerateVmTemplateAsync(VmNameBase, Location, GroupName, _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, _agentConfig.Ssh, SlaveVmSize, nics[i], avSet, i));
+                vmTasks.Add(GenerateVmTemplateAsync(VmNameBase, Location, GroupName, _agentConfig.ImageId, _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, _agentConfig.Ssh, SlaveVmSize, nics[i], avSet, i));
             }
 
             var vms = Task.WhenAll(vmTasks).GetAwaiter().GetResult();
@@ -266,14 +266,15 @@ namespace JenkinsScript
                 .CreateAsync();
         }
 
-        public Task<IWithCreate> GenerateVmTemplateAsync(string vmNameBase, Region location, string groupName, string user, string password, string ssh, VirtualMachineSizeTypes vmSize, INetworkInterface networkInterface, IAvailabilitySet availabilitySet = null, int i = 0)
+        public Task<IWithCreate> GenerateVmTemplateAsync(string vmNameBase, Region location, string groupName, string imageId, string user, string password, string ssh, VirtualMachineSizeTypes vmSize, INetworkInterface networkInterface, IAvailabilitySet availabilitySet = null, int i = 0)
         {
             Console.WriteLine($"Create Vm Teamlate: {vmNameBase + Convert.ToString(i)}");
             var option = _azure.VirtualMachines.Define(vmNameBase + Convert.ToString(i))
                     .WithRegion(location)
                     .WithExistingResourceGroup(groupName)
                     .WithExistingPrimaryNetworkInterface(networkInterface)
-                    .WithPopularLinuxImage(KnownLinuxVirtualMachineImage.UbuntuServer16_04_Lts)
+                    //.WithPopularLinuxImage(KnownLinuxVirtualMachineImage.UbuntuServer16_04_Lts)
+                    .WithLinuxCustomImage(imageId)
                     .WithRootUsername(user)
                     .WithRootPassword(password)
                     .WithSsh(ssh)

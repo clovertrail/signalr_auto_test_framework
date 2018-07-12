@@ -77,5 +77,9 @@ namespace Bench.Common
         [Option("retry", Required = false, HelpText = "Set Max Retry Time")]
         public int Retry { get; set; }
 
+        [Option("concurrentConnection", Required = false, HelpText = "Set Concurrent connection")]
+        public int ConcurrentConnection { get; set; }
+        
+
     }
 }
