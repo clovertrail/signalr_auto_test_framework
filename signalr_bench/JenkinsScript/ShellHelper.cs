@@ -146,7 +146,7 @@ namespace JenkinsScript
             var result = "";
             var cmd = "";
 
-            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log.txt";
+            cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log_appserver.txt";
             Util.Log($"{agentConfig.User}@{agentConfig.AppServer}: {cmd}");
             (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.AppServer, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
 
@@ -169,7 +169,7 @@ namespace JenkinsScript
             agentConfig.Slaves.ForEach(host =>
             {
                 cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Server/; " +
-                    $"dotnet run -- --rpcPort {agentConfig.RpcPort} -d 0.0.0.0 > log.txt";
+                    $"dotnet run -- --rpcPort {agentConfig.RpcPort} -d 0.0.0.0 > log_rpcslave.txt";
                 Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
                 if (errCode != 0) return;
@@ -209,7 +209,6 @@ namespace JenkinsScript
             var serverUrl = vmCreator.AppSvrDomainName();
 
             
-            Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
             for (var i = 0; i < maxRetry; i++)
             {
                 var clear = i == 0 ? "true" : "false";
@@ -226,8 +225,9 @@ namespace JenkinsScript
                     $" --slaveList '{slaveList}' " +
                     $" --retry {maxRetry} " +
                     $" --clear {clear} " +
-                    $"-o '/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{transportType}_{bench_codec_list}_{bench_name_list}_{connection}/counters.txt' > log.txt";
+                    $"-o '/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{transportType}_{bench_codec_list}_{bench_name_list}_{connection}/counters.txt' > log_rpcmaster.txt";
 
+                Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
                 if (errCode == 0) break;
                 Util.Log($"retry {i}th time");

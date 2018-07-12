@@ -39,6 +39,8 @@ namespace Bench.RpcSlave.Worker.Operations
             // send message
             StartSendMsg();
 
+            Task.Delay(10 * 1000).Wait();
+
             // save counters
             SaveCounters();
 
