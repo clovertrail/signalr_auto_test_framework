@@ -12,11 +12,9 @@ namespace Bench.RpcSlave.Worker.Operations
     class StartConnOp : BaseOp, IOperation
     {
         private WorkerToolkit _tk;
-        private int _errConnCnt = 0;
         public void Do(WorkerToolkit tk)
         {
             _tk = tk;
-            //tk.Test.Add(1);
             Start(tk.Connections);
         }
 
@@ -24,7 +22,6 @@ namespace Bench.RpcSlave.Worker.Operations
         {
             Util.Log($"start connections");
             _tk.State = Stat.Types.State.HubconnConnecting;
-            //var tasks = new List<Task>(connections.Count);
 
 
             var swConn = new Stopwatch();
@@ -42,7 +39,7 @@ namespace Bench.RpcSlave.Worker.Operations
                 catch (Exception ex)
                 {
                     Util.Log($"start connection exception: {ex}");
-                    _errConnCnt++;
+                    _tk.Counters.IncreaseConnectionError();
                 }
 
                 if (i > 0 && i % concurrency == 0)
@@ -51,8 +48,9 @@ namespace Bench.RpcSlave.Worker.Operations
                 }
             }
             Task.WhenAll(tasks).Wait();
+            _tk.Counters.UpdateConnectionSuccess(_tk.Connections.Count);
             swConn.Stop();
-            Util.Log($"connction time: {swConn.Elapsed.TotalSeconds}, err conn: {_errConnCnt}");
+            Util.Log($"connection time: {swConn.Elapsed.TotalSeconds}");
 
             _tk.State = Stat.Types.State.HubconnConnected;
         }

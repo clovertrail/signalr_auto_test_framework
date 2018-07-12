@@ -147,17 +147,12 @@ namespace Bench.RpcMaster
 
                 var jobj = new JObject();
                 var received = 0;
-                var sent = 0;
                 foreach (var item in allClientCounters)
                 {
                     jobj.Add(item.Key, item.Value);
-                    if (!item.Key.Contains("sent") && !item.Key.Contains("Sent"))
+                    if (item.Key.Contains("message") && (item.Key.Contains(":ge") || item.Key.Contains(":lt")))
                     {
                         received += item.Value;
-                    }
-                    if (item.Key.Contains("sent"))
-                    {
-                        sent += item.Value;
                     }
                 }
 

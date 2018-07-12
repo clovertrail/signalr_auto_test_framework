@@ -55,7 +55,15 @@ namespace Bench.Common
                         latency -= 1;
                     }
 
-                    //Util.Log($"latencay = {latency}");
+                    if (p.Name.Contains("connection"))
+                    {
+                        latency += 10;
+                        if (p.Name.Contains("error"))
+                        {
+                            latency += 1;
+                        }
+                    }
+
                     return latency;
                 })
             );

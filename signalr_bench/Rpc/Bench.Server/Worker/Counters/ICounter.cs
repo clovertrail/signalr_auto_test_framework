@@ -9,14 +9,5 @@ namespace Bench.RpcSlave.Worker.Counters
 {
     public interface ICounters
     {
-        int LatencyStep { get; set; }
-        int LatencyLength { get; set; }
-        List<Tuple<string, int>> GetAll();
-        void ResetCounters();
-        void CountLatency(long sendTimestamp, long receiveTimestamp);
-        void IncreseSentMsg();
-        void IncreseNotSentFromClientMsg();
-        void SaveCounters();
-        void SetServerCounter(int count);
     }
 }
