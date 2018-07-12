@@ -50,9 +50,9 @@ namespace JenkinsScript
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
             //Task.Delay(TimeSpan.FromSeconds(10)).Wait();
-            ModifyLimitAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
-            InstallDotnetAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
-            ModifySshdAndRestart(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
+            //ModifyLimitAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
+            //InstallDotnetAsync(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
+            //ModifySshdAndRestart(AppSvrDomainName(), _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord).Wait();
         }
         public Task CreateAgentVms()
         {
@@ -106,28 +106,28 @@ namespace JenkinsScript
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
 
-            Console.WriteLine($"Setuping vms");
+            //Console.WriteLine($"Setuping vms");
             //Task.Delay(TimeSpan.FromSeconds(30)).Wait();
-            var modifyLimitTasks = new List<Task>();
-            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
-            {
-                modifyLimitTasks.Add(ModifyLimitAsync(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
-            }
-            Task.WhenAll(modifyLimitTasks).Wait();
+            //var modifyLimitTasks = new List<Task>();
+            //for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
+            //{
+            //    modifyLimitTasks.Add(ModifyLimitAsync(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
+            //}
+            //Task.WhenAll(modifyLimitTasks).Wait();
 
-            var installDotnetTasks = new List<Task>();
-            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
-            {
-                installDotnetTasks.Add(InstallDotnetAsync(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
-            }
-            Task.WhenAll(installDotnetTasks).Wait();
+            //var installDotnetTasks = new List<Task>();
+            //for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
+            //{
+            //    installDotnetTasks.Add(InstallDotnetAsync(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
+            //}
+            //Task.WhenAll(installDotnetTasks).Wait();
 
-            var sshdTasks = new List<Task>();
-            for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
-            {
-                sshdTasks.Add(ModifySshdAndRestart(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
-            }
-            Task.WhenAll(sshdTasks).Wait();
+            //var sshdTasks = new List<Task>();
+            //for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
+            //{
+            //    sshdTasks.Add(ModifySshdAndRestart(SlaveDomainName(i), _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, i));
+            //}
+            //Task.WhenAll(sshdTasks).Wait();
         }
 
         public void LoginAzure()
