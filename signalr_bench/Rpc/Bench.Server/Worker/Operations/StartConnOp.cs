@@ -3,6 +3,7 @@ using Bench.Common.Config;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace Bench.RpcSlave.Worker.Operations
     class StartConnOp : BaseOp, IOperation
     {
         private WorkerToolkit _tk;
-
+        private int errConnCnt = 0;
         public void Do(WorkerToolkit tk)
         {
             _tk = tk;
@@ -23,26 +24,29 @@ namespace Bench.RpcSlave.Worker.Operations
         {
             Util.Log($"start connections");
             _tk.State = Stat.Types.State.HubconnConnecting;
-            var tasks = new List<Task>(connections.Count);
+            //var tasks = new List<Task>(connections.Count);
 
             int i = 0;
 
-            try
+            var swConn = new Stopwatch();
+            swConn.Start();
+            foreach (var conn in connections)
             {
-                foreach (var conn in connections)
+                try
                 {
                     i += 1;
                     int ind = i;
-                    tasks.Add(Task.Delay(ind / 100 * 2000).ContinueWith(_ => conn.StartAsync()));
-                    //conn.StartAsync();
+                    conn.StartAsync().Wait();
                 }
-                Task.WhenAll(tasks).Wait();
+                catch (Exception ex)
+                {
+                    Util.Log($"start connection exception: {ex}");
+                    errConnCnt++;
+                }
             }
-            catch (Exception ex)
-            {
-                Util.Log($"start connection exception: {ex}");
-            }
-            
+            swConn.Stop();
+            Util.Log($"connction time: {swConn.Elapsed.TotalSeconds}, err conn: {errConnCnt}");
+
             _tk.State = Stat.Types.State.HubconnConnected;
         }
     }
