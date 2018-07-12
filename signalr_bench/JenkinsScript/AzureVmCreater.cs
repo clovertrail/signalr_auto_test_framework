@@ -143,7 +143,7 @@ namespace JenkinsScript
                 .Configure()
                 .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
                 .Authenticate(credentials)
-                .WithDefaultSubscription();
+                .WithSubscription(sp.Subscription);
         }
 
         public IResourceGroup CreateResourceGroup(string groupName)
@@ -512,6 +512,9 @@ namespace JenkinsScript
                         break;
                     case "westus":
                         location = Region.USWest;
+                        break;
+                    case "southeastasia":
+                        location = Region.AsiaSouthEast;
                         break;
                     default:
                         location = Region.USEast;
