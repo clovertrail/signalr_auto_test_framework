@@ -263,8 +263,10 @@ namespace Bench.RpcMaster
             }
 
             var sent = (int)counters["message:sent"];
+            var notSent = (int)counters["message:notSentFromClient"];
+            var total = sent + notSent;
             var received = (int)counters["message:received"];
-            var percentage = (double)received / sent;
+            var percentage = (double)received / total;
             Util.Log($"sent: {sent}, received: {received}");
 
             var res = new JObject
