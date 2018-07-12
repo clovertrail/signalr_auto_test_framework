@@ -141,7 +141,7 @@ namespace JenkinsScript
 
             _azure = Azure
                 .Configure()
-                .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
+                .WithLogLevel(HttpLoggingDelegatingHandler.Level.BodyAndHeaders)
                 .Authenticate(credentials)
                 .WithSubscription(sp.Subscription);
         }
@@ -517,7 +517,7 @@ namespace JenkinsScript
                         location = Region.AsiaSouthEast;
                         break;
                     default:
-                        location = Region.USEast;
+                        location = Region.AsiaSouthEast;
                         break;
                 }
 
