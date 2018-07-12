@@ -224,9 +224,9 @@ namespace JenkinsScript
                     $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5000/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
                     $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
                     $" --slaveList '{slaveList}' " +
-                    $" --retry {maxRetry}" +
-                    $" --clear {clear}" +
-                    $"-o '/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}c{connection}_{bench_codec_list}_{bench_name_list}/counters.txt' > log.txt";
+                    $" --retry {maxRetry} " +
+                    $" --clear {clear} " +
+                    $"-o '/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{transportType}_{bench_codec_list}_{bench_name_list}_{connection}/counters.txt' > log.txt";
 
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
                 if (errCode == 0) break;
