@@ -303,6 +303,11 @@ namespace JenkinsScript
             Util.Log($"CMD: signalr service: az login");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 
+            // change subscription
+            cmd = $"az account set --subscription {config.Subscription}";
+            Util.Log($"CMD: az account set --subscription");
+            (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
+
             var rnd = new Random();
             var SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
 

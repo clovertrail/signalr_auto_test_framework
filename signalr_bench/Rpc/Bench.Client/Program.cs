@@ -117,7 +117,6 @@ namespace Bench.RpcMaster
                         Task.Delay(0).ContinueWith(t =>
                             {
                                 var state = client.GetState(new Empty { });
-                                Util.Log($"ind: {ind}, state: {state.State}");
                                 if ((int)state.State >= (int)Stat.Types.State.SendComplete || (int)state.State < (int)Stat.Types.State.SendRunning)
                                 {
                                     isComplete = true;
@@ -125,7 +124,6 @@ namespace Bench.RpcMaster
                                 }
                                 if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
                                 isSend = true;
-                                Util.Log($"ind: {ind++}, state: {state.State}");
                                 var counters = client.CollectCounters(new Force { Force_ = false });
 
                                 for (var i = 0; i < counters.Pairs.Count; i++)
@@ -144,11 +142,9 @@ namespace Bench.RpcMaster
 
                 if (isSend == false || isComplete == true)
                 {
-                    Util.Log($"counters return ... issend: {isSend}; iscomplete: {isComplete}");
                     return;
                 }
 
-                Util.Log($"@@@save counters");
                 var jobj = new JObject();
                 var received = 0;
                 var sent = 0;
