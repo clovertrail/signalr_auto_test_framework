@@ -10,7 +10,9 @@ namespace Bench.RpcSlave.Worker.Operations
         public BaseOp()
         {
             var opName = GetType().Name;
-            Util.Log(opName.Substring(0, opName.Length - 2) + " Operation is Created.");
+            Util.Log(opName.Substring(0, opName.Length - 2) + " Operation Started.");
         }
+
+
     }
 }
