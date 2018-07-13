@@ -130,15 +130,13 @@ namespace JenkinsScript
                                         Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                                         (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
-                                        Task.Delay(5000).Wait();
+                                        Task.Delay(10000).Wait();
                                         (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
-                                        Task.Delay(20000).Wait();
+                                        Task.Delay(30000).Wait();
                                         (errCode, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
                                             serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                             jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
                                         if (errCode != 0) break;
-                                        //(errCode, result) = ShellHelper.GenerateSingleReport(hosts, agentConfig,
-                                        //    serviceType, transportType, hubProtocol, scenario, connection);
                                     }
                                 }
                             }

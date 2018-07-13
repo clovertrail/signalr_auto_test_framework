@@ -219,12 +219,12 @@ namespace Bench.RpcMaster
                     {
                         Util.Log($"client start ind: {indStartJob++}");
                         client.RunJob(benchmarkCellConfig);
-                        SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
                     }));
                 });
-
                 Util.Log($"wait for tasks");
                 Task.WhenAll(tasks).Wait();
+                SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+
             }
             catch (Exception ex)
             {
@@ -262,8 +262,9 @@ namespace Bench.RpcMaster
             var total = sent + notSent;
             var received = (int)counters["message:received"];
             var percentage = (double)received / total;
+            var result = percentage > 0.5 ? "SUCCESS" : "FAIL";
             Util.Log($"sent: {sent}, received: {received}");
-
+            
             var res = new JObject
             {
                 { "connection", connection},
@@ -271,13 +272,18 @@ namespace Bench.RpcMaster
                 { "transportType", transportType},
                 { "protocol", protocol},
                 { "scenario", scenario},
-                {"result",  percentage > 0.5 ? "SUCCESS" : "FAIL"}
+                {"result",  result}
             };
 
             string onelineRecord = Regex.Replace(res.ToString(), @"\s+", "");
             onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
             onelineRecord += Environment.NewLine;
             File.AppendAllText(path, onelineRecord);
+
+            if (result == "FAIL")
+            {
+                throw new Exception();
+            }
         }
 
         private static void CheckLastJobResults(string path, int maxRetryCount, int connection, string serviceType, 

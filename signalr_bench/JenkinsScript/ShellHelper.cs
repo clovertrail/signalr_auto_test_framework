@@ -221,7 +221,7 @@ namespace JenkinsScript
                 cmd += $"dotnet run -- " +
                     $"--rpcPort 5555 " +
                     $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5000/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
-                    $"-v {serviceType}{connection} -t {transportType} -p {hubProtocol} -s {scenario} " +
+                    $"-v {serviceType} -t {transportType} -p {hubProtocol} -s {scenario} " +
                     $" --slaveList '{slaveList}' " +
                     $" --retry {maxRetry} " +
                     $" --clear {clear} " +
