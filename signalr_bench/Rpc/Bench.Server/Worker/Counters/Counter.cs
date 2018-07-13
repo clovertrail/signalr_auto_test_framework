@@ -38,7 +38,7 @@ namespace Bench.RpcSlave.Worker.Counters
             return list;
         }
 
-        public void ResetCounters()
+        public void ResetCounters(bool withConnection = true)
         {
             for (int i = 1; i <= LatencyLength; i++)
             {

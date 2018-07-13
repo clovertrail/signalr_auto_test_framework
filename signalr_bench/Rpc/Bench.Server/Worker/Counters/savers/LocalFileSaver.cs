@@ -21,7 +21,7 @@ namespace Bench.RpcSlave.Worker.Savers
             var totalReceive = 0;
             foreach (var c in counters)
             {
-                if (c.Key != "message:sent" && !c.Key.Contains("received"))
+                if (c.Key.Contains("message") && (c.Key.Contains(":ge") || c.Key.Contains(":lt")))
                 {
                     totalReceive += c.Value;
                 }
