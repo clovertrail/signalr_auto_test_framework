@@ -33,6 +33,9 @@ namespace Bench.RpcSlave.Worker.Operations
 
             Task.Delay(10 * 1000).Wait();
 
+            // get final server count
+            UpdateServerMessageCount();
+
             // save counters
             SaveCounters();
 
@@ -103,20 +106,15 @@ namespace Bench.RpcSlave.Worker.Operations
                         if (ind == 0) Util.Log($"Finish sending messages");
                         _sentMessages[ind]++;
                         _tk.Counters.IncreseSentMsg();
+
+                        UpdateServerMessageCount();
                     }
                     catch
                     {
                         _tk.Counters.IncreseNotSentFromClientMsg();
                     }
 
-                    try
-                    {
-                        if (ind == 0) await connection.SendAsync("count", _tk.BenchmarkCellConfig.Scenario);
-                    }
-                    catch (Exception ex)
-                    {
-                        Util.Log($"Cannot get server msessage count: {ex}");
-                    }
+                    
 
                     await Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Interval));
                 }
@@ -128,5 +126,22 @@ namespace Bench.RpcSlave.Worker.Operations
         {
             _tk.Counters.SaveCounters();
         }
+
+        private void UpdateServerMessageCount()
+        {
+            for (var i = 0; i < _tk.Connections.Count; i++)
+            {
+                try
+                {
+                    if (i == 0) _tk.Connections[i].SendAsync("count", _tk.BenchmarkCellConfig.Scenario).Wait();
+                }
+                catch (Exception ex)
+                {
+                    Util.Log($"Cannot get server msessage count: {ex}");
+                }
+            }
+            
+        }
+        
     }
 }
