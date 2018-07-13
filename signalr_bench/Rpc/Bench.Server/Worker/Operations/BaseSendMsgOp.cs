@@ -51,7 +51,7 @@ namespace Bench.RpcSlave.Worker.Operations
             }
 
             SetCallbacks();
-            _tk.Counters.ResetCounters();
+            _tk.Counters.ResetCounters(withConnection: false);
         }
 
         private void SetCallbacks()
