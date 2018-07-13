@@ -68,7 +68,6 @@ namespace Bench.RpcSlave.Worker.Operations
 
                     _tk.Counters.CountLatency(sendTimestamp, receiveTimestamp);
                     _tk.Counters.SetServerCounter(count);
-                    if (ind == 0) Util.Log($"#### callback");
                 });
 
             }
@@ -95,9 +94,7 @@ namespace Bench.RpcSlave.Worker.Operations
                 {
                     try
                     {
-                        if (ind == 0) Util.Log($"Start  sending messages");
                         await connection.SendAsync(_tk.BenchmarkCellConfig.Scenario, $"{Util.GuidEncoder.Encode(Guid.NewGuid())}", $"{Util.Timestamp()}");
-                        if (ind == 0) Util.Log($"Finish sending messages");
                         _sentMessages[ind]++;
                         _tk.Counters.IncreseSentMsg();
 
