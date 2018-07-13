@@ -48,8 +48,11 @@ namespace Bench.RpcSlave.Worker.Counters
             InnerCounters.AddOrUpdate("message:notSentFromClient", 0, (k, v) => 0);
             InnerCounters.AddOrUpdate("message:sent", 0, (k, v) => 0);
             InnerCounters.AddOrUpdate($"message:ge:{LatencyLength * LatencyStep}", 0, (k, v) => 0);
-            InnerCounters.AddOrUpdate("connection:error", 0, (k, v) => 0);
-            InnerCounters.AddOrUpdate("connection:success", 0, (k, v) => 0);
+            if (withConnection == true)
+            {
+                InnerCounters.AddOrUpdate("connection:error", 0, (k, v) => 0);
+                InnerCounters.AddOrUpdate("connection:success", 0, (k, v) => 0);
+            }
         }
 
         public void CountLatency(long sendTimestamp, long receiveTimestamp)
