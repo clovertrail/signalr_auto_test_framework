@@ -109,6 +109,15 @@ namespace Bench.RpcSlave.Worker.Operations
                         _tk.Counters.IncreseNotSentFromClientMsg();
                     }
 
+                    try
+                    {
+                        if (ind == 0) await connection.SendAsync("count", _tk.BenchmarkCellConfig.Scenario);
+                    }
+                    catch (Exception ex)
+                    {
+                        Util.Log($"Cannot get server msessage count: {ex}");
+                    }
+
                     await Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Interval));
                 }
             }
