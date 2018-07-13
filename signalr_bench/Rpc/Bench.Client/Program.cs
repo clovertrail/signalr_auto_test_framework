@@ -311,6 +311,7 @@ namespace Bench.RpcMaster
             Util.Log($"fail count: {failCount}");
             if (failCount == maxRetryCount)
             {
+                Util.Log("Too many fails. Break job");
                 throw new Exception();
             }
             
