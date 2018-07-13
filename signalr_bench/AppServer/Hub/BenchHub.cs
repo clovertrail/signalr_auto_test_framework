@@ -14,7 +14,6 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         public void Echo(string uid, string time)
         {
             Interlocked.Increment(ref _totolReceivedEcho);
-            Console.WriteLine($"_totolReceivedEcho: {_totolReceivedEcho}"); 
             Clients.Client(Context.ConnectionId).SendAsync("echo", uid, time);
         }
 
@@ -29,7 +28,6 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
             var count = 0;
             if (name == "echo") count = _totolReceivedEcho; 
             if (name == "broadcast") count = _totolReceivedBroadcast;
-            Console.WriteLine($"count {name}: {count}");
             Clients.Client(Context.ConnectionId).SendAsync("count", count);
         }
     }

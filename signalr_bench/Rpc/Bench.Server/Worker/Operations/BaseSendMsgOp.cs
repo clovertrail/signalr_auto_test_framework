@@ -71,6 +71,7 @@ namespace Bench.RpcSlave.Worker.Operations
                 _tk.Connections[i].On("count", (int count) =>
                 {
                     _tk.ServerCount = Math.Max(count, _tk.ServerCount);
+                    Util.Log($"update server received count: {count}");
                     _tk.Counters.SetServerCounter(_tk.ServerCount);
                 });
             }

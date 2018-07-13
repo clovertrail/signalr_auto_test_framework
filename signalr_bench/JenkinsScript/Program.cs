@@ -71,12 +71,26 @@ namespace JenkinsScript
                     break;
                 case "All": 
                 default:
-                    var createResourceTasks = new List<Task>();
-                    createResourceTasks.Add(vmBuilder.CreateAppServerVm());
-                    createResourceTasks.Add(vmBuilder.CreateAgentVms());
 
-                    
-                    Task.WhenAll(createResourceTasks).Wait();
+                    while (true)
+                    {
+                        try
+                        {
+                            var createResourceTasks = new List<Task>();
+                            createResourceTasks.Add(vmBuilder.CreateAppServerVm());
+                            createResourceTasks.Add(vmBuilder.CreateAgentVms());
+                            Task.WhenAll(createResourceTasks).Wait();
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Util.Log($"creating VMs Exception: {ex}");
+                            azureManager.DeleteResourceGroup(vmBuilder.GroupName);
+                            azureManager.DeleteResourceGroup(vmBuilder.AppSvrGroupName);
+                            continue;
+                        }
+                        break;
+                    }
 
                     agentConfig.AppServer = vmBuilder.AppSvrDomainName();
                     agentConfig.Slaves = new List<string>();
@@ -107,8 +121,23 @@ namespace JenkinsScript
                     {
                         var unit = 1;
                         unit = Convert.ToInt32(serviceType.Substring(4));
-                        var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
-                        Task.WhenAll(createSignalrR).Wait();
+
+                        while (true)
+                        {
+
+                            try
+                            {
+                                var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
+                                Task.WhenAll(createSignalrR).Wait();
+                            }
+                            catch(Exception ex)
+                            {
+                                Util.Log($"Creating SignalR Exception: {ex}");
+                                (errCode, result) = ShellHelper.DeleteSignalr(argsOption); // TODO what if delete fail
+                                continue;
+                            }
+                            break;
+                        }
 
                         //// todo: debug
                         //argsOption.AzureSignalrConnectionString = "Endpoint=wanlasrsselfhost.eastus.cloudapp.azure.com;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;";
