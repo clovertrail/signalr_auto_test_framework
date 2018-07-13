@@ -211,7 +211,7 @@ namespace JenkinsScript
             
             for (var i = 0; i < maxRetry; i++)
             {
-                var clear = i == 0 ? "true" : "false";
+                var clear = "false";
                 cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; ";
 
                 cmd += $"export bench_type_list='{serviceType}{connection}'; " +

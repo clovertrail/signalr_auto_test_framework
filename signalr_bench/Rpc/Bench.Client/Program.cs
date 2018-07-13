@@ -288,7 +288,7 @@ namespace Bench.RpcMaster
             for (var i = lines.Count - 1; i > lines.Count - 1 - maxRetryCount && i >= 0; i--)
             {
                 var res = JObject.Parse(lines[i]);
-                if ((int)res["connection"] == connection && (string)res["serviceType"] == serviceType &&
+                if ((string)res["serviceType"] == serviceType &&
                     (string)res["transportType"] == transportType && (string)res["protocol"] == protocol &&
                     (string)res["scenario"] == scenario && (string)res["result"] == "FAIL")
                 {

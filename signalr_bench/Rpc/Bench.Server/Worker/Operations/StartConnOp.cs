@@ -31,16 +31,19 @@ namespace Bench.RpcSlave.Worker.Operations
             var i = 0;
             foreach (var conn in connections)
             {
-                try
+                tasks.Add(Task.Run(() =>
                 {
-                    conn.StartAsync().Wait();
-                    tasks.Add(Task.Run(() => conn.StartAsync().Wait()));
-                }
-                catch (Exception ex)
-                {
-                    Util.Log($"start connection exception: {ex}");
-                    _tk.Counters.IncreaseConnectionError();
-                }
+                    try
+                    {
+                        conn.StartAsync().Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        Util.Log($"start connection exception: {ex}");
+                        _tk.Counters.IncreaseConnectionError();
+                    }
+                }));
+                
 
                 if (i > 0 && i % concurrency == 0)
                 {
