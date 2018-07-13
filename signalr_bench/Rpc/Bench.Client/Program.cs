@@ -285,9 +285,18 @@ namespace Bench.RpcMaster
         {
             var failCount = 0;
             var lines = new List<string>(File.ReadAllLines(path));
-            for (var i = lines.Count - 1; i > lines.Count - 1 - maxRetryCount && i >= 0; i--)
+            for (var i = lines.Count - 1; i > lines.Count - 1 - maxRetryCount - 1  && i >= 0; i--)
             {
-                var res = JObject.Parse(lines[i]);
+                JObject res = null;
+                try
+                {
+                    res = JObject.Parse(lines[i]);
+                }
+                catch (Exception ex)
+                {
+                    Util.Log($"parse result: {lines[i]}\n Exception: {ex}");
+                    continue;
+                }
                 if ((string)res["serviceType"] == serviceType &&
                     (string)res["transportType"] == transportType && (string)res["protocol"] == protocol &&
                     (string)res["scenario"] == scenario && (string)res["result"] == "FAIL")
