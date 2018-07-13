@@ -31,10 +31,9 @@ namespace Bench.RpcSlave.Worker.Operations
             // send message
             StartSendMsg();
 
-            Task.Delay(10 * 1000).Wait();
+            Task.Delay(5 * 1000).Wait();
 
-            // get final server count
-            UpdateServerMessageCount();
+            Task.Delay(5 * 1000).Wait();
 
             // save counters
             SaveCounters();
@@ -62,21 +61,16 @@ namespace Bench.RpcSlave.Worker.Operations
             for (int i = 0; i < _tk.Connections.Count; i++)
             {
                 int ind = i;
-                _tk.Connections[i].On(_tk.BenchmarkCellConfig.Scenario, (string uid, string time) =>
+                _tk.Connections[i].On(_tk.BenchmarkCellConfig.Scenario, (int count, string time) =>
                 {
                     var receiveTimestamp = Util.Timestamp();
                     var sendTimestamp = Convert.ToInt64(time);
 
                     _tk.Counters.CountLatency(sendTimestamp, receiveTimestamp);
+                    _tk.Counters.SetServerCounter(count);
                     if (ind == 0) Util.Log($"#### callback");
                 });
 
-                _tk.Connections[i].On("count", (int count) =>
-                {
-                    _tk.ServerCount = Math.Max(count, _tk.ServerCount);
-                    Util.Log($"update server received count: {count}");
-                    _tk.Counters.SetServerCounter(_tk.ServerCount);
-                });
             }
         }
 
@@ -107,14 +101,12 @@ namespace Bench.RpcSlave.Worker.Operations
                         _sentMessages[ind]++;
                         _tk.Counters.IncreseSentMsg();
 
-                        UpdateServerMessageCount();
                     }
                     catch
                     {
                         _tk.Counters.IncreseNotSentFromClientMsg();
                     }
 
-                    
 
                     await Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Interval));
                 }
@@ -127,21 +119,6 @@ namespace Bench.RpcSlave.Worker.Operations
             _tk.Counters.SaveCounters();
         }
 
-        private void UpdateServerMessageCount()
-        {
-            for (var i = 0; i < _tk.Connections.Count; i++)
-            {
-                try
-                {
-                    if (i == 0) _tk.Connections[i].SendAsync("count", _tk.BenchmarkCellConfig.Scenario).Wait();
-                }
-                catch (Exception ex)
-                {
-                    Util.Log($"Cannot get server msessage count: {ex}");
-                }
-            }
-            
-        }
         
     }
 }

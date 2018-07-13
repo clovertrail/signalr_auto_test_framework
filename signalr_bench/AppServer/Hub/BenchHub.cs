@@ -14,13 +14,13 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         public void Echo(string uid, string time)
         {
             Interlocked.Increment(ref _totolReceivedEcho);
-            Clients.Client(Context.ConnectionId).SendAsync("echo", uid, time);
+            Clients.Client(Context.ConnectionId).SendAsync("echo", _totolReceivedEcho, time);
         }
 
         public void Broadcast(string uid, string time)
         {
             Interlocked.Increment(ref _totolReceivedBroadcast);
-            Clients.All.SendAsync("broadcast", uid, time);
+            Clients.All.SendAsync("broadcast", _totolReceivedBroadcast, time);
         }
 
         public void Count(string name)

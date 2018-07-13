@@ -85,11 +85,7 @@ namespace Bench.RpcSlave.Worker.Operations
 
                 connection.Closed += e =>
                 {
-                    if (_tk.State != Stat.Types.State.HubconnDisconnected ||
-                        _tk.State != Stat.Types.State.HubconnDisconnecting ||
-                        _tk.State != Stat.Types.State.HubconnDisposing ||
-                        _tk.State != Stat.Types.State.HubconnDisposed
-                    )
+                    if (_tk.State <= Stat.Types.State.SendComplete && _tk.State >= Stat.Types.State.SendReady)
                     {
                         var error = $"Connection closed early: {e}";
                         Util.Log(error);
