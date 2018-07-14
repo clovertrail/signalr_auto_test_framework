@@ -14,7 +14,14 @@ namespace JenkinsScript
 
         public AzureManager()
         {
-            LoginAzure();
+            try
+            {
+                LoginAzure();
+            }
+            catch (Exception ex)
+            {
+                Util.Log($"Login Azure Exception: {ex}");
+            }
         }
 
         public void LoginAzure()

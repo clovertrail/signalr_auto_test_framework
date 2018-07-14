@@ -22,7 +22,14 @@ namespace JenkinsScript
 
         public BenchmarkVmBuilder(AgentConfig agentConfig)
         {
-            LoginAzure();
+            try
+            {
+                LoginAzure();
+            }
+            catch (Exception ex)
+            {
+                Util.Log($"Login Azure Exception: {ex}");
+            }
 
             _agentConfig = agentConfig;
 
