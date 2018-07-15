@@ -27,13 +27,12 @@ namespace Bench.RpcSlave.Worker.Operations
             Setup();
 
             _tk.State = Stat.Types.State.SendReady;
+            Task.Delay(3 * 1000).Wait();
 
             // send message
             StartSendMsg();
 
-            Task.Delay(5 * 1000).Wait();
-
-            Task.Delay(5 * 1000).Wait();
+            Task.Delay(30 * 1000).Wait();
 
             // save counters
             SaveCounters();

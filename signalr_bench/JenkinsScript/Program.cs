@@ -122,22 +122,7 @@ namespace JenkinsScript
                         var unit = 1;
                         unit = Convert.ToInt32(serviceType.Substring(4));
 
-                        while (true)
-                        {
-
-                            try
-                            {
-                                var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
-                                Task.WhenAll(createSignalrR).Wait();
-                            }
-                            catch(Exception ex)
-                            {
-                                Util.Log($"Creating SignalR Exception: {ex}");
-                                (errCode, result) = ShellHelper.DeleteSignalr(argsOption); // TODO what if delete fail
-                                continue;
-                            }
-                            break;
-                        }
+                        
 
                         //// todo: debug
                         //argsOption.AzureSignalrConnectionString = "Endpoint=wanlasrsselfhost.eastus.cloudapp.azure.com;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;";
@@ -156,6 +141,23 @@ namespace JenkinsScript
                                     for (var connection = connectionBase; ; connection += connectionIncreaseStep)
                                     //for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
                                     {
+                                        while (true)
+                                        {
+
+                                            try
+                                            {
+                                                var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
+                                                Task.WhenAll(createSignalrR).Wait();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Util.Log($"Creating SignalR Exception: {ex}");
+                                                (errCode, result) = ShellHelper.DeleteSignalr(argsOption); // TODO what if delete fail
+                                                continue;
+                                            }
+                                            break;
+                                        }
+
                                         Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                                         (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
