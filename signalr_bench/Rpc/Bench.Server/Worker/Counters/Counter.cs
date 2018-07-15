@@ -97,7 +97,7 @@ namespace Bench.RpcSlave.Worker.Counters
 
         public void SetServerCounter(int count)
         {
-            InnerCounters.AddOrUpdate("server:received", count, (k, v) => count);
+            InnerCounters.AddOrUpdate("server:received", count, (k, v) => Math.Max(count, v));
         }
 
         private string MsgKey(int latency)

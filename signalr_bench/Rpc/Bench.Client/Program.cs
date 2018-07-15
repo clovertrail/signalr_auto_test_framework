@@ -117,6 +117,7 @@ namespace Bench.RpcMaster
                         Task.Delay(0).ContinueWith(t =>
                             {
                                 var state = client.GetState(new Empty { });
+                                Console.WriteLine($"state: {state.State.ToString()}");
                                 if ((int)state.State >= (int)Stat.Types.State.SendComplete || (int)state.State < (int)Stat.Types.State.SendRunning)
                                 {
                                     isComplete = true;

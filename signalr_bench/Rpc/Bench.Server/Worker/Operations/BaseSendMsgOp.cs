@@ -18,19 +18,25 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            _tk = tk;
-            _tk.State = Stat.Types.State.SendReady;
-            var waitTime = 15 * 1000;
+            
+
+            var waitTime = 5 * 1000;
             Console.WriteLine($"wait time: {waitTime / 1000}s");
             Task.Delay(waitTime).Wait();
+
+            _tk = tk;
+            _tk.State = Stat.Types.State.SendReady;
 
             // setup
             Setup();
 
+            _tk.State = Stat.Types.State.SendRunning;
+            Task.Delay(5000).Wait();
+
             // send message
             StartSendMsg();
 
-            Task.Delay(30 * 1000).Wait();
+            Task.Delay(10 * 1000).Wait();
 
             // save counters
             SaveCounters();
@@ -72,7 +78,6 @@ namespace Bench.RpcSlave.Worker.Operations
 
         private void StartSendMsg()
         {
-            _tk.State = Stat.Types.State.SendRunning;
             var tasks = new List<Task>(_tk.Connections.Count);
             for (var i = 0; i < _tk.Connections.Count; i++)
             {
