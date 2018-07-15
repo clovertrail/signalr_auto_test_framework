@@ -18,13 +18,13 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
+            _tk = tk;
             _tk.State = Stat.Types.State.SendReady;
             var waitTime = 15 * 1000;
             Console.WriteLine($"wait time: {waitTime / 1000}s");
             Task.Delay(waitTime).Wait();
 
             // setup
-            _tk = tk;
             Setup();
 
             // send message

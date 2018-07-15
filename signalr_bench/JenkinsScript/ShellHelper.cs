@@ -231,7 +231,7 @@ namespace JenkinsScript
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
                 if (errCode == 0) break;
                 Util.Log($"retry {i}th time");
-                Task.Delay(2000).Wait();
+                Task.Delay(10000).Wait();
 
                 if (errCode != 0)
                 {
