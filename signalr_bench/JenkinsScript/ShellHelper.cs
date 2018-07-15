@@ -214,6 +214,9 @@ namespace JenkinsScript
                 var clear = "false";
                 cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; ";
 
+                var outputCounterFile = $"/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{transportType}_{bench_codec_list}_{bench_name_list}_{connection}/counters.txt";
+                cmd += $"rm {outputCounterFile} || true;";
+
                 cmd += $"export bench_type_list='{serviceType}{connection}'; " +
                     $"export bench_codec_list='{hubProtocol}'; " +
                     $"export bench_name_list='{scenario}'; ";
@@ -225,7 +228,7 @@ namespace JenkinsScript
                     $" --slaveList '{slaveList}' " +
                     $" --retry {maxRetry} " +
                     $" --clear {clear} " +
-                    $"-o '/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{transportType}_{bench_codec_list}_{bench_name_list}_{connection}/counters.txt' > log_rpcmaster.txt";
+                    $"-o '{outputCounterFile}' > log_rpcmaster.txt";
 
                 Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);

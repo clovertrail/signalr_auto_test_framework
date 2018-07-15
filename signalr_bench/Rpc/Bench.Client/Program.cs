@@ -111,13 +111,13 @@ namespace Bench.RpcMaster
                 var ind = 0;
                 var isSend = false;
                 var isComplete = false;
+                Util.Log($"all clients");
                 clients.ForEach(client =>
                 {
                     collectCountersTasks.Add(
                         Task.Delay(0).ContinueWith(t =>
                             {
                                 var state = client.GetState(new Empty { });
-                                Console.WriteLine($"state: {state.State.ToString()}");
                                 if ((int)state.State >= (int)Stat.Types.State.SendComplete || (int)state.State < (int)Stat.Types.State.SendRunning)
                                 {
                                     isComplete = true;
@@ -131,6 +131,10 @@ namespace Bench.RpcMaster
                                 {
                                     var key = counters.Pairs[i].Key;
                                     var value = counters.Pairs[i].Value;
+                                    if (key.Contains("server"))
+                                    {
+                                        Util.Log($"server [{key}]:[{value}]");
+                                    }
                                     allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
                                 }
                             }
