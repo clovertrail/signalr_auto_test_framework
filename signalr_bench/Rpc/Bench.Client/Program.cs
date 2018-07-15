@@ -110,7 +110,7 @@ namespace Bench.RpcMaster
                 var collectCountersTasks = new List<Task>();
                 var ind = 0;
                 var isSend = false;
-                var isComplete = false;
+                //var isComplete = false;
                 Util.Log($"all clients");
                 clients.ForEach(client =>
                 {
@@ -118,12 +118,7 @@ namespace Bench.RpcMaster
                         Task.Delay(0).ContinueWith(t =>
                             {
                                 var state = client.GetState(new Empty { });
-                                if ((int)state.State >= (int)Stat.Types.State.SendComplete || (int)state.State < (int)Stat.Types.State.SendRunning)
-                                {
-                                    isComplete = true;
-                                    return;
-                                }
-                                if ((int)state.State < (int)Stat.Types.State.SendRunning) return;
+                                if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
                                 isSend = true;
                                 var counters = client.CollectCounters(new Force { Force_ = false });
 
@@ -133,9 +128,10 @@ namespace Bench.RpcMaster
                                     var value = counters.Pairs[i].Value;
                                     if (key.Contains("server"))
                                     {
-                                        Util.Log($"server [{key}]:[{value}]");
+                                        allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
                                     }
-                                    allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
+                                    else
+                                        allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
                                 }
                             }
                         )
@@ -145,7 +141,7 @@ namespace Bench.RpcMaster
 
                 Task.WhenAll(collectCountersTasks).Wait();
 
-                if (isSend == false || isComplete == true)
+                if (isSend == false)
                 {
                     return;
                 }
