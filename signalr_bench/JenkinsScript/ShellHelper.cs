@@ -196,7 +196,7 @@ namespace JenkinsScript
             var bench_type_list = serviceType;
             var bench_codec_list = hubProtocol;
             var bench_name_list = scenario;
-            var maxRetry = 5;
+            var maxRetry = 1;
             var slaveList = "";
 
             for (var i = 0; i < agentConfig.Slaves.Count; i++)
@@ -234,7 +234,7 @@ namespace JenkinsScript
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
                 if (errCode == 0) break;
                 Util.Log($"retry {i}th time");
-                Task.Delay(10000).Wait();
+                //Task.Delay(10000).Wait();
 
                 if (errCode != 0)
                 {

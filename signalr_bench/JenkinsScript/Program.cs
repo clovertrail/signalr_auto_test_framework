@@ -161,18 +161,27 @@ namespace JenkinsScript
                                             break;
                                         }
 
-                                        Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
-                                        (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
-                                        Task.Delay(10000).Wait();
-                                        (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
-                                        Task.Delay(30000).Wait();
-                                        (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
-                                        Task.Delay(30000).Wait();
-                                        (errCode, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
-                                            serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
-                                            jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
-                                        if (errCode != 0) break;
+
+                                        var maxRetry = 5;
+                                        var errCodeMaster = 0;
+                                        for (var i = 0; i < maxRetry; i++)
+                                        {
+                                            Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
+                                            (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
+                                            Task.Delay(10000).Wait();
+                                            (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
+                                            Task.Delay(30000).Wait();
+                                            (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
+                                            Task.Delay(30000).Wait();
+                                            (errCodeMaster, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
+                                                serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
+                                                jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
+                                            if (errCodeMaster == 0) break;
+                                            Util.Log($"retry {i+1}th time");
+                                        }
+
                                         (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
+                                        if (errCodeMaster != 0) break;
                                     }
                                 }
                             }

@@ -37,6 +37,8 @@ namespace JenkinsScript
         [Option('h', "help", Required = false, HelpText = " dotnet run -j /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/job.yaml -a  /home/wanl/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Configs/agent.yaml")]
         public string Help { get; set; }
 
+        [Option("debug", Required = false, HelpText = " debug")]
+        public string Debug { get; set; }
 
     }
 }
