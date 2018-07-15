@@ -104,6 +104,9 @@ namespace JenkinsScript
                     agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
                     hosts.Add(agentConfig.Master);
 
+                    // TODO: check if ssh success
+                    Task.Delay(20 * 1000).Wait();
+
                     (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
                     (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
 
@@ -160,8 +163,9 @@ namespace JenkinsScript
 
                                         Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
                                         (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
-                                        (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                                         Task.Delay(10000).Wait();
+                                        (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
+                                        Task.Delay(30000).Wait();
                                         (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
                                         Task.Delay(30000).Wait();
                                         (errCode, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,

@@ -18,6 +18,7 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
+            _tk.State = Stat.Types.State.SendReady;
             var waitTime = 15 * 1000;
             Console.WriteLine($"wait time: {waitTime / 1000}s");
             Task.Delay(waitTime).Wait();
@@ -25,9 +26,6 @@ namespace Bench.RpcSlave.Worker.Operations
             // setup
             _tk = tk;
             Setup();
-
-            _tk.State = Stat.Types.State.SendReady;
-            Task.Delay(3 * 1000).Wait();
 
             // send message
             StartSendMsg();
