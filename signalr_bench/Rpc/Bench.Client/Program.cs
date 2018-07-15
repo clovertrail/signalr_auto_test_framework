@@ -262,7 +262,7 @@ namespace Bench.RpcMaster
             var total = sent + notSent;
             var received = (int)counters["message:received"];
             var percentage = (double)received / total;
-            var result = percentage > 0.5 ? "SUCCESS" : "FAIL";
+            var result = percentage > 0.8 ? "SUCCESS" : "FAIL";
 
             Util.Log($"sent: {sent}, received: {received}");
             

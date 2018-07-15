@@ -196,7 +196,7 @@ namespace JenkinsScript
             var bench_type_list = serviceType;
             var bench_codec_list = hubProtocol;
             var bench_name_list = scenario;
-            var maxRetry = 10;
+            var maxRetry = 5;
             var slaveList = "";
 
             for (var i = 0; i < agentConfig.Slaves.Count; i++)
