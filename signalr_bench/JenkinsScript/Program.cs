@@ -168,6 +168,7 @@ namespace JenkinsScript
                                             serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                             jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
                                         if (errCode != 0) break;
+                                        (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
                                     }
                                 }
                             }
