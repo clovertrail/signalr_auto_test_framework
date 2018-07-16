@@ -248,6 +248,35 @@ namespace Bench.RpcMaster
             Console.WriteLine ("Exit client...");
         }
 
+        private static void SaveConfig(string path, int connection, string serviceType, string transportType, string protocol, string scenario)
+        {
+            var jobj = new JObject
+            {
+                {"connection", connection},
+                {"serviceType", serviceType},
+                {"transportType", transportType},
+                {"protocol", protocol},
+                {"scenario", scenario}
+            };
+
+            string onelineRecord = Regex.Replace(jobj.ToString(), @"\s+", "");
+            onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
+            onelineRecord += Environment.NewLine;
+
+            var resDir = System.IO.Path.GetDirectoryName(path);
+            if (!Directory.Exists(resDir))
+            {
+                Directory.CreateDirectory(resDir);
+            }
+            if (!File.Exists(path))
+            {
+                StreamWriter sw = File.CreateText(path);
+            }
+
+            File.AppendAllText(path, onelineRecord);
+        }
+
+
         private static void SaveJobResult(string path, JObject counters, int connection, string serviceType, string transportType, string protocol, string scenario)
         {
 

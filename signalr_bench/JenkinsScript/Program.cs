@@ -72,32 +72,46 @@ namespace JenkinsScript
                 case "All": 
                 default:
 
-                    while (true)
+                    if (argsOption.Debug == "true")
                     {
-                        try
+                        agentConfig.AppServer = "wanlauto5c54189495appsvrdns0.southeastasia.cloudapp.azure.com";
+                        agentConfig.Slaves = new List<string>();
+                        agentConfig.SlaveVmCount = 2;
+                        for (var i = 0; i < agentConfig.SlaveVmCount; i++)
                         {
-                            var createResourceTasks = new List<Task>();
-                            createResourceTasks.Add(vmBuilder.CreateAppServerVm());
-                            createResourceTasks.Add(vmBuilder.CreateAgentVms());
-                            Task.WhenAll(createResourceTasks).Wait();
-
+                            agentConfig.Slaves.Add($"wanlauto5c54189495dns{i}.southeastasia.cloudapp.azure.com");
                         }
-                        catch (Exception ex)
-                        {
-                            Util.Log($"creating VMs Exception: {ex}");
-                            azureManager.DeleteResourceGroup(vmBuilder.GroupName);
-                            azureManager.DeleteResourceGroup(vmBuilder.AppSvrGroupName);
-                            continue;
-                        }
-                        break;
                     }
-
-                    agentConfig.AppServer = vmBuilder.AppSvrDomainName();
-                    agentConfig.Slaves = new List<string>();
-                    for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                    else
                     {
-                        agentConfig.Slaves.Add(vmBuilder.SlaveDomainName(i));
+                        while (true)
+                        {
+                            try
+                            {
+                                var createResourceTasks = new List<Task>();
+                                createResourceTasks.Add(vmBuilder.CreateAppServerVm());
+                                createResourceTasks.Add(vmBuilder.CreateAgentVms());
+                                Task.WhenAll(createResourceTasks).Wait();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Util.Log($"creating VMs Exception: {ex}");
+                                azureManager.DeleteResourceGroup(vmBuilder.GroupName);
+                                azureManager.DeleteResourceGroup(vmBuilder.AppSvrGroupName);
+                                continue;
+                            }
+                            break;
+                        }
+
+                        agentConfig.AppServer = vmBuilder.AppSvrDomainName();
+                        agentConfig.Slaves = new List<string>();
+                        for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                        {
+                            agentConfig.Slaves.Add(vmBuilder.SlaveDomainName(i));
+                        }
                     }
+                    
 
                     var hosts = new List<string>();
                     hosts.Add(agentConfig.AppServer);
