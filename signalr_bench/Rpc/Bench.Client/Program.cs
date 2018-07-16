@@ -112,7 +112,6 @@ namespace Bench.RpcMaster
                 var isSend = false;
                 var isComplete = false;
                 //var isComplete = false;
-                Util.Log($"all clients");
                 clients.ForEach(client =>
                 {
                     collectCountersTasks.Add(
