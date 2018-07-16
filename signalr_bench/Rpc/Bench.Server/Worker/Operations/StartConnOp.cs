@@ -26,31 +26,46 @@ namespace Bench.RpcSlave.Worker.Operations
 
             var swConn = new Stopwatch();
             swConn.Start();
-            int concurrency = 50;
-            var tasks = new List<Task>(connections.Count);
+            //int concurrency = 50;
+            //var tasks = new List<Task>(connections.Count);
+            //var i = 0;
+            //foreach (var conn in connections)
+            //{
+            //    tasks.Add(Task.Run(() =>
+            //    {
+            //        try
+            //        {
+            //            conn.StartAsync().Wait();
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Util.Log($"start connection exception: {ex}");
+            //            _tk.Counters.IncreaseConnectionError();
+            //        }
+            //    }));
+
+
+            //    if (i > 0 && i % concurrency == 0)
+            //    {
+            //        Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+            //    }
+            //}
+            //Task.WhenAll(tasks).Wait();
+
             var i = 0;
             foreach (var conn in connections)
             {
-                tasks.Add(Task.Run(() =>
+                try
                 {
-                    try
-                    {
-                        conn.StartAsync().Wait();
-                    }
-                    catch (Exception ex)
-                    {
-                        Util.Log($"start connection exception: {ex}");
-                        _tk.Counters.IncreaseConnectionError();
-                    }
-                }));
-                
-
-                if (i > 0 && i % concurrency == 0)
+                    conn.StartAsync().Wait();
+                }
+                catch (Exception ex)
                 {
-                    Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+                    Util.Log($"start connection exception: {ex}");
+                    _tk.Counters.IncreaseConnectionError();
                 }
             }
-            Task.WhenAll(tasks).Wait();
+
             _tk.Counters.UpdateConnectionSuccess(_tk.Connections.Count);
             swConn.Stop();
             Util.Log($"connection time: {swConn.Elapsed.TotalSeconds}");
