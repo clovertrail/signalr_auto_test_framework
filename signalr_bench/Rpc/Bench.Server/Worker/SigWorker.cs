@@ -1,4 +1,4 @@
-﻿using Bench.Common.Config;
+using Bench.Common.Config;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;

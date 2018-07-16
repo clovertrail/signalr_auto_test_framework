@@ -1,4 +1,4 @@
-﻿using CommandLine;
+using CommandLine;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Bench.Common
         [Option('j', "jobconfig", Required = false, HelpText = "Specify Job Config File")]
         public string JobConfigFile { get; set; }
 
-        [Option('d', "dnsname", Required = false, HelpText = "Specify DNS Name")]
+        [Option('d', "dnsname", Default = "0.0.0.0", Required = false, HelpText = "Specify DNS Name")]
         public string DnsName { get; set; }
 
         [Option('c', "containername", Required = false, HelpText = "Specify Azure Container Name")]
@@ -39,7 +39,6 @@ namespace Bench.Common
 
         [Option('s', "scenerio", Required = false, HelpText = "Specify BenchMark Scenario")]
         public string Scenario { get; set; }
-
 
         [Option('B', "connectionbase", Required = false, HelpText = "Specify Connection Base")]
         public string ConnectionBase { get; set; }
@@ -77,9 +76,10 @@ namespace Bench.Common
         [Option("retry", Required = false, HelpText = "Set Max Retry Time")]
         public int Retry { get; set; }
 
-        [Option("concurrentConnection", Required = false, HelpText = "Set Concurrent connection")]
+        [Option("concurrentConnection", Default = 1, Required = false, HelpText = "Set Concurrent connection")]
         public int ConcurrentConnection { get; set; }
-        
 
+        [Option("pidFile", Default = null, Required = false, HelpText = "Set The File to Save PID")]
+        public string PidFile { get; set; }
     }
 }

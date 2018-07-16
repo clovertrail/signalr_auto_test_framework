@@ -1,4 +1,4 @@
-﻿using Bench.Common;
+using Bench.Common;
 using Bench.Common.Config;
 using Bench.RpcSlave.Worker;
 using Grpc.Core;
@@ -45,6 +45,7 @@ namespace Bench.RpcSlave
                 var jobConfig = new JobConfig
                 {
                     Connections = config.Connections,
+                    ConcurrentConnections = config.ConcurrentConnections,
                     Slaves = config.Slaves,
                     Interval = config.Interval,
                     Duration = config.Duration,
@@ -67,8 +68,6 @@ namespace Bench.RpcSlave
                 Util.Log($"Exception: {ex}");
                 throw;
             }
-
-            
         }
 
         public override Task<Stat> CreateWorker(Empty empty, ServerCallContext context)
@@ -90,7 +89,6 @@ namespace Bench.RpcSlave
                 Util.Log($"Exception: {ex}");
                 throw;
             }
-            
         }
 
         public override Task<CounterDict> CollectCounters(Force force, ServerCallContext context)
@@ -112,7 +110,6 @@ namespace Bench.RpcSlave
                 Util.Log($"Exception: {ex}");
                 throw;
             }
-            
         }
 
         public override Task<Stat> RunJob(Common.BenchmarkCellConfig cellConfig, ServerCallContext context)
@@ -140,14 +137,11 @@ namespace Bench.RpcSlave
                 Util.Log($"Exception: {ex}");
                 throw;
             }
-            
-
         }
 
         public override Task<Stat> Test(Strg strg, ServerCallContext context)
         {
             return Task.FromResult(new Stat { State = Stat.Types.State.DebugTodo});
         }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using Bench.Common;
+using Bench.Common;
 using Bench.Common.Config;
 using Bench.RpcSlave.Worker.Counters;
 using Bench.RpcSlave.Worker.Savers;
