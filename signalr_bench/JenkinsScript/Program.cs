@@ -144,22 +144,30 @@ namespace JenkinsScript
                                     for (var connection = connectionBase; ; connection += connectionIncreaseStep)
                                     //for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
                                     {
-                                        while (true)
+                                        if (argsOption.Debug == "true")
                                         {
-
-                                            try
-                                            {
-                                                var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
-                                                Task.WhenAll(createSignalrR).Wait();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Util.Log($"Creating SignalR Exception: {ex}");
-                                                (errCode, result) = ShellHelper.DeleteSignalr(argsOption); // TODO what if delete fail
-                                                continue;
-                                            }
-                                            break;
+                                            argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsoutheastasia.service.signalr.net;AccessKey=OARMNcuoy3Cf157eCBkyWh3dTA58TtGdWOjNHpTzJnA=;";
                                         }
+                                        else
+                                        {
+                                            while (true)
+                                            {
+
+                                                try
+                                                {
+                                                    var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
+                                                    Task.WhenAll(createSignalrR).Wait();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    Util.Log($"Creating SignalR Exception: {ex}");
+                                                    (errCode, result) = ShellHelper.DeleteSignalr(argsOption); // TODO what if delete fail
+                                                    continue;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        
 
 
                                         var maxRetry = 5;
@@ -180,7 +188,13 @@ namespace JenkinsScript
                                             Util.Log($"retry {i+1}th time");
                                         }
 
-                                        (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
+                                        if (argsOption.Debug == "true")
+                                        {
+                                        }
+                                        else
+                                        {
+                                            (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
+                                        }
                                         if (errCodeMaster != 0) break;
                                     }
                                 }

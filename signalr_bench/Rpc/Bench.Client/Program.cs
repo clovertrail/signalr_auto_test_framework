@@ -143,7 +143,7 @@ namespace Bench.RpcMaster
 
                 Task.WhenAll(collectCountersTasks).Wait();
 
-                if (isSend == false && isComplete == true)
+                if (isSend == false || isComplete == true)
                 {
                     return;
                 }
@@ -250,15 +250,8 @@ namespace Bench.RpcMaster
 
         private static void SaveJobResult(string path, JObject counters, int connection, string serviceType, string transportType, string protocol, string scenario)
         {
-            var resDir = System.IO.Path.GetDirectoryName(path);
-            if (!Directory.Exists(resDir))
-            {
-                Directory.CreateDirectory(resDir);
-            }
-            if (!File.Exists(path))
-            {
-                StreamWriter sw = File.CreateText(path);
-            }
+
+            if (counters == null) return;
 
             var sent = (int)counters["message:sent"];
             var notSent = (int)counters["message:notSentFromClient"];
@@ -273,7 +266,7 @@ namespace Bench.RpcMaster
             {
                 percentage = (double)received / (total);
             }
-            var result = percentage > 0.8 ? "SUCCESS" : "FAIL";
+            var result = percentage > 0.7 ? "SUCCESS" : "FAIL";
 
             Util.Log($"sent: {sent}, received: {received}");
             
@@ -290,6 +283,17 @@ namespace Bench.RpcMaster
             string onelineRecord = Regex.Replace(res.ToString(), @"\s+", "");
             onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
             onelineRecord += Environment.NewLine;
+
+            var resDir = System.IO.Path.GetDirectoryName(path);
+            if (!Directory.Exists(resDir))
+            {
+                Directory.CreateDirectory(resDir);
+            }
+            if (!File.Exists(path))
+            {
+                StreamWriter sw = File.CreateText(path);
+            }
+
             File.AppendAllText(path, onelineRecord);
 
             if (result == "FAIL")

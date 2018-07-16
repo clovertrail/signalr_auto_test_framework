@@ -196,7 +196,7 @@ namespace JenkinsScript
             var bench_type_list = serviceType;
             var bench_codec_list = hubProtocol;
             var bench_name_list = scenario;
-            var maxRetry = 1;
+            var maxRetry = 5;
             var slaveList = "";
 
             for (var i = 0; i < agentConfig.Slaves.Count; i++)
@@ -209,13 +209,14 @@ namespace JenkinsScript
             var serverUrl = vmCreator.AppSvrDomainName();
 
             
-            for (var i = 0; i < maxRetry; i++)
+            for (var i = 0; i < 1; i++)
             {
                 var clear = "false";
                 cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Rpc/Bench.Client/; ";
 
-                var outputCounterFile = $"/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{transportType}_{bench_codec_list}_{bench_name_list}_{connection}/counters.txt";
-                cmd += $"rm {outputCounterFile} || true;";
+                var outputCounterDir = $"/home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{bench_type_list}_{transportType}_{bench_codec_list}_{bench_name_list}_{connection}/";
+                var outputCounterFile = outputCounterDir + $"counters.txt";
+                cmd += $"rm -rf {outputCounterFile} || true;";
 
                 cmd += $"export bench_type_list='{serviceType}{connection}'; " +
                     $"export bench_codec_list='{hubProtocol}'; " +

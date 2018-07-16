@@ -29,6 +29,7 @@ namespace Bench.RpcSlave.Worker.Operations
 
             // setup
             Setup();
+            Task.Delay(5000).Wait();
 
             _tk.State = Stat.Types.State.SendRunning;
             Task.Delay(5000).Wait();
