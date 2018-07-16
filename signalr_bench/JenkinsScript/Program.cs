@@ -160,7 +160,7 @@ namespace JenkinsScript
                                     {
                                         if (argsOption.Debug == "true")
                                         {
-                                            argsOption.AzureSignalrConnectionString = "Endpoint=https://wanldebugasia.service.signalr.net;AccessKey=+DEuX25AseghvWMvOMlkn7Xlq0LZOVjFAmxPZYM1JGc=;";
+                                            argsOption.AzureSignalrConnectionString = "Endpoint=https://wanldebugsa.service.signalr.net;AccessKey=4bb4D1/C8ocS8PhhNB4t71p6JN5AeNCvbDvRvx6wiuY=;";
                                         }
                                         else
                                         {
@@ -188,13 +188,18 @@ namespace JenkinsScript
                                         var errCodeMaster = 0;
                                         for (var i = 0; i < maxRetry; i++)
                                         {
+                                            int waitTime = 20000;
+                                            if (argsOption.Debug == "true")
+                                            {
+                                                waitTime = 5000;
+                                            }
                                             Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
                                             (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
-                                            Task.Delay(10000).Wait();
+                                            Task.Delay(waitTime).Wait();
                                             (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
-                                            Task.Delay(30000).Wait();
+                                            Task.Delay(waitTime).Wait();
                                             (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
-                                            Task.Delay(30000).Wait();
+                                            Task.Delay(waitTime).Wait();
                                             (errCodeMaster, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
                                                 serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                                 jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
