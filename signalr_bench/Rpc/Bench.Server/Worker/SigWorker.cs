@@ -23,19 +23,19 @@ namespace Bench.RpcSlave.Worker
         }
 
 
-        public Stat.Types.State ProcessJob()
+        public Stat.Types.State ProcessJob(string opName)
         {
             // process operations
-            GetPipeline().ForEach(opName =>
-            {
-                var tuple = OperationFactory.CreateOp(opName, _tk);
-                var obj = tuple.Item1;
-                var type = tuple.Item2;
-                dynamic op = Convert.ChangeType(obj, type);
-                op.Do(_tk);
-            });
+            //GetPipeline().ForEach(opName =>
+            //{
+            var tuple = OperationFactory.CreateOp(opName, _tk);
+            var obj = tuple.Item1;
+            var type = tuple.Item2;
+            dynamic op = Convert.ChangeType(obj, type);
+            op.Do(_tk);
+            //});
 
-            return Stat.Types.State.SendComplete;
+            return _tk.State;
         }
 
         public List<string> GetPipeline()

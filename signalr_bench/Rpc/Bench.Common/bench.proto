@@ -18,6 +18,7 @@ message BenchmarkCellConfig {
 	string transportType = 2;
 	string hubProtocol = 3;
 	string scenario = 4;
+	string step = 5;
 }
 
 message Force {

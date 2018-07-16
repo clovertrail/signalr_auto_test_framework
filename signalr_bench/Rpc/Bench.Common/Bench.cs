@@ -22,43 +22,44 @@ namespace Bench.Common {
     static BenchReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgtCZW5jaC5wcm90bxIMQmVuY2guQ29tbW9uImgKE0JlbmNobWFya0NlbGxD",
+            "CgtCZW5jaC5wcm90bxIMQmVuY2guQ29tbW9uInYKE0JlbmNobWFya0NlbGxD",
             "b25maWcSEwoLc2Vydml2ZVR5cGUYASABKAkSFQoNdHJhbnNwb3J0VHlwZRgC",
-            "IAEoCRITCgtodWJQcm90b2NvbBgDIAEoCRIQCghzY2VuYXJpbxgEIAEoCSIW",
-            "CgVGb3JjZRINCgVmb3JjZRgBIAEoCCIiCgRQYWlyEgsKA2tleRgBIAEoCRIN",
-            "CgV2YWx1ZRgCIAEoBSIwCgtDb3VudGVyRGljdBIhCgVwYWlycxgBIAMoCzIS",
-            "LkJlbmNoLkNvbW1vbi5QYWlyIhUKBFBhdGgSDQoFcHBhdGgYASABKAkifQoN",
-            "Q2VsbEpvYkNvbmZpZxITCgtjb25uZWN0aW9ucxgBIAEoBRIOCgZzbGF2ZXMY",
-            "AiABKAUSEAoIaW50ZXJ2YWwYAyABKAUSEAoIZHVyYXRpb24YBCABKAUSEQoJ",
-            "c2VydmVyVXJsGAUgASgJEhAKCHBpcGVsaW5lGAYgASgJIvcDCgRTdGF0EicK",
-            "BXN0YXRlGAEgASgOMhguQmVuY2guQ29tbW9uLlN0YXQuU3RhdGUixQMKBVN0",
-            "YXRlEg4KCkRFQlVHX1RPRE8QABIXChNIVUJDT05OX1VOQ09OTkVDVEVEEAES",
-            "FgoSSFVCQ09OTl9DT05ORUNUSU5HEAISFQoRSFVCQ09OTl9DT05ORUNURUQQ",
-            "AxITCg9DT05GSUdfVU5MT0FERUQQCBISCg5DT05GSUdfTE9BRElORxAJEhEK",
-            "DUNPTkZJR19MT0FERUQQChIOCgpTRU5EX1JFQURZEAsSEAoMU0VORF9SVU5O",
-            "SU5HEAwSEQoNU0VORF9DT01QTEVURRANEhIKDldPUktFUl9VTkVYSVNUEA4S",
-            "EwoPV09SS0VSX0NSRUFUSU5HEA8SEgoOV09SS0VSX0NSRUFURUQQEBISCg5X",
-            "T1JLRVJfRVhJU1RFRBAREhUKEUhVQkNPTk5fVU5DUkVBVEVEEBISFAoQSFVC",
-            "Q09OTl9DUkVBVElORxATEhMKD0hVQkNPTk5fQ1JFQVRFRBAUEhkKFUhVQkNP",
-            "Tk5fRElTQ09OTkVDVElORxAYEhgKFEhVQkNPTk5fRElTQ09OTkVDVEVEEBkS",
-            "FQoRSFVCQ09OTl9ESVNQT1NJTkcQGhIUChBIVUJDT05OX0RJU1BPU0VEEBsi",
-            "EwoEU3RyZxILCgNzdHIYASABKAkiGQoJVGltZXN0YW1wEgwKBHRpbWUYASAB",
-            "KAQiBwoFRW1wdHky/AMKClJwY1NlcnZpY2USPgoMR2V0VGltZXN0YW1wEhMu",
-            "QmVuY2guQ29tbW9uLkVtcHR5GhcuQmVuY2guQ29tbW9uLlRpbWVzdGFtcCIA",
-            "Ej4KEUdldENvdW50ZXJKc29uU3RyEhMuQmVuY2guQ29tbW9uLkVtcHR5GhIu",
-            "QmVuY2guQ29tbW9uLlN0cmciABI1CghHZXRTdGF0ZRITLkJlbmNoLkNvbW1v",
-            "bi5FbXB0eRoSLkJlbmNoLkNvbW1vbi5TdGF0IgASQgoNTG9hZEpvYkNvbmZp",
-            "ZxIbLkJlbmNoLkNvbW1vbi5DZWxsSm9iQ29uZmlnGhIuQmVuY2guQ29tbW9u",
-            "LlN0YXQiABI5CgxDcmVhdGVXb3JrZXISEy5CZW5jaC5Db21tb24uRW1wdHka",
-            "Ei5CZW5jaC5Db21tb24uU3RhdCIAEkMKD0NvbGxlY3RDb3VudGVycxITLkJl",
-            "bmNoLkNvbW1vbi5Gb3JjZRoZLkJlbmNoLkNvbW1vbi5Db3VudGVyRGljdCIA",
-            "EkEKBlJ1bkpvYhIhLkJlbmNoLkNvbW1vbi5CZW5jaG1hcmtDZWxsQ29uZmln",
-            "GhIuQmVuY2guQ29tbW9uLlN0YXQiABIwCgRUZXN0EhIuQmVuY2guQ29tbW9u",
-            "LlN0cmcaEi5CZW5jaC5Db21tb24uU3RhdCIAYgZwcm90bzM="));
+            "IAEoCRITCgtodWJQcm90b2NvbBgDIAEoCRIQCghzY2VuYXJpbxgEIAEoCRIM",
+            "CgRzdGVwGAUgASgJIhYKBUZvcmNlEg0KBWZvcmNlGAEgASgIIiIKBFBhaXIS",
+            "CwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgFIjAKC0NvdW50ZXJEaWN0EiEK",
+            "BXBhaXJzGAEgAygLMhIuQmVuY2guQ29tbW9uLlBhaXIiFQoEUGF0aBINCgVw",
+            "cGF0aBgBIAEoCSJ9Cg1DZWxsSm9iQ29uZmlnEhMKC2Nvbm5lY3Rpb25zGAEg",
+            "ASgFEg4KBnNsYXZlcxgCIAEoBRIQCghpbnRlcnZhbBgDIAEoBRIQCghkdXJh",
+            "dGlvbhgEIAEoBRIRCglzZXJ2ZXJVcmwYBSABKAkSEAoIcGlwZWxpbmUYBiAB",
+            "KAki9wMKBFN0YXQSJwoFc3RhdGUYASABKA4yGC5CZW5jaC5Db21tb24uU3Rh",
+            "dC5TdGF0ZSLFAwoFU3RhdGUSDgoKREVCVUdfVE9ETxAAEhcKE0hVQkNPTk5f",
+            "VU5DT05ORUNURUQQARIWChJIVUJDT05OX0NPTk5FQ1RJTkcQAhIVChFIVUJD",
+            "T05OX0NPTk5FQ1RFRBADEhMKD0NPTkZJR19VTkxPQURFRBAIEhIKDkNPTkZJ",
+            "R19MT0FESU5HEAkSEQoNQ09ORklHX0xPQURFRBAKEg4KClNFTkRfUkVBRFkQ",
+            "CxIQCgxTRU5EX1JVTk5JTkcQDBIRCg1TRU5EX0NPTVBMRVRFEA0SEgoOV09S",
+            "S0VSX1VORVhJU1QQDhITCg9XT1JLRVJfQ1JFQVRJTkcQDxISCg5XT1JLRVJf",
+            "Q1JFQVRFRBAQEhIKDldPUktFUl9FWElTVEVEEBESFQoRSFVCQ09OTl9VTkNS",
+            "RUFURUQQEhIUChBIVUJDT05OX0NSRUFUSU5HEBMSEwoPSFVCQ09OTl9DUkVB",
+            "VEVEEBQSGQoVSFVCQ09OTl9ESVNDT05ORUNUSU5HEBgSGAoUSFVCQ09OTl9E",
+            "SVNDT05ORUNURUQQGRIVChFIVUJDT05OX0RJU1BPU0lORxAaEhQKEEhVQkNP",
+            "Tk5fRElTUE9TRUQQGyITCgRTdHJnEgsKA3N0chgBIAEoCSIZCglUaW1lc3Rh",
+            "bXASDAoEdGltZRgBIAEoBCIHCgVFbXB0eTL8AwoKUnBjU2VydmljZRI+CgxH",
+            "ZXRUaW1lc3RhbXASEy5CZW5jaC5Db21tb24uRW1wdHkaFy5CZW5jaC5Db21t",
+            "b24uVGltZXN0YW1wIgASPgoRR2V0Q291bnRlckpzb25TdHISEy5CZW5jaC5D",
+            "b21tb24uRW1wdHkaEi5CZW5jaC5Db21tb24uU3RyZyIAEjUKCEdldFN0YXRl",
+            "EhMuQmVuY2guQ29tbW9uLkVtcHR5GhIuQmVuY2guQ29tbW9uLlN0YXQiABJC",
+            "Cg1Mb2FkSm9iQ29uZmlnEhsuQmVuY2guQ29tbW9uLkNlbGxKb2JDb25maWca",
+            "Ei5CZW5jaC5Db21tb24uU3RhdCIAEjkKDENyZWF0ZVdvcmtlchITLkJlbmNo",
+            "LkNvbW1vbi5FbXB0eRoSLkJlbmNoLkNvbW1vbi5TdGF0IgASQwoPQ29sbGVj",
+            "dENvdW50ZXJzEhMuQmVuY2guQ29tbW9uLkZvcmNlGhkuQmVuY2guQ29tbW9u",
+            "LkNvdW50ZXJEaWN0IgASQQoGUnVuSm9iEiEuQmVuY2guQ29tbW9uLkJlbmNo",
+            "bWFya0NlbGxDb25maWcaEi5CZW5jaC5Db21tb24uU3RhdCIAEjAKBFRlc3QS",
+            "Ei5CZW5jaC5Db21tb24uU3RyZxoSLkJlbmNoLkNvbW1vbi5TdGF0IgBiBnBy",
+            "b3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.BenchmarkCellConfig), global::Bench.Common.BenchmarkCellConfig.Parser, new[]{ "ServiveType", "TransportType", "HubProtocol", "Scenario" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.BenchmarkCellConfig), global::Bench.Common.BenchmarkCellConfig.Parser, new[]{ "ServiveType", "TransportType", "HubProtocol", "Scenario", "Step" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Force), global::Bench.Common.Force.Parser, new[]{ "Force_" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Pair), global::Bench.Common.Pair.Parser, new[]{ "Key", "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CounterDict), global::Bench.Common.CounterDict.Parser, new[]{ "Pairs" }, null, null, null),
@@ -102,6 +103,7 @@ namespace Bench.Common {
       transportType_ = other.transportType_;
       hubProtocol_ = other.hubProtocol_;
       scenario_ = other.scenario_;
+      step_ = other.step_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -153,6 +155,17 @@ namespace Bench.Common {
       }
     }
 
+    /// <summary>Field number for the "step" field.</summary>
+    public const int StepFieldNumber = 5;
+    private string step_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Step {
+      get { return step_; }
+      set {
+        step_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as BenchmarkCellConfig);
@@ -170,6 +183,7 @@ namespace Bench.Common {
       if (TransportType != other.TransportType) return false;
       if (HubProtocol != other.HubProtocol) return false;
       if (Scenario != other.Scenario) return false;
+      if (Step != other.Step) return false;
       return true;
     }
 
@@ -180,6 +194,7 @@ namespace Bench.Common {
       if (TransportType.Length != 0) hash ^= TransportType.GetHashCode();
       if (HubProtocol.Length != 0) hash ^= HubProtocol.GetHashCode();
       if (Scenario.Length != 0) hash ^= Scenario.GetHashCode();
+      if (Step.Length != 0) hash ^= Step.GetHashCode();
       return hash;
     }
 
@@ -206,6 +221,10 @@ namespace Bench.Common {
         output.WriteRawTag(34);
         output.WriteString(Scenario);
       }
+      if (Step.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Step);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -222,6 +241,9 @@ namespace Bench.Common {
       }
       if (Scenario.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Scenario);
+      }
+      if (Step.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Step);
       }
       return size;
     }
@@ -242,6 +264,9 @@ namespace Bench.Common {
       }
       if (other.Scenario.Length != 0) {
         Scenario = other.Scenario;
+      }
+      if (other.Step.Length != 0) {
+        Step = other.Step;
       }
     }
 
@@ -267,6 +292,10 @@ namespace Bench.Common {
           }
           case 34: {
             Scenario = input.ReadString();
+            break;
+          }
+          case 42: {
+            Step = input.ReadString();
             break;
           }
         }

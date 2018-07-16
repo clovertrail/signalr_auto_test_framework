@@ -201,33 +201,69 @@ namespace Bench.RpcMaster
             collectTimer.Start();
 
 
-            // process pipeline
-            var tasks = new List<Task>(clients.Count);
-            var benchmarkCellConfig = new BenchmarkCellConfig
-            {
-                ServiveType = argsOption.ServiceType,
-                TransportType = argsOption.TransportType,
-                HubProtocol = argsOption.HubProtocal,
-                Scenario = argsOption.Scenario
-            };
-            Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}");
+            //// process pipeline
+            //var tasks = new List<Task>(clients.Count);
+            //var benchmarkCellConfig = new BenchmarkCellConfig
+            //{
+            //    ServiveType = argsOption.ServiceType,
+            //    TransportType = argsOption.TransportType,
+            //    HubProtocol = argsOption.HubProtocal,
+            //    Scenario = argsOption.Scenario,
+            //    Step = ""
+            //};
+            //Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}");
+
+            //try
+            //{
+            //    var indStartJob = 0;
+            //    clients.ForEach(client =>
+            //    {
+            //        Util.Log($"client add task ind: {indStartJob}");
+            //        tasks.Add(Task.Run(() =>
+            //        {
+            //            Util.Log($"client start ind: {indStartJob++}");
+            //            client.RunJob(benchmarkCellConfig);
+            //        }));
+            //    });
+            //    Util.Log($"wait for tasks");
+            //    Task.WhenAll(tasks).Wait();
+            //    SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    Util.Log($"Exception from RPC master: {ex}");
+            //    var counters = new JObject(_counters);
+            //    counters["message:received"] = 0;
+            //    SaveJobResult(_jobResultFile, counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+            //    throw;
+            //}
 
             try
             {
-                var indStartJob = 0;
-                clients.ForEach(client =>
+                // process jobs for each step
+                foreach (var step in argsOption.PipeLine.Split(';'))
                 {
-                    Util.Log($"client add task ind: {indStartJob}");
-                    tasks.Add(Task.Run(() =>
+                    var benchmarkCellConfig = new BenchmarkCellConfig
                     {
-                        Util.Log($"client start ind: {indStartJob++}");
-                        client.RunJob(benchmarkCellConfig);
-                    }));
-                });
-                Util.Log($"wait for tasks");
-                Task.WhenAll(tasks).Wait();
-                SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
-
+                        ServiveType = argsOption.ServiceType,
+                        TransportType = argsOption.TransportType,
+                        HubProtocol = argsOption.HubProtocal,
+                        Scenario = argsOption.Scenario,
+                        Step = step
+                    };
+                    Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
+                    var tasks = new List<Task>(clients.Count);
+                    clients.ForEach(client =>
+                    {
+                        tasks.Add(Task.Run(() =>
+                        {
+                            client.RunJob(benchmarkCellConfig);
+                        }));
+                    });
+                    Task.WhenAll(tasks).Wait();
+                    Task.Delay(1000).Wait();
+                }
             }
             catch (Exception ex)
             {
@@ -238,7 +274,8 @@ namespace Bench.RpcMaster
                 throw;
             }
             
-            
+
+
 
             for (var i = 0; i < channels.Count; i++)
             {

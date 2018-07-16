@@ -130,8 +130,8 @@ namespace Bench.RpcSlave
                 Console.WriteLine($"LoadBenchmarkCellConfig");
                 _sigWorker.LoadBenchmarkCellConfig(benchmarkCellConfig);
 
-                Console.WriteLine($"ProcessJob");
-                _sigWorker.ProcessJob();
+                Console.WriteLine($"ProcessJob step: {cellConfig.Step}");
+                _sigWorker.ProcessJob(cellConfig.Step);
 
                 return Task.FromResult(new Stat { State = Stat.Types.State.DebugTodo });
             }
