@@ -160,7 +160,7 @@ namespace JenkinsScript
                                     {
                                         if (argsOption.Debug == "true")
                                         {
-                                            argsOption.AzureSignalrConnectionString = "Endpoint=https://wanlsoutheastasia.service.signalr.net;AccessKey=OARMNcuoy3Cf157eCBkyWh3dTA58TtGdWOjNHpTzJnA=;";
+                                            argsOption.AzureSignalrConnectionString = "Endpoint=https://wanldebugasia.service.signalr.net;AccessKey=+DEuX25AseghvWMvOMlkn7Xlq0LZOVjFAmxPZYM1JGc=;";
                                         }
                                         else
                                         {
