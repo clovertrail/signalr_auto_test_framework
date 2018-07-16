@@ -119,9 +119,9 @@ namespace Bench.RpcMaster
                         Task.Delay(0).ContinueWith(t =>
                             {
                                 var state = client.GetState(new Empty { });
+                                if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
                                 if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
                                 isSend = true;
-                                if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
                                 var counters = client.CollectCounters(new Force { Force_ = false });
 
                                 for (var i = 0; i < counters.Pairs.Count; i++)
