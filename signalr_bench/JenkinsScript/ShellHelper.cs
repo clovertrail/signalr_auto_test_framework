@@ -207,8 +207,11 @@ namespace JenkinsScript
             }
 
             var serverUrl = vmCreator.AppSvrDomainName();
+            if (argsOption.Debug == "true")
+            {
+                serverUrl = "wanlauto5c54189495appsvrdns0.southeastasia.cloudapp.azure.com";
+            }
 
-            
             for (var i = 0; i < 1; i++)
             {
                 var clear = "false";
