@@ -180,10 +180,6 @@ namespace JenkinsScript
                                     for (var connection = connectionBase; ; connection += connectionIncreaseStep)
                                     //for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
                                     {
-                                        
-                                        
-
-
                                         var maxRetry = 5;
                                         var errCodeMaster = 0;
                                         for (var i = 0; i < maxRetry; i++)

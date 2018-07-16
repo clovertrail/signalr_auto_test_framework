@@ -264,6 +264,10 @@ namespace Bench.RpcMaster
                     Task.WhenAll(tasks).Wait();
                     Task.Delay(1000).Wait();
                 }
+
+                SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+
+
             }
             catch (Exception ex)
             {
