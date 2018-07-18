@@ -264,7 +264,6 @@ namespace Bench.RpcMaster
                     Task.Delay(1000).Wait();
                 }
 
-                SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
 
 
             }
@@ -276,7 +275,8 @@ namespace Bench.RpcMaster
                 SaveJobResult(_jobResultFile, counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
                 throw;
             }
-            
+
+            SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
 
 
 

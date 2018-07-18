@@ -192,7 +192,7 @@ namespace JenkinsScript
                                     var connectionBase = (jobConfig.ConnectionBase.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionBase) as List<int>)[indType];
                                     var connectionIncreaseStep = (jobConfig.ConnectionIncreaseStep.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionIncreaseStep) as List<int>)[indType];
 
-                                    for (var connection = connectionBase; connection < connection + connectionIncreaseStep * jobConfig.ConnectionLength; connection += connectionIncreaseStep)
+                                    for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep * jobConfig.ConnectionLength; connection += connectionIncreaseStep)
                                     {
                                         var maxRetry = 1;
                                         var errCodeMaster = 0;
