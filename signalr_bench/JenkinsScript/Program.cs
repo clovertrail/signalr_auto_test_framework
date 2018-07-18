@@ -198,12 +198,13 @@ namespace JenkinsScript
                                         var errCodeMaster = 0;
                                         for (var i = 0; i < maxRetry; i++)
                                         {
-                                            int waitTime = 20000;
+                                            int waitTime = 60000;
                                             if (argsOption.Debug.Contains("debug"))
                                             {
                                                 waitTime = 5000;
                                             }
                                             Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
+                                            Task.Delay(waitTime).Wait();
                                             (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig, argsOption);
                                             if (argsOption.Debug.Contains("debug") && argsOption.Debug.Contains("local"))
                                             {
