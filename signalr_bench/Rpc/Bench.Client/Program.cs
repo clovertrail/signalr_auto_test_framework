@@ -237,9 +237,7 @@ namespace Bench.RpcMaster
             catch (Exception ex)
             {
                 Util.Log($"Exception from RPC master: {ex}");
-                var counters = new JObject(_counters);
-                counters["message:received"] = 0;
-                SaveJobResult(_jobResultFile, counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+                SaveJobResult(_jobResultFile, null, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
                 throw;
             }
 
@@ -283,12 +281,45 @@ namespace Bench.RpcMaster
             File.AppendAllText(path, onelineRecord);
         }
 
+        private static void SaveToFile(string path, JObject jobj)
+        {
+            string onelineRecord = Regex.Replace(jobj.ToString(), @"\s+", "");
+            onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
+            onelineRecord += Environment.NewLine;
+
+            var resDir = System.IO.Path.GetDirectoryName(path);
+            if (!Directory.Exists(resDir))
+            {
+                Directory.CreateDirectory(resDir);
+            }
+            if (!File.Exists(path))
+            {
+                StreamWriter sw = File.CreateText(path);
+            }
+
+            File.AppendAllText(path, onelineRecord);
+        }
 
         private static void SaveJobResult(string path, JObject counters, int connection, string serviceType, string transportType, string protocol, string scenario)
         {
+            // fail for sure
+            if (counters == null)
+            {
+                var resFail = new JObject
+                {
+                    { "connection", connection},
+                    { "serviceType", serviceType},
+                    { "transportType", transportType},
+                    { "protocol", protocol},
+                    { "scenario", scenario},
+                    {"result",  "FAIL"}
+                };
 
-            if (counters == null) return;
+                SaveToFile(path, resFail);
+                return;
+            }
 
+            // maybe success
             var sent = (int)counters["message:sent"];
             var notSent = (int)counters["message:notSentFromClient"];
             var total = sent + notSent;
@@ -315,26 +346,15 @@ namespace Bench.RpcMaster
                 { "scenario", scenario},
                 {"result",  result}
             };
-
-            string onelineRecord = Regex.Replace(res.ToString(), @"\s+", "");
-            onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
-            onelineRecord += Environment.NewLine;
-
-            var resDir = System.IO.Path.GetDirectoryName(path);
-            if (!Directory.Exists(resDir))
-            {
-                Directory.CreateDirectory(resDir);
-            }
-            if (!File.Exists(path))
-            {
-                StreamWriter sw = File.CreateText(path);
-            }
-
-            File.AppendAllText(path, onelineRecord);
+            
 
             if (result == "FAIL")
             {
                 throw new Exception();
+            } 
+            else
+            {
+                SaveToFile(path, res);
             }
         }
 
