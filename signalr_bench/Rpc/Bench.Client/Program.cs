@@ -31,6 +31,7 @@ namespace Bench.RpcMaster
     {
         private static JObject _counters;
         private static string _jobResultFile = "./jobResult.txt";
+        private static double _successThreshold = 0.7;
         public static void Main (string[] args)
         {
             // parse args
@@ -114,7 +115,6 @@ namespace Bench.RpcMaster
                 {
                     var allClientCounters = new ConcurrentDictionary<string, int>();
                     var collectCountersTasks = new List<Task>();
-                    var ind = 0;
                     var isSend = false;
                     var isComplete = false;
                     //var isComplete = false;
@@ -178,20 +178,25 @@ namespace Bench.RpcMaster
 
                     try
                     {
-                        var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
-                        if (!Directory.Exists(dir))
-                        {
-                            if (dir != null && dir != "")
-                            {
-                                Directory.CreateDirectory(dir);
-                            }
-                        }
-                        if (!File.Exists(argsOption.OutputCounterFile))
-                        {
-                            StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
-                        }
+                        //var percentage = GetSuccessPercentage(_counters, argsOption.Scenario, argsOption.Connections);
+                        //if (percentage > _successThreshold)
+                        //{
 
-                        File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
+                            var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
+                            if (!Directory.Exists(dir))
+                            {
+                                if (dir != null && dir != "")
+                                {
+                                    Directory.CreateDirectory(dir);
+                                }
+                            }
+                            if (!File.Exists(argsOption.OutputCounterFile))
+                            {
+                                StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
+                            }
+
+                            File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
+                        //}
                     }
                     catch (Exception ex)
                     {
@@ -300,6 +305,25 @@ namespace Bench.RpcMaster
             File.AppendAllText(path, onelineRecord);
         }
 
+        private static double GetSuccessPercentage(JObject counters, string scenario, int connection)
+        {
+            var sent = (int)counters["message:sent"];
+            var notSent = (int)counters["message:notSentFromClient"];
+            var total = sent + notSent;
+            var received = (int)counters["message:received"];
+            var percentage = 0.0;
+            if (scenario.Contains("broadcast"))
+            {
+                percentage = (double)received / (total * connection);
+            }
+            else
+            {
+                percentage = (double)received / (total);
+            }
+
+            return percentage;
+        }
+
         private static void SaveJobResult(string path, JObject counters, int connection, string serviceType, string transportType, string protocol, string scenario)
         {
             // fail for sure
@@ -320,23 +344,9 @@ namespace Bench.RpcMaster
             }
 
             // maybe success
-            var sent = (int)counters["message:sent"];
-            var notSent = (int)counters["message:notSentFromClient"];
-            var total = sent + notSent;
-            var received = (int)counters["message:received"];
-            var percentage = 0.0;
-            if (scenario.Contains("broadcast"))
-            {
-                percentage = (double)received / (total * connection);
-            }
-            else
-            {
-                percentage = (double)received / (total);
-            }
-            var result = percentage > 0.7 ? "SUCCESS" : "FAIL";
+            var percentage = GetSuccessPercentage(counters, scenario, connection);
+            var result = percentage > _successThreshold ? "SUCCESS" : "FAIL";
 
-            Util.Log($"sent: {sent}, received: {received}");
-            
             var res = new JObject
             {
                 { "connection", connection},
@@ -350,6 +360,7 @@ namespace Bench.RpcMaster
 
             if (result == "FAIL")
             {
+                SaveToFile(path, res);
                 throw new Exception();
             } 
             else
@@ -361,37 +372,38 @@ namespace Bench.RpcMaster
         private static void CheckLastJobResults(string path, int maxRetryCount, int connection, string serviceType, 
             string transportType, string protocol, string scenario)
         {
-            var failCount = 0;
-            var lines = new List<string>(File.ReadAllLines(path));
-            for (var i = lines.Count - 1; i > lines.Count - 1 - maxRetryCount - 1  && i >= 0; i--)
-            {
-                JObject res = null;
-                try
-                {
-                    res = JObject.Parse(lines[i]);
-                }
-                catch (Exception ex)
-                {
-                    Util.Log($"parse result: {lines[i]}\n Exception: {ex}");
-                    continue;
-                }
-                if ((string)res["serviceType"] == serviceType &&
-                    (string)res["transportType"] == transportType && (string)res["protocol"] == protocol &&
-                    (string)res["scenario"] == scenario && (string)res["result"] == "FAIL")
-                {
-                    failCount++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            Util.Log($"fail count: {failCount}");
-            if (failCount >= maxRetryCount)
-            {
-                Util.Log("Too many fails. Break job");
-                throw new Exception();
-            }
+            return;
+            //var failCount = 0;
+            //var lines = new List<string>(File.ReadAllLines(path));
+            //for (var i = lines.Count - 1; i > lines.Count - 1 - maxRetryCount - 1  && i >= 0; i--)
+            //{
+            //    JObject res = null;
+            //    try
+            //    {
+            //        res = JObject.Parse(lines[i]);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Util.Log($"parse result: {lines[i]}\n Exception: {ex}");
+            //        continue;
+            //    }
+            //    if ((string)res["serviceType"] == serviceType &&
+            //        (string)res["transportType"] == transportType && (string)res["protocol"] == protocol &&
+            //        (string)res["scenario"] == scenario && (string)res["result"] == "FAIL")
+            //    {
+            //        failCount++;
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
+            //}
+            //Util.Log($"fail count: {failCount}");
+            //if (failCount >= maxRetryCount)
+            //{
+            //    Util.Log("Too many fails. Break job");
+            //    throw new Exception();
+            //}
             
         }
     }
