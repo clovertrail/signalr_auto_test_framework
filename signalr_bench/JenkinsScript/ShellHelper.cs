@@ -83,7 +83,7 @@ namespace JenkinsScript
             return (errCode, result);
         }
 
-        public static (int, string) KillAllDotnetProcess(List<string> hosts, AgentConfig agentConfig)
+        public static (int, string) KillAllDotnetProcess(List<string> hosts, AgentConfig agentConfig, ArgsOption argsOption)
         {
             var errCode = 0;
             var result = "";
@@ -92,7 +92,14 @@ namespace JenkinsScript
             hosts.ForEach(host =>
             {
                 cmd = $"killall dotnet || true";
-                if (host.Contains("localhost") || host.Contains("127.0.0.1")) { }
+                if (host.Contains("localhost") || host.Contains("127.0.0.1"))
+                {
+                    if (argsOption.Debug.Contains("debug") && argsOption.Debug.Contains("local"))
+                    {
+                        Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
+                        (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd);
+                    }
+                }
                 else if (host == agentConfig.Master)
                 {
                     Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
@@ -212,7 +219,7 @@ namespace JenkinsScript
             }
 
             var serverUrl = vmCreator.AppSvrDomainName();
-            if (argsOption.Debug.Contains("true"))
+            if (argsOption.Debug.Contains("debug"))
             {
                 serverUrl = "wanlauto5c54189495appsvrdns0.southeastasia.cloudapp.azure.com";
                 if (argsOption.Debug.Contains("local"))
@@ -244,12 +251,12 @@ namespace JenkinsScript
                     $"export bench_codec_list='{hubProtocol}'; " +
                     $"export bench_name_list='{scenario}'; ";
 
-                cmd += $"dotnet run -- " +
+                cmd += $"dotnet build; dotnet run -- " +
                     $"--rpcPort 5555 " +
                     $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5000/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
                     $"-v {serviceType} -t {transportType} -p {hubProtocol} -s {scenario} " +
                     $" --slaveList '{slaveList}' " +
-                    $" --retry {maxRetry} " +
+                    $" --retry {0} " +
                     $" --clear {clear} " +
                     $"-o '{outputCounterFile}' > log_rpcmaster.txt";
 

@@ -72,7 +72,7 @@ namespace JenkinsScript
                 case "All": 
                 default:
 
-                    if (argsOption.Debug.Contains("true"))
+                    if (argsOption.Debug.Contains("debug"))
                     {
                         if (argsOption.Debug.Contains("local"))
                         {
@@ -135,7 +135,7 @@ namespace JenkinsScript
                     // TODO: check if ssh success
                     Task.Delay(20 * 1000).Wait();
 
-                    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
+                    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig, argsOption);
                     if (!argsOption.Debug.Contains("debug")) (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
 
 
@@ -153,7 +153,7 @@ namespace JenkinsScript
                         var unit = 1;
                         unit = Convert.ToInt32(serviceType.Substring(4));
 
-                        if (argsOption.Debug.Contains("true"))
+                        if (argsOption.Debug.Contains("debug"))
                         {
                             argsOption.AzureSignalrConnectionString = "Endpoint=https://wanldebugsa.service.signalr.net;AccessKey=4bb4D1/C8ocS8PhhNB4t71p6JN5AeNCvbDvRvx6wiuY=;";
                             if (argsOption.Debug.Contains("local"))
@@ -199,14 +199,17 @@ namespace JenkinsScript
                                         for (var i = 0; i < maxRetry; i++)
                                         {
                                             int waitTime = 20000;
-                                            if (argsOption.Debug.Contains("true"))
+                                            if (argsOption.Debug.Contains("debug"))
                                             {
                                                 waitTime = 5000;
                                             }
                                             Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
-                                            (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
-                                            if (argsOption.Debug.Contains("debug") && argsOption.Debug.Contains("local")) 
+                                            (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig, argsOption);
+                                            if (argsOption.Debug.Contains("debug") && argsOption.Debug.Contains("local"))
+                                            {
+                                                Task.Delay(waitTime).Wait();
                                                 ShellHelper.Bash(" cd /home/wanl/workspace/oss/src/Microsoft.Azure.SignalR.ServiceRuntime; dotnet run  > /home/wanl/workspace/scripts-for-sr-benchmark/local/log_service.txt", wait: false);
+                                            }
                                             Task.Delay(waitTime).Wait();
                                             (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                                             Task.Delay(waitTime).Wait();
@@ -216,14 +219,13 @@ namespace JenkinsScript
                                                 serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                                 jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
                                             if (errCodeMaster == 0) break;
-                                            Util.Log($"retry {i+1}th time");
                                         }
                                     }
                                 }
                             }
                         }
                         indType++;
-                        if (argsOption.Debug.Contains("true"))
+                        if (argsOption.Debug.Contains("debug"))
                         {
                         }
                         else
