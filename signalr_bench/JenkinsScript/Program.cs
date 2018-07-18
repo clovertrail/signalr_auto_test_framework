@@ -74,13 +74,27 @@ namespace JenkinsScript
 
                     if (argsOption.Debug.Contains("true"))
                     {
-                        agentConfig.AppServer = "wanlauto5c54189495appsvrdns0.southeastasia.cloudapp.azure.com";
-                        agentConfig.Slaves = new List<string>();
-                        agentConfig.SlaveVmCount = 2;
-                        for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                        if (argsOption.Debug.Contains("local"))
                         {
-                            agentConfig.Slaves.Add($"wanlauto5c54189495dns{i}.southeastasia.cloudapp.azure.com");
+                            agentConfig.AppServer = "localhost";
+                            agentConfig.Slaves = new List<string>();
+                            agentConfig.SlaveVmCount = 1;
+                            for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                            {
+                                agentConfig.Slaves.Add($"localhost");
+                            }
                         }
+                        else
+                        {
+                            agentConfig.AppServer = "wanlauto5c54189495appsvrdns0.southeastasia.cloudapp.azure.com";
+                            agentConfig.Slaves = new List<string>();
+                            agentConfig.SlaveVmCount = 2;
+                            for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                            {
+                                agentConfig.Slaves.Add($"wanlauto5c54189495dns{i}.southeastasia.cloudapp.azure.com");
+                            }
+                        }
+                        
                     }
                     else
                     {
