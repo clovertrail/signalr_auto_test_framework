@@ -39,23 +39,6 @@ namespace Bench.RpcMaster
                 .WithParsed(options => argsOption = options)
                 .WithNotParsed(error => { });
 
-            if (argsOption.Clear == "true")
-            {
-                if (File.Exists(_jobResultFile))
-                {
-                    File.Delete(_jobResultFile);
-                }
-            } 
-            else
-            {
-                if (File.Exists(_jobResultFile))
-                {
-                    CheckLastJobResults(_jobResultFile, argsOption.Retry, argsOption.Connections,
-                        argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
-                }
-                
-            }
-
             var slaveList = new List<string>(argsOption.SlaveList.Split(';'));
 
             // open channel to rpc servers
@@ -66,180 +49,164 @@ namespace Bench.RpcMaster
                 channels.Add(new Channel($"{slaveList[i]}:{argsOption.RpcPort}", ChannelCredentials.Insecure));
             }
 
-            // create rpc clients
-            var clients = new List<RpcService.RpcServiceClient>(slaveList.Count);
-            for (var i = 0; i < slaveList.Count; i++)
-            {
-                clients.Add(new RpcService.RpcServiceClient(channels[i]));
-            }
-
-            // load job config
-            var jobConfig = new JobConfig(argsOption);
-
-            // allocate connections/protocol/transport type...
-            // TODO, only for dev
-            //var criteria = new Dictionary<string, int>();
-            //var allocator = new OneAllocator();
-            //var allocated = allocator.Allocate(slaveList, jobConfig.Connections, criteria);
-
-            // call salves to load job config
-            clients.ForEach( client =>
-            {
-               var state = new Stat();
-               state = client.CreateWorker(new Empty());
-               var config = new CellJobConfig 
-               {
-                    Connections = argsOption.Connections,
-                    Slaves = argsOption.Slaves,
-                    Interval = argsOption.Interval,
-                    Duration = argsOption.Duration,
-                    ServerUrl = argsOption.ServerUrl,
-                    Pipeline = argsOption.PipeLine
-               };
-               Util.Log($"create worker state: {state.State}");
-               state = client.LoadJobConfig(config);
-               Util.Log($"load job config state: {state.State}");
-            });
-
-            // collect counters
-            var collectTimer = new System.Timers.Timer(1000);
-            collectTimer.AutoReset = true;
-            collectTimer.Elapsed += (sender, e) =>
-            {
-                var allClientCounters = new ConcurrentDictionary<string, int>();
-                var collectCountersTasks = new List<Task>();
-                var ind = 0;
-                var isSend = false;
-                var isComplete = false;
-                //var isComplete = false;
-                clients.ForEach(client =>
-                {
-                    collectCountersTasks.Add(
-                        Task.Delay(0).ContinueWith(t =>
-                            {
-                                var state = client.GetState(new Empty { });
-                                if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
-                                if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
-                                isSend = true;
-                                var counters = client.CollectCounters(new Force { Force_ = false });
-
-                                for (var i = 0; i < counters.Pairs.Count; i++)
-                                {
-                                    var key = counters.Pairs[i].Key;
-                                    var value = counters.Pairs[i].Value;
-                                    if (key.Contains("server"))
-                                    {
-                                        allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
-                                    }
-                                    else
-                                        allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
-                                }
-                            }
-                        )
-                    );
-                    
-                });
-
-                Task.WhenAll(collectCountersTasks).Wait();
-
-                if (isSend == false || isComplete == true)
-                {
-                    return;
-                }
-
-                var jobj = new JObject();
-                var received = 0;
-                foreach (var item in allClientCounters)
-                {
-                    jobj.Add(item.Key, item.Value);
-                    if (item.Key.Contains("message") && (item.Key.Contains(":ge") || item.Key.Contains(":lt")))
-                    {
-                        received += item.Value;
-                    }
-                }
-
-                jobj.Add("message:received", received);
-                _counters = Util.Sort(jobj);
-                var finalRec = new JObject
-                {
-                    { "Time", Util.Timestamp2DateTimeStr(Util.Timestamp()) },
-                    { "Counters", _counters}
-                };
-                string onelineRecord = Regex.Replace(finalRec.ToString(), @"\s+", "");
-                onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
-                onelineRecord += "," + Environment.NewLine;
-                Util.Log("per second: " + onelineRecord);
-
-                try
-                {
-                    var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
-                    if (!Directory.Exists(dir))
-                    {
-                        if (dir != null && dir != "")
-                        {
-                            Directory.CreateDirectory(dir);
-                        }
-                    }
-                    if (!File.Exists(argsOption.OutputCounterFile))
-                    {
-                        StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
-                    }
-
-                    File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
-                }
-                catch (Exception ex)
-                {
-                    Util.Log($"Cannot save file: {ex}");
-                }
-                
-
-                
-
-
-            };
-            collectTimer.Start();
-
-
-            //// process pipeline
-            //var tasks = new List<Task>(clients.Count);
-            //var benchmarkCellConfig = new BenchmarkCellConfig
-            //{
-            //    ServiveType = argsOption.ServiceType,
-            //    TransportType = argsOption.TransportType,
-            //    HubProtocol = argsOption.HubProtocal,
-            //    Scenario = argsOption.Scenario,
-            //    Step = ""
-            //};
-            //Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}");
-
-            //try
-            //{
-            //    var indStartJob = 0;
-            //    clients.ForEach(client =>
-            //    {
-            //        Util.Log($"client add task ind: {indStartJob}");
-            //        tasks.Add(Task.Run(() =>
-            //        {
-            //            Util.Log($"client start ind: {indStartJob++}");
-            //            client.RunJob(benchmarkCellConfig);
-            //        }));
-            //    });
-            //    Util.Log($"wait for tasks");
-            //    Task.WhenAll(tasks).Wait();
-            //    SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    Util.Log($"Exception from RPC master: {ex}");
-            //    var counters = new JObject(_counters);
-            //    counters["message:received"] = 0;
-            //    SaveJobResult(_jobResultFile, counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
-            //    throw;
-            //}
-
             try
             {
+                
+
+                if (argsOption.Clear == "true")
+                {
+                    if (File.Exists(_jobResultFile))
+                    {
+                        File.Delete(_jobResultFile);
+                    }
+                } 
+                else
+                {
+                    if (File.Exists(_jobResultFile))
+                    {
+                        CheckLastJobResults(_jobResultFile, argsOption.Retry, argsOption.Connections,
+                            argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
+                    }
+                
+                }
+
+                
+
+                // create rpc clients
+                var clients = new List<RpcService.RpcServiceClient>(slaveList.Count);
+                for (var i = 0; i < slaveList.Count; i++)
+                {
+                    clients.Add(new RpcService.RpcServiceClient(channels[i]));
+                }
+
+                // load job config
+                var jobConfig = new JobConfig(argsOption);
+
+                // allocate connections/protocol/transport type...
+                // TODO, only for dev
+                //var criteria = new Dictionary<string, int>();
+                //var allocator = new OneAllocator();
+                //var allocated = allocator.Allocate(slaveList, jobConfig.Connections, criteria);
+
+                // call salves to load job config
+                clients.ForEach( client =>
+                {
+                   var state = new Stat();
+                   state = client.CreateWorker(new Empty());
+                   var config = new CellJobConfig 
+                   {
+                        Connections = argsOption.Connections,
+                        Slaves = argsOption.Slaves,
+                        Interval = argsOption.Interval,
+                        Duration = argsOption.Duration,
+                        ServerUrl = argsOption.ServerUrl,
+                        Pipeline = argsOption.PipeLine
+                   };
+                   Util.Log($"create worker state: {state.State}");
+                   state = client.LoadJobConfig(config);
+                   Util.Log($"load job config state: {state.State}");
+                });
+
+                // collect counters
+                var collectTimer = new System.Timers.Timer(1000);
+                collectTimer.AutoReset = true;
+                collectTimer.Elapsed += (sender, e) =>
+                {
+                    var allClientCounters = new ConcurrentDictionary<string, int>();
+                    var collectCountersTasks = new List<Task>();
+                    var ind = 0;
+                    var isSend = false;
+                    var isComplete = false;
+                    //var isComplete = false;
+                    clients.ForEach(client =>
+                    {
+                        collectCountersTasks.Add(
+                            Task.Delay(0).ContinueWith(t =>
+                                {
+                                    var state = client.GetState(new Empty { });
+                                    if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
+                                    if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
+                                    isSend = true;
+                                    var counters = client.CollectCounters(new Force { Force_ = false });
+
+                                    for (var i = 0; i < counters.Pairs.Count; i++)
+                                    {
+                                        var key = counters.Pairs[i].Key;
+                                        var value = counters.Pairs[i].Value;
+                                        if (key.Contains("server"))
+                                        {
+                                            allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
+                                        }
+                                        else
+                                            allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
+                                    }
+                                }
+                            )
+                        );
+                    
+                    });
+
+                    Task.WhenAll(collectCountersTasks).Wait();
+
+                    if (isSend == false || isComplete == true)
+                    {
+                        return;
+                    }
+
+                    var jobj = new JObject();
+                    var received = 0;
+                    foreach (var item in allClientCounters)
+                    {
+                        jobj.Add(item.Key, item.Value);
+                        if (item.Key.Contains("message") && (item.Key.Contains(":ge") || item.Key.Contains(":lt")))
+                        {
+                            received += item.Value;
+                        }
+                    }
+
+                    jobj.Add("message:received", received);
+                    _counters = Util.Sort(jobj);
+                    var finalRec = new JObject
+                    {
+                        { "Time", Util.Timestamp2DateTimeStr(Util.Timestamp()) },
+                        { "Counters", _counters}
+                    };
+                    string onelineRecord = Regex.Replace(finalRec.ToString(), @"\s+", "");
+                    onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
+                    onelineRecord += "," + Environment.NewLine;
+                    Util.Log("per second: " + onelineRecord);
+
+                    try
+                    {
+                        var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
+                        if (!Directory.Exists(dir))
+                        {
+                            if (dir != null && dir != "")
+                            {
+                                Directory.CreateDirectory(dir);
+                            }
+                        }
+                        if (!File.Exists(argsOption.OutputCounterFile))
+                        {
+                            StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
+                        }
+
+                        File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
+                    }
+                    catch (Exception ex)
+                    {
+                        Util.Log($"Cannot save file: {ex}");
+                    }
+                
+
+                
+
+
+                };
+                collectTimer.Start();
+
+
+            
                 // process jobs for each step
                 foreach (var step in argsOption.PipeLine.Split(';'))
                 {
