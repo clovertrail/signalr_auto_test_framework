@@ -31,6 +31,9 @@ namespace JenkinsScript
         [Option('S', "step", Required = false, HelpText = "Specify the Step")]
         public string  Step{ get; set; }
 
+        [Option("ExtensionScriptsDir", Required = false, HelpText = "Specify the absolute directory of extension scripts")]
+        public string ExtensionScriptDir { get; set; }
+
         [Option('p', "spblobname", Required = false, HelpText = "Specify the Service Principal")]
         public string SpBlobName { get; set; }
 

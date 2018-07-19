@@ -72,10 +72,24 @@ namespace JenkinsScript
                 case "CreateDogfoodSignalr":
                     break;
                 case "RegisterDogfoodCloud":
-                    DogfoodSignalROps.RegisterDogfoodCloud();
+                    if (argsOption.ExtensionScriptDir == null)
+                    {
+                        Util.Log("extension scripts directory is not specified, so this function does not work");
+                    }
+                    else
+                    {
+                        DogfoodSignalROps.RegisterDogfoodCloud(argsOption.ExtensionScriptDir);
+                    }
                     break;
                 case "UnregisterDogfoodCloud":
-                    DogfoodSignalROps.UnregisterDogfoodCloud();
+                    if (argsOption.ExtensionScriptDir == null)
+                    {
+                        Util.Log("extension scripts directory is not specified, so this function does not work");
+                    }
+                    else
+                    {
+                        DogfoodSignalROps.UnregisterDogfoodCloud(argsOption.ExtensionScriptDir);
+                    }
                     break;
                 case "All": 
                 default:
