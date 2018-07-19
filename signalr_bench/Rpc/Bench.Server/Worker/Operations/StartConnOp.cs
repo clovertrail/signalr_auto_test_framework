@@ -1,4 +1,4 @@
-﻿using Bench.Common;
+using Bench.Common;
 using Bench.Common.Config;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
@@ -52,20 +52,42 @@ namespace Bench.RpcSlave.Worker.Operations
             //}
             //Task.WhenAll(tasks).Wait();
 
-            var i = 0;
-            foreach (var conn in connections)
+            
+            var left = connections.Count;
+            var nextBatch = _tk.JobConfig.ConcurrentConnections;
+            if (nextBatch <= left)
             {
-                try
-                {
-                    conn.StartAsync().Wait();
-                }
-                catch (Exception ex)
-                {
-                    Util.Log($"start connection exception: {ex}");
-                    _tk.Counters.IncreaseConnectionError();
-                }
-            }
+                var tasks = new List<Task>(connections.Count);
+                var i = 0;
+                do
+                {   
+                    for (var j = 0; j < nextBatch; j++)
+                    {
+                        var index = i + j;
+                        tasks.Add(Task.Run(() =>
+                        {
+                            try
+                            {
+                                connections[index].StartAsync().Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                Util.Log($"start connection exception: {ex}");
+                                _tk.Counters.IncreaseConnectionError();
+                            }
+                        }));
+                    }
 
+                    Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+                    i += nextBatch;
+                    left = left - nextBatch;
+                    if (left < nextBatch)
+                    {
+                        nextBatch = left;
+                    }
+                } while (left > 0);
+                Task.WhenAll(tasks).Wait();
+            }
             _tk.Counters.UpdateConnectionSuccess(_tk.Connections.Count);
             swConn.Stop();
             Util.Log($"connection time: {swConn.Elapsed.TotalSeconds}");

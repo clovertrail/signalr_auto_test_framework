@@ -1,26 +1,22 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Grpc.Core;
 using Bench.Common;
 using CommandLine;
-using Bench.Common.Config;
-using Bench.RpcSlave.Worker;
+using Grpc.Core;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Bench.RpcSlave {
-    
-
+namespace Bench.RpcSlave
+{
     class Program
     {
         public static void Main (string[] args)
         {
             Console.WriteLine("MachineName: {0}", Environment.MachineName);
-
             var argsOption = new ArgsOption();
             var result = Parser.Default.ParseArguments<ArgsOption>(args)
                 .WithParsed(options => argsOption = options)
                 .WithNotParsed(error => { });
-
             Grpc.Core.Server server = new Grpc.Core.Server
             {
                 Services = { RpcService.BindService(new RpcServiceImpl()) },
@@ -28,8 +24,15 @@ namespace Bench.RpcSlave {
             };
             server.Start();
             Console.WriteLine($"Server [{argsOption.DnsName}:{argsOption.RpcPort}] started");
+            var pid = Process.GetCurrentProcess().Id;
+            if (argsOption.PidFile != null)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(argsOption.PidFile, false))
+                {
+                    file.Write(pid);
+                }
+            }
             Task.Delay(Timeout.Infinite).Wait();
-            
         }
     }
 }

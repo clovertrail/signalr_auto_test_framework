@@ -8,6 +8,7 @@ namespace Bench.Common.Config
     {
         // common config
         public int Connections { get; set; }
+        public int ConcurrentConnections { get; set; }
         public int Slaves { get; set; }
         public int Interval { get; set; }
         public int Duration { get; set; }
@@ -17,6 +18,7 @@ namespace Bench.Common.Config
         public JobConfig(ArgsOption argsOption)
         {
             Connections = argsOption.Connections;
+            ConcurrentConnections = argsOption.ConcurrentConnection;
             Slaves = argsOption.Slaves;
             Interval = argsOption.Interval;
             Duration = argsOption.Duration;

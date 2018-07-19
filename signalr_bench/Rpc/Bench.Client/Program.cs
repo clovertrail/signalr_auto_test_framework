@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Grpc.Core;
 using Bench.Common;
 using Bench.Common.Config;
 using CommandLine;
-using System.Collections.Generic;
-using Bench.RpcMaster.Allocators;
+using Grpc.Core;
 using Newtonsoft.Json.Linq;
-using System.Text.RegularExpressions;
-using System.IO;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Bench.RpcMaster
@@ -40,6 +40,15 @@ namespace Bench.RpcMaster
                 .WithParsed(options => argsOption = options)
                 .WithNotParsed(error => { });
 
+            var pid = Process.GetCurrentProcess().Id;
+            if (argsOption.PidFile != null)
+            {
+                using (StreamWriter file = new StreamWriter(argsOption.PidFile, false))
+                {
+                    file.Write(pid);
+                }
+            }
+
             var slaveList = new List<string>(argsOption.SlaveList.Split(';'));
 
             // open channel to rpc servers
@@ -52,8 +61,6 @@ namespace Bench.RpcMaster
 
             try
             {
-                
-
                 if (argsOption.Clear == "true")
                 {
                     if (File.Exists(_jobResultFile))
@@ -68,11 +75,7 @@ namespace Bench.RpcMaster
                         CheckLastJobResults(_jobResultFile, argsOption.Retry, argsOption.Connections,
                             argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
                     }
-                
                 }
-
-                
-
                 // create rpc clients
                 var clients = new List<RpcService.RpcServiceClient>(slaveList.Count);
                 for (var i = 0; i < slaveList.Count; i++)
@@ -92,20 +95,24 @@ namespace Bench.RpcMaster
                 // call salves to load job config
                 clients.ForEach( client =>
                 {
-                   var state = new Stat();
-                   state = client.CreateWorker(new Empty());
-                   var config = new CellJobConfig 
-                   {
-                        Connections = argsOption.Connections,
+                    var i = clients.IndexOf(client);
+                    var clientConnections = Util.SplitNumber(argsOption.Connections, i, slaveList.Count);
+                    var concurrentConnections = Util.SplitNumber(argsOption.ConcurrentConnection, i, slaveList.Count);
+                    var state = new Stat();
+                    state = client.CreateWorker(new Empty());
+                    var config = new CellJobConfig
+                    {
+                        Connections = clientConnections,
+                        ConcurrentConnections = concurrentConnections,
                         Slaves = argsOption.Slaves,
                         Interval = argsOption.Interval,
                         Duration = argsOption.Duration,
                         ServerUrl = argsOption.ServerUrl,
                         Pipeline = argsOption.PipeLine
-                   };
-                   Util.Log($"create worker state: {state.State}");
-                   state = client.LoadJobConfig(config);
-                   Util.Log($"load job config state: {state.State}");
+                    };
+                    Util.Log($"create worker state: {state.State}");
+                    state = client.LoadJobConfig(config);
+                    Util.Log($"load job config state: {state.State}");
                 });
 
                 // collect counters
@@ -202,16 +209,8 @@ namespace Bench.RpcMaster
                     {
                         Util.Log($"Cannot save file: {ex}");
                     }
-                
-
-                
-
-
                 };
                 collectTimer.Start();
-
-
-            
                 // process jobs for each step
                 foreach (var step in argsOption.PipeLine.Split(';'))
                 {
@@ -235,9 +234,6 @@ namespace Bench.RpcMaster
                     Task.WhenAll(tasks).Wait();
                     Task.Delay(1000).Wait();
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -245,16 +241,12 @@ namespace Bench.RpcMaster
                 SaveJobResult(_jobResultFile, null, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
                 throw;
             }
-
             SaveJobResult(_jobResultFile, _counters, argsOption.Connections, argsOption.ServiceType, argsOption.TransportType, argsOption.HubProtocal, argsOption.Scenario);
-
-
 
             for (var i = 0; i < channels.Count; i++)
             {
                 channels[i].ShutdownAsync().Wait();
             }
-
             Console.WriteLine ("Exit client...");
         }
 
@@ -356,8 +348,6 @@ namespace Bench.RpcMaster
                 { "scenario", scenario},
                 {"result",  result}
             };
-            
-
             if (result == "FAIL")
             {
                 SaveToFile(path, res);
