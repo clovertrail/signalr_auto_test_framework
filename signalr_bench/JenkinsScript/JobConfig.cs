@@ -1,4 +1,4 @@
-﻿using JenkinsScript.Config.FinerConfigs;
+using JenkinsScript.Config.FinerConfigs;
 using JenkinsScript.FinerConfigs;
 using System;
 using System.Collections.Generic;
