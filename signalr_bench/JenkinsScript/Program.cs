@@ -10,12 +10,19 @@ namespace JenkinsScript
     {
         static void Main(string[] args)
         {
+            bool invalidInput = false;
             // read options
             var argsOption = new ArgsOption();
             _ = Parser.Default.ParseArguments<ArgsOption>(args)
                 .WithParsed(options => argsOption = options)
-                .WithNotParsed(error => { });
-
+                .WithNotParsed(error => {
+                    invalidInput = true;
+                    Util.Log($"error occurs: {error}");
+                });
+            if (invalidInput)
+            {
+                return;
+            }
             // parse agent config file
             AgentConfig agentConfig = new AgentConfig();
             JobConfig jobConfig = new JobConfig();
