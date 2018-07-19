@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Management.Fluent;
+using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 using System;
