@@ -69,6 +69,14 @@ namespace JenkinsScript
                 case "CreateAppServerVm":
                     vmBuilder.CreateAppServerVmCore();
                     break;
+                case "CreateDogfoodSignalr":
+                    break;
+                case "RegisterDogfoodCloud":
+                    DogfoodSignalROps.RegisterDogfoodCloud();
+                    break;
+                case "UnregisterDogfoodCloud":
+                    DogfoodSignalROps.UnregisterDogfoodCloud();
+                    break;
                 case "All": 
                 default:
 
