@@ -14,32 +14,25 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         {
             Configuration = configuration;
             useLocalSignalR = false;
-            useMessagePack = true;
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine($"use local signalr: {useLocalSignalR}, use msgpack: {useMessagePack}");
+            Console.WriteLine($"use local signalr: {useLocalSignalR}");
             Console.BackgroundColor = ConsoleColor.Black;
         }
 
         public IConfiguration Configuration { get; }
         private bool useLocalSignalR = false;
-        private bool useMessagePack = true;
         
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionStr = Environment.GetEnvironmentVariable("AzureSignalRConnectionString");
-            Console.WriteLine($"@@@ connection string: {connectionStr}");
             services.AddMvc();
             if (useLocalSignalR)
-                if (useMessagePack)
-                    services.AddSignalR().AddMessagePackProtocol();
-                else
-                    services.AddSignalR();
+                services.AddSignalR().AddMessagePackProtocol();
             else
-                if (useMessagePack)
-                    services.AddSignalR().AddMessagePackProtocol().AddAzureSignalR(connectionStr);
-                else
-                   services.AddSignalR().AddAzureSignalR(connectionStr);
+                services.AddSignalR().AddMessagePackProtocol().AddAzureSignalR(option =>
+                {
+                    option.ConnectionCount = Configuration.GetValue<int>("Azure:SignalR:ConnectionNumber");
+                });
         }
 
         public void Configure(IApplicationBuilder app)

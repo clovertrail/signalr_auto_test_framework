@@ -72,15 +72,29 @@ namespace JenkinsScript
                 case "All": 
                 default:
 
-                    if (argsOption.Debug == "true")
+                    if (argsOption.Debug.Contains("debug"))
                     {
-                        agentConfig.AppServer = "wanlauto5c54189495appsvrdns0.southeastasia.cloudapp.azure.com";
-                        agentConfig.Slaves = new List<string>();
-                        agentConfig.SlaveVmCount = 2;
-                        for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                        if (argsOption.Debug.Contains("local"))
                         {
-                            agentConfig.Slaves.Add($"wanlauto5c54189495dns{i}.southeastasia.cloudapp.azure.com");
+                            agentConfig.AppServer = "localhost";
+                            agentConfig.Slaves = new List<string>();
+                            agentConfig.SlaveVmCount = 1;
+                            for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                            {
+                                agentConfig.Slaves.Add($"localhost");
+                            }
                         }
+                        else
+                        {
+                            agentConfig.AppServer = "wanlauto5c54189495appsvrdns0.southeastasia.cloudapp.azure.com";
+                            agentConfig.Slaves = new List<string>();
+                            agentConfig.SlaveVmCount = 2;
+                            for (var i = 0; i < agentConfig.SlaveVmCount; i++)
+                            {
+                                agentConfig.Slaves.Add($"wanlauto5c54189495dns{i}.southeastasia.cloudapp.azure.com");
+                            }
+                        }
+                        
                     }
                     else
                     {
@@ -121,8 +135,8 @@ namespace JenkinsScript
                     // TODO: check if ssh success
                     Task.Delay(20 * 1000).Wait();
 
-                    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
-                    (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
+                    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig, argsOption);
+                    if (!argsOption.Debug.Contains("debug")) (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
 
 
                     var types = jobConfig.ServiceTypeList;
@@ -139,10 +153,34 @@ namespace JenkinsScript
                         var unit = 1;
                         unit = Convert.ToInt32(serviceType.Substring(4));
 
-                        
+                        if (argsOption.Debug.Contains("debug"))
+                        {
+                            argsOption.AzureSignalrConnectionString = "Endpoint=https://wanldebugsa.service.signalr.net;AccessKey=4bb4D1/C8ocS8PhhNB4t71p6JN5AeNCvbDvRvx6wiuY=;";
+                            if (argsOption.Debug.Contains("local"))
+                            {
+                                ShellHelper.Bash(" cd /home/wanl/workspace/oss/src/Microsoft.Azure.SignalR.ServiceRuntime; dotnet run  > /home/wanl/workspace/scripts-for-sr-benchmark/local/log_service.txt", wait: false);
+                                argsOption.AzureSignalrConnectionString = "Endpoint=http://localhost;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;";
+                            }
+                        }
+                        else
+                        {
+                            while (true)
+                            {
 
-                        //// todo: debug
-                        //argsOption.AzureSignalrConnectionString = "Endpoint=wanlasrsselfhost.eastus.cloudapp.azure.com;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789;";
+                                try
+                                {
+                                    var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
+                                    Task.WhenAll(createSignalrR).Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Util.Log($"Creating SignalR Exception: {ex}");
+                                    (errCode, result) = ShellHelper.DeleteSignalr(argsOption); // TODO what if delete fail
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
 
                         foreach (var transportType in jobConfig.TransportTypeList)
                         {
@@ -154,47 +192,25 @@ namespace JenkinsScript
                                     var connectionBase = (jobConfig.ConnectionBase.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionBase) as List<int>)[indType];
                                     var connectionIncreaseStep = (jobConfig.ConnectionIncreaseStep.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionIncreaseStep) as List<int>)[indType];
 
-                                    // TODO: debug
-                                    for (var connection = connectionBase; ; connection += connectionIncreaseStep)
-                                    //for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep + 10; connection += connectionIncreaseStep)
+                                    for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep * jobConfig.ConnectionLength; connection += connectionIncreaseStep)
                                     {
-                                        if (argsOption.Debug == "true")
-                                        {
-                                            argsOption.AzureSignalrConnectionString = "Endpoint=https://wanldebugsa.service.signalr.net;AccessKey=4bb4D1/C8ocS8PhhNB4t71p6JN5AeNCvbDvRvx6wiuY=;";
-                                        }
-                                        else
-                                        {
-                                            while (true)
-                                            {
-
-                                                try
-                                                {
-                                                    var createSignalrR = Task.Run(() => { (errCode, argsOption.AzureSignalrConnectionString) = ShellHelper.CreateSignalrService(argsOption, unit); });
-                                                    Task.WhenAll(createSignalrR).Wait();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    Util.Log($"Creating SignalR Exception: {ex}");
-                                                    (errCode, result) = ShellHelper.DeleteSignalr(argsOption); // TODO what if delete fail
-                                                    continue;
-                                                }
-                                                break;
-                                            }
-                                        }
-                                        
-
-
-                                        var maxRetry = 5;
+                                        var maxRetry = 1;
                                         var errCodeMaster = 0;
                                         for (var i = 0; i < maxRetry; i++)
                                         {
-                                            int waitTime = 20000;
-                                            if (argsOption.Debug == "true")
+                                            int waitTime = 60000;
+                                            if (argsOption.Debug.Contains("debug"))
                                             {
                                                 waitTime = 5000;
                                             }
                                             Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
-                                            (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
+                                            Task.Delay(waitTime).Wait();
+                                            (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig, argsOption);
+                                            if (argsOption.Debug.Contains("debug") && argsOption.Debug.Contains("local"))
+                                            {
+                                                Task.Delay(waitTime).Wait();
+                                                ShellHelper.Bash(" cd /home/wanl/workspace/oss/src/Microsoft.Azure.SignalR.ServiceRuntime; dotnet run  > /home/wanl/workspace/scripts-for-sr-benchmark/local/log_service.txt", wait: false);
+                                            }
                                             Task.Delay(waitTime).Wait();
                                             (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                                             Task.Delay(waitTime).Wait();
@@ -204,22 +220,19 @@ namespace JenkinsScript
                                                 serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                                 jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);
                                             if (errCodeMaster == 0) break;
-                                            Util.Log($"retry {i+1}th time");
                                         }
-
-                                        if (argsOption.Debug == "true")
-                                        {
-                                        }
-                                        else
-                                        {
-                                            (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
-                                        }
-                                        if (errCodeMaster != 0) break;
                                     }
                                 }
                             }
                         }
                         indType++;
+                        if (argsOption.Debug.Contains("debug"))
+                        {
+                        }
+                        else
+                        {
+                            (errCode, result) = ShellHelper.DeleteSignalr(argsOption);
+                        }
                         //(errCode, result) = ShellHelper.DeleteSignalr(argsOption);
                     }
                     //(errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);

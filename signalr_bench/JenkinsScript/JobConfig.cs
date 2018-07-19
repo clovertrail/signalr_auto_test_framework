@@ -28,5 +28,6 @@ namespace JenkinsScript
         public ConnectionBaseConfig ConnectionBase { get; set; }
         public MixConfig Mix { get; set; }
         public GroupConfig Group { get; set; }
+        public int ConnectionLength { get; set;}
     }
 }

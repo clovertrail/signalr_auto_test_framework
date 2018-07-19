@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,7 +49,7 @@ namespace Bench.Common
                     {
                         latency += 1;
                     }
-                    
+
                     if (p.Name.Contains("receive"))
                     {
                         latency -= 1;
@@ -99,6 +99,16 @@ namespace Bench.Common
                 byte[] buffer = Convert.FromBase64String(encoded + "==");
                 return new Guid(buffer);
             }
+        }
+
+        public static int SplitNumber(int total, int index, int agents)
+        {
+            int baseNumber = total / agents;
+            if (index < total % agents)
+            {
+                baseNumber++;
+            }
+            return baseNumber;
         }
     }
 }
