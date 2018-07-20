@@ -92,7 +92,7 @@ namespace JenkinsScript
                         var postfix = Util.GenRandPrefix();
                         resourceGroupName = Util.GenResourceGroupName(postfix);
                         signalrServiceName = Util.GenSignalRServiceName(postfix);
-                        var connectionString = DogfoodSignalROps.CreateDogfoodSignalRService(argsOption.ExtensionScriptDir, resourceGroupName, signalrServiceName, "Basic_DS2", argsOption.SignalRUnit);
+                        var connectionString = DogfoodSignalROps.CreateDogfoodSignalRService(argsOption.ExtensionScriptDir, argsOption.Location, resourceGroupName, signalrServiceName, "Basic_DS2", argsOption.SignalRUnit);
                         if (connectionString != null)
                         {
                             Util.Log($"Connection string is {connectionString} under resource group {resourceGroupName}");
