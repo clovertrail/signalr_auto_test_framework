@@ -35,7 +35,7 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
 
         public void JoinGroup(string groupName, string client)
         {
-            Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            Groups.AddToGroupAsync(Context.ConnectionId, groupName).Wait();
             if (string.Equals(client, "perf", StringComparison.Ordinal))
             {
                 // for perf test
@@ -49,7 +49,7 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
 
         public void LeaveGroup(string groupName, string client)
         {
-            Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+            Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName).Wait();
             if (string.Equals(client, "perf", StringComparison.Ordinal))
             {
                 Clients.Client(Context.ConnectionId).SendAsync("LeaveGroup", Context.ConnectionId, $"{Context.ConnectionId} left {groupName}");
