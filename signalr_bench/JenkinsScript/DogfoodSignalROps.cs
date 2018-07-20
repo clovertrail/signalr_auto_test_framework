@@ -18,7 +18,15 @@
         {
             var errCode = 0;
             var result = "";
-            var cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; create_signalr_service {resourceGroup} {serviceName} {sku} {unit}";
+
+            var cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; az_login_ASRS_dogfood";
+            (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
+            if (errCode != 0)
+            {
+                Util.Log($"Fail to login to dogfood Azure");
+                return null;
+            }
+            cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; create_signalr_service {resourceGroup} {serviceName} {sku} {unit}";
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0)
             {
@@ -48,7 +56,14 @@
             var errCode = 0;
             var result = "";
             bool rtn = false;
-            var cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; delete_signalr_service {serviceName} {resourceGroup}";
+            var cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; az_login_ASRS_dogfood";
+            (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
+            if (errCode != 0)
+            {
+                Util.Log($"Fail to login to dogfood Azure");
+                return null;
+            }
+            cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; delete_signalr_service {serviceName} {resourceGroup}";
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0)
             {
