@@ -1,19 +1,7 @@
-using Microsoft.Azure.Management.Compute.Fluent;
-using Microsoft.Azure.Management.Compute.Fluent.Models;
-using Microsoft.Azure.Management.Fluent;
-using Microsoft.Azure.Management.ResourceManager.Fluent;
-using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
-using Microsoft.Azure.Management.ResourceManager.Fluent.Core.ResourceActions;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace JenkinsScript
 {
@@ -341,11 +329,8 @@ namespace JenkinsScript
             Util.Log($"CMD: az account set --subscription");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 
-            var rnd = new Random();
-            var SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
-
-            var groupName = config.BaseName + "Group";
-            var srName = config.BaseName + SrRndNum + "SR";
+            var groupName = Util.GenResourceGroupName(config.BaseName);
+            var srName = Util.GenSignalRServiceName(config.BaseName);
             
             cmd = $"  az extension add -n signalr || true";
             Util.Log($"CMD: signalr service: {cmd}");

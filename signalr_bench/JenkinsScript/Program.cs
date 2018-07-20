@@ -10,12 +10,19 @@ namespace JenkinsScript
     {
         static void Main(string[] args)
         {
+            bool invalidInput = false;
             // read options
             var argsOption = new ArgsOption();
             _ = Parser.Default.ParseArguments<ArgsOption>(args)
                 .WithParsed(options => argsOption = options)
-                .WithNotParsed(error => { });
-
+                .WithNotParsed(error => {
+                    invalidInput = true;
+                    Util.Log($"error occurs: {error}");
+                });
+            if (invalidInput)
+            {
+                return;
+            }
             // parse agent config file
             AgentConfig agentConfig = new AgentConfig();
             JobConfig jobConfig = new JobConfig();
@@ -37,9 +44,15 @@ namespace JenkinsScript
 
             var errCode = 0;
             var result = "";
-            var azureManager = new AzureManager();
-            var vmBuilder = new BenchmarkVmBuilder(agentConfig);
-
+            AzureManager azureManager = null;
+            BenchmarkVmBuilder vmBuilder = null;
+            if (argsOption.ExtensionScriptDir == null)
+            {
+                azureManager = new AzureManager();
+                vmBuilder = new BenchmarkVmBuilder(agentConfig);
+            }
+            var resourceGroupName = "";
+            var signalrServiceName = "";
             switch (argsOption.Step)
             {
                 //case "KillAllDotnet":
@@ -68,6 +81,60 @@ namespace JenkinsScript
                     break;
                 case "CreateAppServerVm":
                     vmBuilder.CreateAppServerVmCore();
+                    break;
+                case "CreateDogfoodSignalr":
+                    if (argsOption.ExtensionScriptDir == null)
+                    {
+                        Util.Log("extension scripts directory is not specified, so this function does not work");
+                    }
+                    else
+                    {
+                        var postfix = Util.GenRandPrefix();
+                        resourceGroupName = Util.GenResourceGroupName(postfix);
+                        signalrServiceName = Util.GenSignalRServiceName(postfix);
+                        var connectionString = DogfoodSignalROps.CreateDogfoodSignalRService(argsOption.ExtensionScriptDir, argsOption.Location, resourceGroupName, signalrServiceName, "Basic_DS2", argsOption.SignalRUnit);
+                        if (connectionString != null)
+                        {
+                            Util.Log($"Connection string is {connectionString} under resource group {resourceGroupName}");
+                        }
+                    }
+                    break;
+                case "DeleteDogfoodSignalr":
+                    if (argsOption.ExtensionScriptDir == null)
+                    {
+                        Util.Log("extension scripts directory is not specified, so this function does not work");
+                    }
+                    else
+                    {
+                        if (argsOption.SignalRService == null || argsOption.ResourceGroup == null)
+                        {
+                            Util.Log("Please specify SignalR Service name and Resource Group you want to delete");
+                        }
+                        else
+                        {
+                            DogfoodSignalROps.DeleteDogfoodSignalRService(argsOption.ExtensionScriptDir, argsOption.ResourceGroup, argsOption.SignalRService);
+                        }
+                    }
+                    break;
+                case "RegisterDogfoodCloud":
+                    if (argsOption.ExtensionScriptDir == null)
+                    {
+                        Util.Log("extension scripts directory is not specified, so this function does not work");
+                    }
+                    else
+                    {
+                        DogfoodSignalROps.RegisterDogfoodCloud(argsOption.ExtensionScriptDir);
+                    }
+                    break;
+                case "UnregisterDogfoodCloud":
+                    if (argsOption.ExtensionScriptDir == null)
+                    {
+                        Util.Log("extension scripts directory is not specified, so this function does not work");
+                    }
+                    else
+                    {
+                        DogfoodSignalROps.UnregisterDogfoodCloud(argsOption.ExtensionScriptDir);
+                    }
                     break;
                 case "All": 
                 default:

@@ -58,6 +58,28 @@ namespace JenkinsScript
             return sorted;
         }
 
+        public static string GenRandPrefix()
+        {
+            var rnd = new Random();
+            var srRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
+            return srRndNum;
+        }
+
+        public static string GenResourceGroupName(string postfix)
+        {
+            return "group" + postfix;
+        }
+
+        public static string GenSignalRServiceName(string postfix)
+        {
+            var rnd = new Random();
+            var SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
+
+            // SignalR Service name will be used in http url, so upper case will be automatically changed to lower case.
+            // In order to avoid confusion, please use lower case in SignalR service naming.
+            return "sr" + postfix;
+        }
+
         public static class GuidEncoder
         {
             public static string Encode(string guidText)
