@@ -61,7 +61,7 @@
             if (errCode != 0)
             {
                 Util.Log($"Fail to login to dogfood Azure");
-                return null;
+                return false;
             }
             cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; delete_signalr_service {serviceName} {resourceGroup}";
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
