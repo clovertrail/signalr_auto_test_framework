@@ -89,9 +89,9 @@ namespace JenkinsScript
                     }
                     else
                     {
-                        var prefix = Util.GenRandPrefix();
-                        resourceGroupName = Util.GenResourceGroupName(prefix);
-                        signalrServiceName = Util.GenSignalRServiceName(prefix);
+                        var postfix = Util.GenRandPrefix();
+                        resourceGroupName = Util.GenResourceGroupName(postfix);
+                        signalrServiceName = Util.GenSignalRServiceName(postfix);
                         var connectionString = DogfoodSignalROps.CreateDogfoodSignalRService(argsOption.ExtensionScriptDir, resourceGroupName, signalrServiceName, "Basic_DS2", argsOption.SignalRUnit);
                         if (connectionString != null)
                         {

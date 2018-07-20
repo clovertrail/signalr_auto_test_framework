@@ -65,17 +65,17 @@ namespace JenkinsScript
             return srRndNum;
         }
 
-        public static string GenResourceGroupName(string prefix)
+        public static string GenResourceGroupName(string postfix)
         {
-            return prefix + "Group";
+            return "Group" + postfix;
         }
 
-        public static string GenSignalRServiceName(string prefix)
+        public static string GenSignalRServiceName(string postfix)
         {
             var rnd = new Random();
             var SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
 
-            return prefix + "SR";
+            return "SR" + postfix;
         }
 
         public static class GuidEncoder
