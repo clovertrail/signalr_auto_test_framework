@@ -329,11 +329,8 @@ namespace JenkinsScript
             Util.Log($"CMD: az account set --subscription");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 
-            var rnd = new Random();
-            var SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
-
-            var groupName = config.BaseName + "Group";
-            var srName = config.BaseName + SrRndNum + "SR";
+            var groupName = Util.GenResourceGroupName(config.BaseName);
+            var srName = Util.GenSignalRServiceName(config.BaseName);
             
             cmd = $"  az extension add -n signalr || true";
             Util.Log($"CMD: signalr service: {cmd}");

@@ -29,10 +29,19 @@ namespace JenkinsScript
         public string OutputCounterFile { get; set; }
 
         [Option('S', "step", Required = false, HelpText = "Specify the Step")]
-        public string  Step{ get; set; }
+        public string Step { get; set; }
 
         [Option("ExtensionScriptsDir", Required = false, HelpText = "Specify the absolute directory of extension scripts")]
         public string ExtensionScriptDir { get; set; }
+
+        [Option("Unit", Required = false, Default = 2, HelpText = "Specify the unit number for SignalR Service")]
+        public int SignalRUnit { get; set; }
+
+        [Option("ResourceGroup", Required = false, HelpText = "Specify the resource group if you want to delete SignalR Service")]
+        public string ResourceGroup { get; set; }
+
+        [Option("SignalRService", Required = false, HelpText = "Specify the SignalR Service if you want to delete it")]
+        public string SignalRService { get; set; }
 
         [Option('p', "spblobname", Required = false, HelpText = "Specify the Service Principal")]
         public string SpBlobName { get; set; }

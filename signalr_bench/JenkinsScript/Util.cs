@@ -58,6 +58,26 @@ namespace JenkinsScript
             return sorted;
         }
 
+        public static string GenRandPrefix()
+        {
+            var rnd = new Random();
+            var srRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
+            return srRndNum;
+        }
+
+        public static string GenResourceGroupName(string prefix)
+        {
+            return prefix + "Group";
+        }
+
+        public static string GenSignalRServiceName(string prefix)
+        {
+            var rnd = new Random();
+            var SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
+
+            return prefix + "SR";
+        }
+
         public static class GuidEncoder
         {
             public static string Encode(string guidText)
