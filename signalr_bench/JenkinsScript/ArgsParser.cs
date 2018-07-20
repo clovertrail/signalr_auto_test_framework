@@ -43,6 +43,9 @@ namespace JenkinsScript
         [Option("SignalRService", Required = false, HelpText = "Specify the SignalR Service if you want to delete it")]
         public string SignalRService { get; set; }
 
+        [Option("ResourceGroupLocation", Required = false, Default = "southeastasia", HelpText = "Specify the Location of resource group")]
+        public string Location { get; set; }
+
         [Option('p', "spblobname", Required = false, HelpText = "Specify the Service Principal")]
         public string SpBlobName { get; set; }
 

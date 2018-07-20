@@ -14,11 +14,12 @@
             ShellHelper.Bash(cmd, handleRes: true);
         }
 
-        public static string CreateDogfoodSignalRService(string extensionScriptsDir, string resourceGroup, string serviceName, string sku, int unit)
+        public static string CreateDogfoodSignalRService(string extensionScriptsDir, string location, string resourceGroup, string serviceName, string sku, int unit)
         {
             var errCode = 0;
             var result = "";
 
+            // Dogfood Azure login
             var cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; az_login_ASRS_dogfood";
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0)
@@ -26,6 +27,15 @@
                 Util.Log($"Fail to login to dogfood Azure");
                 return null;
             }
+            // Create resource group if it does not exist
+            cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; create_group_if_not_exist {resourceGroup} {location}";
+            (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
+            if (errCode != 0)
+            {
+                Util.Log($"Fail to create resource group");
+                return null;
+            }
+            // Create SignalR service
             cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; create_signalr_service {resourceGroup} {serviceName} {sku} {unit}";
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0)
@@ -33,6 +43,7 @@
                 Util.Log($"Fail to create SignalR Service");
                 return null;
             }
+            // Check DNS ready
             cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; check_signalr_service_dns {resourceGroup} {serviceName}";
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0 || !result.Equals("0"))
@@ -40,7 +51,7 @@
                 Util.Log($"SignalR service DNS is not ready to use");
                 return null;
             }
-
+            // Get ConnectionString
             cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; query_connection_string {serviceName} {resourceGroup}";
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0)
