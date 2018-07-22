@@ -111,6 +111,7 @@ namespace Bench.RpcMaster
                         Pipeline = argsOption.PipeLine
                     };
                     Util.Log($"create worker state: {state.State}");
+                    Util.Log($"client connections: {config.Connections}");
                     state = client.LoadJobConfig(config);
                     Util.Log($"load job config state: {state.State}");
                 });
@@ -150,7 +151,6 @@ namespace Bench.RpcMaster
                                 }
                             )
                         );
-                    
                     });
 
                     Task.WhenAll(collectCountersTasks).Wait();

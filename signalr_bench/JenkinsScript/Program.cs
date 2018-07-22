@@ -178,8 +178,11 @@ namespace JenkinsScript
                             catch (Exception ex)
                             {
                                 Util.Log($"creating VMs Exception: {ex}");
+                                Util.Log($"delete all vms");
                                 azureManager.DeleteResourceGroup(vmBuilder.GroupName);
                                 azureManager.DeleteResourceGroup(vmBuilder.AppSvrGroupName);
+                                Util.Log($"going to retry creating vms in 1s");
+                                Task.Delay(1000).Wait();
                                 continue;
                             }
                             break;
@@ -242,7 +245,10 @@ namespace JenkinsScript
                                 catch (Exception ex)
                                 {
                                     Util.Log($"Creating SignalR Exception: {ex}");
+                                    Util.Log($"deleting all signalr services");
                                     (errCode, result) = ShellHelper.DeleteSignalr(argsOption); // TODO what if delete fail
+                                    Util.Log($"going to retry creating signalr service in 1s");
+                                    Task.Delay(1000).Wait();
                                     continue;
                                 }
                                 break;

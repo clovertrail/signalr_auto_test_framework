@@ -22,7 +22,7 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
 
         public IConfiguration Configuration { get; }
         private bool useLocalSignalR = false;
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();

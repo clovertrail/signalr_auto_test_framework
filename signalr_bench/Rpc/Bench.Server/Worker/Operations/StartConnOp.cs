@@ -51,43 +51,62 @@ namespace Bench.RpcSlave.Worker.Operations
             //    }
             //}
             //Task.WhenAll(tasks).Wait();
-
-            
-            var left = connections.Count;
-            var nextBatch = _tk.JobConfig.ConcurrentConnections;
-            if (nextBatch <= left)
+            Util.Log($"concurrent conn: {_tk.JobConfig.ConcurrentConnections}");
+            if (true || _tk.JobConfig.ConcurrentConnections == 1) // debug
             {
-                var tasks = new List<Task>(connections.Count);
-                var i = 0;
-                do
-                {   
-                    for (var j = 0; j < nextBatch; j++)
+                Util.Log($"Concurrent conn: 1");
+                foreach (var conn in connections)
+                {
+                    try
                     {
-                        var index = i + j;
-                        tasks.Add(Task.Run(() =>
-                        {
-                            try
-                            {
-                                connections[index].StartAsync().Wait();
-                            }
-                            catch (Exception ex)
-                            {
-                                Util.Log($"start connection exception: {ex}");
-                                _tk.Counters.IncreaseConnectionError();
-                            }
-                        }));
+                        conn.StartAsync().Wait();
                     }
-
-                    Task.Delay(TimeSpan.FromSeconds(1)).Wait();
-                    i += nextBatch;
-                    left = left - nextBatch;
-                    if (left < nextBatch)
+                    catch (Exception ex)
                     {
-                        nextBatch = left;
+                        Util.Log($"start connection exception: {ex}");
+                        _tk.Counters.IncreaseConnectionError();
                     }
-                } while (left > 0);
-                Task.WhenAll(tasks).Wait();
+                }
             }
+            else
+            {
+                var left = connections.Count;
+                var nextBatch = _tk.JobConfig.ConcurrentConnections; // bug: concurrent could be 0 -> dead loop
+                if (nextBatch <= left)
+                {
+                    var tasks = new List<Task>(connections.Count);
+                    var i = 0;
+                    do
+                    {   
+                        for (var j = 0; j < nextBatch; j++)
+                        {
+                            var index = i + j;
+                            tasks.Add(Task.Run(() =>
+                            {
+                                try
+                                {
+                                    connections[index].StartAsync().Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Util.Log($"start connection exception: {ex}");
+                                    _tk.Counters.IncreaseConnectionError();
+                                }
+                            }));
+                        }
+
+                        Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+                        i += nextBatch;
+                        left = left - nextBatch;
+                        if (left < nextBatch)
+                        {
+                            nextBatch = left;
+                        }
+                    } while (left > 0);
+                    Task.WhenAll(tasks).Wait();
+                }
+            }
+
             _tk.Counters.UpdateConnectionSuccess(_tk.Connections.Count);
             swConn.Stop();
             Util.Log($"connection time: {swConn.Elapsed.TotalSeconds}");

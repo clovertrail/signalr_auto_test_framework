@@ -42,7 +42,10 @@ namespace JenkinsScript
 
         public void DeleteResourceGroup(string name)
         {
-            _azure.ResourceGroups.DeleteByName(name);
+            if (_azure.ResourceGroups.Contain(name))
+            {
+                _azure.ResourceGroups.DeleteByName(name);
+            }
         }
     }
 }

@@ -114,17 +114,29 @@ namespace JenkinsScript
         {
             var errCode = 0;
             var result = "";
-            var cmd = "";
+
+            var tasks = new List<Task>();
 
             hosts.ForEach(host =>
             {
-                cmd = $"rm -rf /home/{agentConfig.User}/signalr_auto_test_framework; git clone {agentConfig.Repo} /home/{agentConfig.User}/signalr_auto_test_framework"; //TODO
-                Util.Log($"CMD: {agentConfig.User}@{host}: {cmd}");
-                if (host == agentConfig.Master) { }
-                else (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmd);
-                if (errCode != 0) return;
-                return;//TODO: only for debug, to remove
+                tasks.Add(Task.Run(() =>
+                {
+                    var errCodeInner = 0;
+                    var resultInner = "";
+                    var cmdInner = $"rm -rf /home/{agentConfig.User}/signalr_auto_test_framework; git clone {agentConfig.Repo} /home/{agentConfig.User}/signalr_auto_test_framework; "; //TODO
+                    cmdInner += "cd ~/signalr_auto_test_framework/; git checkout origin/wanl";
+                    Util.Log($"CMD: {agentConfig.User}@{host}: {cmdInner}");
+                    if (host == agentConfig.Master) { }
+                    else (errCodeInner, resultInner) = ShellHelper.RemoteBash(agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmdInner);
+                    if (errCodeInner != 0)
+                    {
+                        errCode = errCodeInner;
+                        result = resultInner;
+                    }
+                }));
             });
+
+            Task.WhenAll(tasks).Wait();
 
             if (errCode != 0)
             {
@@ -142,9 +154,9 @@ namespace JenkinsScript
             var cmd = "";
 
             if (argsOption.Debug.Contains("local"))
-                cmd = $"cd /home/{agentConfig.User}/workspace/signalr_auto_test_framework_x/signalr_bench/AppServer/; export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log_appserver.txt";
+                cmd = $"cd /home/{agentConfig.User}/workspace/signalr_auto_test_framework_x/signalr_bench/AppServer/; export Azure__SignalR__ConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log_appserver.txt";
             else
-                cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export AzureSignalRConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log_appserver.txt";
+                cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export Azure__SignalR__ConnectionString='{argsOption.AzureSignalrConnectionString}'; dotnet run > log_appserver.txt";
             Util.Log($"{agentConfig.User}@{agentConfig.AppServer}: {cmd}");
             (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.AppServer, agentConfig.SshPort, agentConfig.Password, cmd, wait: false);
 
@@ -241,12 +253,13 @@ namespace JenkinsScript
 
                 cmd += $"dotnet build; dotnet run -- " +
                     $"--rpcPort 5555 " +
-                    $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5000/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
+                    $"--duration {duration} --connections {connection} --interval {interval} --slaves {agentConfig.Slaves.Count} --serverUrl 'http://{serverUrl}:5050/signalrbench' --pipeLine '{string.Join(";", pipeLine)}' " +
                     $"-v {serviceType} -t {transportType} -p {hubProtocol} -s {scenario} " +
                     $" --slaveList '{slaveList}' " +
                     $" --retry {0} " +
                     $" --clear {clear} " +
-                    $"-o '{outputCounterFile}' > log_rpcmaster.txt";
+                    $" --concurrentConnection 1 " +
+                    $" -o '{outputCounterFile}' > log_rpcmaster.txt";
 
                 Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
                 (errCode, result) = ShellHelper.RemoteBash(agentConfig.User, agentConfig.Master, agentConfig.SshPort, agentConfig.Password, cmd);
@@ -329,9 +342,16 @@ namespace JenkinsScript
             Util.Log($"CMD: az account set --subscription");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
 
-            var groupName = Util.GenResourceGroupName(config.BaseName);
-            var srName = Util.GenSignalRServiceName(config.BaseName);
+            // var groupName = Util.GenResourceGroupName(config.BaseName);
+            // var srName = Util.GenSignalRServiceName(config.BaseName);
             
+            var rnd = new Random();
+            var SrRndNum = (rnd.Next(10000) * rnd.Next(10000)).ToString();
+
+            var groupName = config.BaseName + "Group";
+            var srName = config.BaseName + SrRndNum + "SR";
+            
+
             cmd = $"  az extension add -n signalr || true";
             Util.Log($"CMD: signalr service: {cmd}");
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
