@@ -556,10 +556,12 @@ namespace JenkinsScript
         {
             switch (vmSizeName.ToLower())
             {
-                case "standardds1":
+                case "StandardDS1":
                     return VirtualMachineSizeTypes.StandardDS1;
-                case "d2v2":
+                case "StandardD2V2":
                     return VirtualMachineSizeTypes.StandardD2V2;
+                    case "StandardF2s":
+                    return VirtualMachineSizeTypes.StandardF2s;
                 default:
                     return VirtualMachineSizeTypes.StandardDS1;
             }
