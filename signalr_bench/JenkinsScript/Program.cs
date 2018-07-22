@@ -288,7 +288,7 @@ namespace JenkinsScript
                                             (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                                             Task.Delay(waitTime).Wait();
                                             (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
-                                            Task.Delay(waitTime).Wait();
+                                            if (!argsOption.Debug.Contains("debug")) Task.Delay(waitTime).Wait();
                                             (errCodeMaster, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
                                                 serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                                                 jobConfig.Interval, string.Join(";", jobConfig.Pipeline), vmBuilder);

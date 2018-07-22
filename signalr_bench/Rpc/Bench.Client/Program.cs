@@ -83,6 +83,22 @@ namespace Bench.RpcMaster
                     clients.Add(new RpcService.RpcServiceClient(channels[i]));
                 }
 
+                // check rpc connections
+                while (true) {
+                    try
+                    {
+                        foreach (var client in clients)
+                        {
+                            var strg = new Strg { Str = "" };
+                            client.Test(strg);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Util.Log($"rpc connection ex: {ex}");
+                    }
+                    break;
+                }
                 // load job config
                 var jobConfig = new JobConfig(argsOption);
 
