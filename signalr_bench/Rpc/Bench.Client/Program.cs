@@ -96,6 +96,7 @@ namespace Bench.RpcMaster
                     catch (Exception ex)
                     {
                         Util.Log($"rpc connection ex: {ex}");
+                        continue;
                     }
                     break;
                 }
