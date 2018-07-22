@@ -554,7 +554,7 @@ namespace JenkinsScript
 
         private VirtualMachineSizeTypes GetVmSize(string vmSizeName)
         {
-            switch (vmSizeName.ToLower())
+            switch (vmSizeName)
             {
                 case "StandardDS1":
                     return VirtualMachineSizeTypes.StandardDS1;
