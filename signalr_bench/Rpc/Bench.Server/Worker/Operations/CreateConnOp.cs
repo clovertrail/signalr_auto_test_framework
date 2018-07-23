@@ -1,12 +1,12 @@
-﻿using Bench.Common;
-using Bench.Common.Config;
+using Bench.Common;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bench.RpcSlave.Worker.Operations
@@ -51,24 +51,29 @@ namespace Bench.RpcSlave.Worker.Operations
                     break;
             }
 
-            var httpClientHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
-                MaxConnectionsPerServer = 200000,
-                MaxAutomaticRedirections = 200000
-            };
-
             _tk.State = Stat.Types.State.HubconnCreating;
             var connections = new List<HubConnection>(conn);
             for (var i = 0; i < conn; i++)
             {
-                var hubConnectionBuilder = new HubConnectionBuilder()
-                .WithUrl(url, httpConnectionOptions =>
+                var cookies = new CookieContainer();
+                var httpClientHandler = new HttpClientHandler
                 {
-                    httpConnectionOptions.HttpMessageHandlerFactory = _ => httpClientHandler;
-                    httpConnectionOptions.Transports = transportType;
-                    httpConnectionOptions.CloseTimeout = TimeSpan.FromMinutes(100);
-                });
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                    CookieContainer = cookies,
+                };
+                var hubConnectionBuilder = new HubConnectionBuilder()
+                    .ConfigureLogging(logging =>
+                    {
+                        logging.AddConsole();
+                        logging.SetMinimumLevel(LogLevel.Warning);
+                    })
+                    .WithUrl(url, httpConnectionOptions =>
+                    {
+                        httpConnectionOptions.HttpMessageHandlerFactory = _ => httpClientHandler;
+                        httpConnectionOptions.Transports = transportType;
+                        httpConnectionOptions.CloseTimeout = TimeSpan.FromMinutes(100);
+                        httpConnectionOptions.Cookies = cookies;
+                    });
 
                 HubConnection connection = null;
                 switch (hubProtocol)

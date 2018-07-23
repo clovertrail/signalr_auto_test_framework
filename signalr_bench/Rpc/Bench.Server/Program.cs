@@ -24,13 +24,11 @@ namespace Bench.RpcSlave
             };
             server.Start();
             Console.WriteLine($"Server [{argsOption.DnsName}:{argsOption.RpcPort}] started");
+
             var pid = Process.GetCurrentProcess().Id;
             if (argsOption.PidFile != null)
             {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(argsOption.PidFile, false))
-                {
-                    file.Write(pid);
-                }
+                Util.SaveContentToFile(argsOption.PidFile, Convert.ToString(pid), false);
             }
             Task.Delay(Timeout.Infinite).Wait();
         }
