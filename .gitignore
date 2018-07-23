@@ -35,3 +35,6 @@ msbuild.wrn
 
 # log
 *.txt
+
+# debug scripts
+signalr_bench/DebugScripts/**/*.sh
