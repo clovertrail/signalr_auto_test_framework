@@ -79,13 +79,20 @@ namespace Bench.RpcSlave.Worker.Operations
 
         private void StartSendMsg()
         {
-            var tasks = new List<Task>(_tk.Connections.Count);
-            for (var i = 0; i < _tk.Connections.Count; i++)
+            if (_tk.Connections.Count == 0)
             {
-                tasks.Add(StartSendingMessageAsync(_tk.Connections[i], i));
+                Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + 5)).Wait();
             }
+            else
+            {
+                var tasks = new List<Task>(_tk.Connections.Count);
+                for (var i = 0; i < _tk.Connections.Count; i++)
+                {
+                    tasks.Add(StartSendingMessageAsync(_tk.Connections[i], i));
+                }
 
-            Task.WhenAll(tasks).Wait();
+                Task.WhenAll(tasks).Wait();
+            }
         }
 
         private async Task StartSendingMessageAsync(HubConnection connection, int ind)

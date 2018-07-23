@@ -271,7 +271,7 @@ namespace JenkinsScript
                                         var errCodeMaster = 0;
                                         for (var i = 0; i < maxRetry; i++)
                                         {
-                                            int waitTime = 60000;
+                                            int waitTime = 20000;
                                             if (argsOption.Debug.Contains("debug"))
                                             {
                                                 waitTime = 5000;

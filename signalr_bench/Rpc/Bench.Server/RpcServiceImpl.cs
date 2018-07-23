@@ -123,6 +123,7 @@ namespace Bench.RpcSlave
                     HubProtocol = cellConfig.HubProtocol,
                     TransportType = cellConfig.TransportType,
                     Scenario = cellConfig.Scenario
+                    
                 };
                 Console.WriteLine($"LoadBenchmarkCellConfig");
                 _sigWorker.LoadBenchmarkCellConfig(benchmarkCellConfig);
