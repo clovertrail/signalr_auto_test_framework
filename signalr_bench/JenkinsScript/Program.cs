@@ -64,9 +64,9 @@ namespace JenkinsScript
                 //case "StartAppServer":
                 //    (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
                 //    break;
-                case "StartRpcServer":
-                    (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
-                    break;
+                // case "StartRpcServer":
+                //     (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario, connection);
+                    // break;
                 case "CreateSignalr":
                     (errCode, result) = ShellHelper.CreateSignalrService(argsOption, 10);
                     break;
@@ -285,9 +285,9 @@ namespace JenkinsScript
                                                 ShellHelper.Bash(" cd /home/wanl/workspace/oss/src/Microsoft.Azure.SignalR.ServiceRuntime; dotnet run  > /home/wanl/workspace/scripts-for-sr-benchmark/local/log_service.txt", wait: false);
                                             }
                                             Task.Delay(waitTime).Wait();
-                                            (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
+                                            (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario, connection);
                                             Task.Delay(waitTime).Wait();
-                                            (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption);
+                                            (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario, connection);
                                             if (!argsOption.Debug.Contains("debug")) Task.Delay(waitTime).Wait();
                                             (errCodeMaster, result) = ShellHelper.StartRpcMaster(agentConfig, argsOption,
                                                 serviceType, isSelfHost, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
