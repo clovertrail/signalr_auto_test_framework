@@ -1,2 +1,1 @@
-echo 'this script not work'
-#protoc -I./ --csharp_out .  ./Bench.proto --grpc_out . --plugin=protoc-gen-grpc=`which grpc_csharp_plugin`
+/Users/albertxavier/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Packages/Grpc.Tools.1.8.0/tools/macosx_x64/protoc -I./ --csharp_out .  ./Bench.proto --grpc_out . --plugin=protoc-gen-grpc=/Users/albertxavier/workspace/signalr_auto_test_framework/signalr_bench/Rpc/Packages/Grpc.Tools.1.8.0/tools/macosx_x64/grpc_csharp_plugin
