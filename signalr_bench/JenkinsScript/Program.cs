@@ -34,13 +34,7 @@ namespace JenkinsScript
                 agentConfig = configLoader.Load<AgentConfig>(argsOption.AgentConfigFile);
                 jobConfig = configLoader.Load<JobConfig>(argsOption.JobConfigFile);
                 Util.Log("finish loading config");
-
-                //hosts = new List<string>();
-                //hosts.Add(agentConfig.AppServer);
-                //agentConfig.Slaves.ForEach(slv => hosts.Add(slv));
-                //hosts.Add(agentConfig.Master);
             }
-            
 
             var errCode = 0;
             var result = "";
@@ -55,18 +49,6 @@ namespace JenkinsScript
             var signalrServiceName = "";
             switch (argsOption.Step)
             {
-                //case "KillAllDotnet":
-                //    (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig);
-                //    break;
-                //case "CloneRepo":
-                //    (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
-                //    break;
-                //case "StartAppServer":
-                //    (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption);
-                //    break;
-                // case "StartRpcServer":
-                //     (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario, connection);
-                    // break;
                 case "CreateSignalr":
                     (errCode, result) = ShellHelper.CreateSignalrService(argsOption, 10);
                     break;
@@ -136,7 +118,7 @@ namespace JenkinsScript
                         DogfoodSignalROps.UnregisterDogfoodCloud(argsOption.ExtensionScriptDir);
                     }
                     break;
-                case "All": 
+                case "All":
                 default:
 
                     if (argsOption.Debug.Contains("debug"))
@@ -161,7 +143,6 @@ namespace JenkinsScript
                                 agentConfig.Slaves.Add($"wanlauto5c54189495dns{i}.southeastasia.cloudapp.azure.com");
                             }
                         }
-                        
                     }
                     else
                     {
@@ -195,7 +176,6 @@ namespace JenkinsScript
                             agentConfig.Slaves.Add(vmBuilder.SlaveDomainName(i));
                         }
                     }
-                    
 
                     var hosts = new List<string>();
                     hosts.Add(agentConfig.AppServer);
@@ -261,7 +241,7 @@ namespace JenkinsScript
                             {
                                 foreach (var scenario in jobConfig.ScenarioList)
                                 {
-                                    var propName = scenario.First().ToString().ToUpper() + scenario.Substring(1); 
+                                    var propName = scenario.First().ToString().ToUpper() + scenario.Substring(1);
                                     var connectionBase = (jobConfig.ConnectionBase.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionBase) as List<int>)[indType];
                                     var connectionIncreaseStep = (jobConfig.ConnectionIncreaseStep.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionIncreaseStep) as List<int>)[indType];
 

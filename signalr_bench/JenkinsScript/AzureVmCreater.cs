@@ -531,7 +531,6 @@ namespace JenkinsScript
 
                 return location;
             }
-            
         }
 
         public VirtualMachineSizeTypes SlaveVmSize
@@ -540,7 +539,6 @@ namespace JenkinsScript
             {
                 return GetVmSize(_agentConfig.SlaveVmSize);
             }
-            
         }
 
         public VirtualMachineSizeTypes AppSvrVmSize
@@ -560,7 +558,7 @@ namespace JenkinsScript
                     return VirtualMachineSizeTypes.StandardDS1;
                 case "StandardD2V2":
                     return VirtualMachineSizeTypes.StandardD2V2;
-                    case "StandardF2s":
+                case "StandardF2s":
                     return VirtualMachineSizeTypes.StandardF2s;
                 default:
                     return VirtualMachineSizeTypes.StandardDS1;
