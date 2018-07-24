@@ -67,7 +67,7 @@ namespace Bench.RpcMaster
                     {
                         File.Delete(_jobResultFile);
                     }
-                } 
+                }
                 else
                 {
                     if (File.Exists(_jobResultFile))
