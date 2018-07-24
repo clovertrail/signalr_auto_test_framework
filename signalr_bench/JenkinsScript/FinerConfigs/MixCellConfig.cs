@@ -6,6 +6,7 @@ namespace JenkinsScript.Config.FinerConfigs
 {
     public class MixCellConfig
     {
-        public int Connections { get; set; }
+        public int Connections { get; set;}
+        public string Pipeline {get; set;}
     }
 }

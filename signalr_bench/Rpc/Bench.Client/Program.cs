@@ -143,10 +143,12 @@ namespace Bench.RpcMaster
                     var isSend = false;
                     var isComplete = false;
                     //var isComplete = false;
+                    var swCounter = new Stopwatch();
+                    swCounter.Start();
                     clients.ForEach(client =>
                     {
                         collectCountersTasks.Add(
-                            Task.Delay(0).ContinueWith(t =>
+                            Task.Run(() =>
                                 {
                                     var state = client.GetState(new Empty { });
                                     if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
@@ -169,8 +171,11 @@ namespace Bench.RpcMaster
                             )
                         );
                     });
-
                     Task.WhenAll(collectCountersTasks).Wait();
+
+                    swCounter.Stop();
+                    Util.Log($"CCCCCCCCCCCCCC collect time: {swCounter.Elapsed.TotalSeconds} s");
+
 
                     if (isSend == false || isComplete == true)
                     {

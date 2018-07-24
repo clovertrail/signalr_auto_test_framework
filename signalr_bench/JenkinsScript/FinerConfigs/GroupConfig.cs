@@ -6,6 +6,7 @@ namespace JenkinsScript.Config.FinerConfigs
 {
     public class GroupConfig
     {
-        public int GroupNum { get; set; } 
+        public MixCellConfig Broadcast {get; set;}
+        public MixCellConfig Echo {get; set;}
     }
 }
