@@ -147,10 +147,10 @@ namespace Bench.RpcMaster
                     swCounter.Start();
                     clients.ForEach(client =>
                     {
-                            var task = 
-                                Task.Run(() =>
-                                    {
-                                        Util.Log($"ssssssss start collecting time: {Util.Timestamp()}");
+                            // var task = 
+                                // Task.Run(() =>
+                                    // {
+                                        Util.Log($"ssssssss start collecting time: {Util.Timestamp2DateTimeStr(Util.Timestamp())}");
                                         var swCounterInner = new Stopwatch();
                                         swCounterInner.Start();
                                         var swGetState = new Stopwatch();
@@ -184,12 +184,12 @@ namespace Bench.RpcMaster
                                         Util.Log($"uuuuuuuuuuuu swUpdateCounters: {swUpdateCounters.Elapsed.TotalSeconds} s");
                                         swCounterInner.Stop();
                                         Util.Log($"ccccccccccc swCounterInner: {swCounterInner.Elapsed.TotalSeconds} s");
-                                    }
-                                );
+                                    // }
+                                // );
                         // task.Start();
-                        collectCountersTasks.Add(task);
+                        // collectCountersTasks.Add(task);
                     });
-                    Task.WhenAll(collectCountersTasks).Wait();
+                    // Task.WhenAll(collectCountersTasks).Wait();
 
                     swCounter.Stop();
                     Util.Log($"CCCCCCCCCCCCCC collect time: {swCounter.Elapsed.TotalSeconds} s");
