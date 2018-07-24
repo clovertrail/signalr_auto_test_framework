@@ -139,7 +139,7 @@ namespace Bench.RpcMaster
                 collectTimer.Elapsed += (sender, e) =>
                 {
                     var allClientCounters = new ConcurrentDictionary<string, int>();
-                    var collectCountersTasks = new List<Task>();
+                    var collectCountersTasks = new List<Task>(clients.Count);
                     var isSend = false;
                     var isComplete = false;
                     //var isComplete = false;
@@ -147,37 +147,38 @@ namespace Bench.RpcMaster
                     swCounter.Start();
                     clients.ForEach(client =>
                     {
-                        collectCountersTasks.Add(
-                            Task.Run(() =>
-                                {
-                                    var swCounterInner = new Stopwatch();
-                                    swCounterInner.Start();
-                                    var state = client.GetState(new Empty { });
-                                    if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
-                                    if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
-                                    isSend = true;
-                                    var swCounterCollect = new Stopwatch();
-                                    swCounterCollect.Start();
-                                    var counters = client.CollectCounters(new Force { Force_ = false });
-                                    swCounterCollect.Stop();
-                                    Util.Log($"............ swCounterCollect: {swCounterCollect.Elapsed.TotalSeconds} s");
-
-                                    for (var i = 0; i < counters.Pairs.Count; i++)
+                            var task = 
+                                Task.Run(() =>
                                     {
-                                        var key = counters.Pairs[i].Key;
-                                        var value = counters.Pairs[i].Value;
-                                        if (key.Contains("server"))
+                                        Util.Log($"ssssssss start collecting time: {Util.Timestamp()}");
+                                        var swCounterInner = new Stopwatch();
+                                        swCounterInner.Start();
+                                        var state = client.GetState(new Empty { });
+                                        if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
+                                        if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
+                                        isSend = true;
+                                        var swCounterCollect = new Stopwatch();
+                                        swCounterCollect.Start();
+                                        var counters = client.CollectCounters(new Force { Force_ = false });
+                                        swCounterCollect.Stop();
+                                        Util.Log($"............ swCounterCollect: {swCounterCollect.Elapsed.TotalSeconds} s");
+
+                                        for (var i = 0; i < counters.Pairs.Count; i++)
                                         {
-                                            allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
+                                            var key = counters.Pairs[i].Key;
+                                            var value = counters.Pairs[i].Value;
+                                            if (key.Contains("server"))
+                                            {
+                                                allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
+                                            }
+                                            else
+                                                allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
                                         }
-                                        else
-                                            allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
+                                        swCounterInner.Stop();
+                                        Util.Log($"ccccccccccc swCounterInner: {swCounterInner.Elapsed.TotalSeconds} s");
                                     }
-                                    swCounterInner.Stop();
-                                    Util.Log($"ccccccccccc swCounterInner: {swCounterInner.Elapsed.TotalSeconds} s");
-                                }
-                            )
-                        );
+                                );
+                        collectCountersTasks.Add(task);
                     });
                     Task.WhenAll(collectCountersTasks).Wait();
 
