@@ -178,7 +178,7 @@ namespace Bench.RpcMaster
                                         Util.Log($"ccccccccccc swCounterInner: {swCounterInner.Elapsed.TotalSeconds} s");
                                     }
                                 );
-                        task.Start();
+                        // task.Start();
                         collectCountersTasks.Add(task);
                     });
                     Task.WhenAll(collectCountersTasks).Wait();

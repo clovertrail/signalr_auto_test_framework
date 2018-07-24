@@ -156,6 +156,8 @@ namespace JenkinsScript
 
             if (argsOption.Debug.Contains("local"))
                 cmd = $"cd /home/{agentConfig.User}/workspace/signalr_auto_test_framework_x/signalr_bench/AppServer/; export Azure__SignalR__ConnectionString='{argsOption.AzureSignalrConnectionString}'; mkdir log/{Environment.GetEnvironmentVariable("result_root")}/; dotnet run > log/{Environment.GetEnvironmentVariable("result_root")}/log_appserver_{serviceType}_{transportType}_{hubProtocol}_{scenario}_{connection}.txt";
+            else if (argsOption.Debug.Contains("debug"))
+                cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export useLocalSignalR='true'; export Azure__SignalR__ConnectionString='{argsOption.AzureSignalrConnectionString}'; mkdir log/{Environment.GetEnvironmentVariable("result_root")}/; dotnet run > log/{Environment.GetEnvironmentVariable("result_root")}/log_appserver_{serviceType}_{transportType}_{hubProtocol}_{scenario}_{connection}.txt";
             else
                 cmd = $"cd /home/{agentConfig.User}/signalr_auto_test_framework/signalr_bench/AppServer/; export Azure__SignalR__ConnectionString='{argsOption.AzureSignalrConnectionString}'; mkdir log/{Environment.GetEnvironmentVariable("result_root")}/; dotnet run > log/{Environment.GetEnvironmentVariable("result_root")}/log_appserver_{serviceType}_{transportType}_{hubProtocol}_{scenario}_{connection}.txt";
             Util.Log($"{agentConfig.User}@{agentConfig.AppServer}: {cmd}");
