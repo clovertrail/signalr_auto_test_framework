@@ -153,7 +153,11 @@ namespace Bench.RpcMaster
                                         Util.Log($"ssssssss start collecting time: {Util.Timestamp()}");
                                         var swCounterInner = new Stopwatch();
                                         swCounterInner.Start();
+                                        var swGetState = new Stopwatch();
+                                        swGetState.Start();
                                         var state = client.GetState(new Empty { });
+                                        swGetState.Stop();
+                                        Util.Log($"********* swGetState: {swGetState.Elapsed.TotalSeconds} s");
                                         if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
                                         if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
                                         isSend = true;
@@ -163,6 +167,8 @@ namespace Bench.RpcMaster
                                         swCounterCollect.Stop();
                                         Util.Log($"............ swCounterCollect: {swCounterCollect.Elapsed.TotalSeconds} s");
 
+                                        var swUpdateCounters = new Stopwatch();
+                                        swUpdateCounters.Start();
                                         for (var i = 0; i < counters.Pairs.Count; i++)
                                         {
                                             var key = counters.Pairs[i].Key;
@@ -174,6 +180,8 @@ namespace Bench.RpcMaster
                                             else
                                                 allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
                                         }
+                                        swUpdateCounters.Stop();
+                                        Util.Log($"uuuuuuuuuuuu swUpdateCounters: {swUpdateCounters.Elapsed.TotalSeconds} s");
                                         swCounterInner.Stop();
                                         Util.Log($"ccccccccccc swCounterInner: {swCounterInner.Elapsed.TotalSeconds} s");
                                     }
