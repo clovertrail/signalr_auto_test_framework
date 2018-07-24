@@ -13,8 +13,8 @@ namespace Bench.RpcSlave.Worker
         public List<HubConnection> Connections { get; set; }
         public Stat.Types.State State { get; set; } = Stat.Types.State.WorkerUnexist;
         public Counter Counters { get; set; } = new Counter(new LocalFileSaver());
-        public BenchmarkCellConfig BenchmarkCellConfig { get; set; }
-
+        public Common.BenchmarkCellConfig BenchmarkCellConfig { get; set; }
+        // public MixConnectionConfig 
         public int ServerCount { get; set; }
 
     }

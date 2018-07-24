@@ -21,6 +21,10 @@ message BenchmarkCellConfig {
 	string hubProtocol = 3;
 	string scenario = 4;
 	string step = 5;
+	string mixGroupName = 6;
+	int32 mixEchoConnection = 7;
+	int32 mixBroadcastConnection = 8;
+	int32 mixGroupConnection = 9;
 }
 
 message Force {

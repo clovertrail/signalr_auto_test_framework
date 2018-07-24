@@ -150,11 +150,17 @@ namespace Bench.RpcMaster
                         collectCountersTasks.Add(
                             Task.Run(() =>
                                 {
+                                    var swCounterInner = new Stopwatch();
+                                    swCounterInner.Start();
                                     var state = client.GetState(new Empty { });
                                     if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
                                     if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
                                     isSend = true;
+                                    var swCounterCollect = new Stopwatch();
+                                    swCounterCollect.Start();
                                     var counters = client.CollectCounters(new Force { Force_ = false });
+                                    swCounterCollect.Stop();
+                                    Util.Log($"............ swCounterCollect: {swCounterCollect.Elapsed.TotalSeconds} s");
 
                                     for (var i = 0; i < counters.Pairs.Count; i++)
                                     {
@@ -167,6 +173,8 @@ namespace Bench.RpcMaster
                                         else
                                             allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
                                     }
+                                    swCounterInner.Stop();
+                                    Util.Log($"ccccccccccc swCounterInner: {swCounterInner.Elapsed.TotalSeconds} s");
                                 }
                             )
                         );
@@ -242,7 +250,11 @@ namespace Bench.RpcMaster
                         TransportType = argsOption.TransportType,
                         HubProtocol = argsOption.HubProtocal,
                         Scenario = argsOption.Scenario,
-                        Step = step
+                        Step = step,
+                        MixEchoConnection = 10, //todo
+                        MixBroadcastConnection = 10, //todo
+                        MixGroupName = "group", //todo
+                        MixGroupConnection = 10 //todo
                     };
                     Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
                     var tasks = new List<Task>(clients.Count);

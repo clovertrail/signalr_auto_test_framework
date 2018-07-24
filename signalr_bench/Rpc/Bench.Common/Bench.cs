@@ -22,44 +22,47 @@ namespace Bench.Common {
     static BenchReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgtCZW5jaC5wcm90bxIMQmVuY2guQ29tbW9uInYKE0JlbmNobWFya0NlbGxD",
-            "b25maWcSEwoLc2Vydml2ZVR5cGUYASABKAkSFQoNdHJhbnNwb3J0VHlwZRgC",
-            "IAEoCRITCgtodWJQcm90b2NvbBgDIAEoCRIQCghzY2VuYXJpbxgEIAEoCRIM",
-            "CgRzdGVwGAUgASgJIhYKBUZvcmNlEg0KBWZvcmNlGAEgASgIIiIKBFBhaXIS",
-            "CwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgFIjAKC0NvdW50ZXJEaWN0EiEK",
-            "BXBhaXJzGAEgAygLMhIuQmVuY2guQ29tbW9uLlBhaXIiFQoEUGF0aBINCgVw",
-            "cGF0aBgBIAEoCSKcAQoNQ2VsbEpvYkNvbmZpZxITCgtjb25uZWN0aW9ucxgB",
-            "IAEoBRIdChVjb25jdXJyZW50Q29ubmVjdGlvbnMYAiABKAUSDgoGc2xhdmVz",
-            "GAMgASgFEhAKCGludGVydmFsGAQgASgFEhAKCGR1cmF0aW9uGAUgASgFEhEK",
-            "CXNlcnZlclVybBgGIAEoCRIQCghwaXBlbGluZRgHIAEoCSL3AwoEU3RhdBIn",
-            "CgVzdGF0ZRgBIAEoDjIYLkJlbmNoLkNvbW1vbi5TdGF0LlN0YXRlIsUDCgVT",
-            "dGF0ZRIOCgpERUJVR19UT0RPEAASFwoTSFVCQ09OTl9VTkNPTk5FQ1RFRBAB",
-            "EhYKEkhVQkNPTk5fQ09OTkVDVElORxACEhUKEUhVQkNPTk5fQ09OTkVDVEVE",
-            "EAMSEwoPQ09ORklHX1VOTE9BREVEEAgSEgoOQ09ORklHX0xPQURJTkcQCRIR",
-            "Cg1DT05GSUdfTE9BREVEEAoSDgoKU0VORF9SRUFEWRALEhAKDFNFTkRfUlVO",
-            "TklORxAMEhEKDVNFTkRfQ09NUExFVEUQDRISCg5XT1JLRVJfVU5FWElTVBAO",
-            "EhMKD1dPUktFUl9DUkVBVElORxAPEhIKDldPUktFUl9DUkVBVEVEEBASEgoO",
-            "V09SS0VSX0VYSVNURUQQERIVChFIVUJDT05OX1VOQ1JFQVRFRBASEhQKEEhV",
-            "QkNPTk5fQ1JFQVRJTkcQExITCg9IVUJDT05OX0NSRUFURUQQFBIZChVIVUJD",
-            "T05OX0RJU0NPTk5FQ1RJTkcQGBIYChRIVUJDT05OX0RJU0NPTk5FQ1RFRBAZ",
-            "EhUKEUhVQkNPTk5fRElTUE9TSU5HEBoSFAoQSFVCQ09OTl9ESVNQT1NFRBAb",
-            "IhMKBFN0cmcSCwoDc3RyGAEgASgJIhkKCVRpbWVzdGFtcBIMCgR0aW1lGAEg",
-            "ASgEIgcKBUVtcHR5MvwDCgpScGNTZXJ2aWNlEj4KDEdldFRpbWVzdGFtcBIT",
-            "LkJlbmNoLkNvbW1vbi5FbXB0eRoXLkJlbmNoLkNvbW1vbi5UaW1lc3RhbXAi",
-            "ABI+ChFHZXRDb3VudGVySnNvblN0chITLkJlbmNoLkNvbW1vbi5FbXB0eRoS",
-            "LkJlbmNoLkNvbW1vbi5TdHJnIgASNQoIR2V0U3RhdGUSEy5CZW5jaC5Db21t",
-            "b24uRW1wdHkaEi5CZW5jaC5Db21tb24uU3RhdCIAEkIKDUxvYWRKb2JDb25m",
-            "aWcSGy5CZW5jaC5Db21tb24uQ2VsbEpvYkNvbmZpZxoSLkJlbmNoLkNvbW1v",
-            "bi5TdGF0IgASOQoMQ3JlYXRlV29ya2VyEhMuQmVuY2guQ29tbW9uLkVtcHR5",
-            "GhIuQmVuY2guQ29tbW9uLlN0YXQiABJDCg9Db2xsZWN0Q291bnRlcnMSEy5C",
-            "ZW5jaC5Db21tb24uRm9yY2UaGS5CZW5jaC5Db21tb24uQ291bnRlckRpY3Qi",
-            "ABJBCgZSdW5Kb2ISIS5CZW5jaC5Db21tb24uQmVuY2htYXJrQ2VsbENvbmZp",
-            "ZxoSLkJlbmNoLkNvbW1vbi5TdGF0IgASMAoEVGVzdBISLkJlbmNoLkNvbW1v",
-            "bi5TdHJnGhIuQmVuY2guQ29tbW9uLlN0YXQiAGIGcHJvdG8z"));
+            "CgtCZW5jaC5wcm90bxIMQmVuY2guQ29tbW9uIuMBChNCZW5jaG1hcmtDZWxs",
+            "Q29uZmlnEhMKC3NlcnZpdmVUeXBlGAEgASgJEhUKDXRyYW5zcG9ydFR5cGUY",
+            "AiABKAkSEwoLaHViUHJvdG9jb2wYAyABKAkSEAoIc2NlbmFyaW8YBCABKAkS",
+            "DAoEc3RlcBgFIAEoCRIUCgxtaXhHcm91cE5hbWUYBiABKAkSGQoRbWl4RWNo",
+            "b0Nvbm5lY3Rpb24YByABKAUSHgoWbWl4QnJvYWRjYXN0Q29ubmVjdGlvbhgI",
+            "IAEoBRIaChJtaXhHcm91cENvbm5lY3Rpb24YCSABKAUiFgoFRm9yY2USDQoF",
+            "Zm9yY2UYASABKAgiIgoEUGFpchILCgNrZXkYASABKAkSDQoFdmFsdWUYAiAB",
+            "KAUiMAoLQ291bnRlckRpY3QSIQoFcGFpcnMYASADKAsyEi5CZW5jaC5Db21t",
+            "b24uUGFpciIVCgRQYXRoEg0KBXBwYXRoGAEgASgJIpwBCg1DZWxsSm9iQ29u",
+            "ZmlnEhMKC2Nvbm5lY3Rpb25zGAEgASgFEh0KFWNvbmN1cnJlbnRDb25uZWN0",
+            "aW9ucxgCIAEoBRIOCgZzbGF2ZXMYAyABKAUSEAoIaW50ZXJ2YWwYBCABKAUS",
+            "EAoIZHVyYXRpb24YBSABKAUSEQoJc2VydmVyVXJsGAYgASgJEhAKCHBpcGVs",
+            "aW5lGAcgASgJIvcDCgRTdGF0EicKBXN0YXRlGAEgASgOMhguQmVuY2guQ29t",
+            "bW9uLlN0YXQuU3RhdGUixQMKBVN0YXRlEg4KCkRFQlVHX1RPRE8QABIXChNI",
+            "VUJDT05OX1VOQ09OTkVDVEVEEAESFgoSSFVCQ09OTl9DT05ORUNUSU5HEAIS",
+            "FQoRSFVCQ09OTl9DT05ORUNURUQQAxITCg9DT05GSUdfVU5MT0FERUQQCBIS",
+            "Cg5DT05GSUdfTE9BRElORxAJEhEKDUNPTkZJR19MT0FERUQQChIOCgpTRU5E",
+            "X1JFQURZEAsSEAoMU0VORF9SVU5OSU5HEAwSEQoNU0VORF9DT01QTEVURRAN",
+            "EhIKDldPUktFUl9VTkVYSVNUEA4SEwoPV09SS0VSX0NSRUFUSU5HEA8SEgoO",
+            "V09SS0VSX0NSRUFURUQQEBISCg5XT1JLRVJfRVhJU1RFRBAREhUKEUhVQkNP",
+            "Tk5fVU5DUkVBVEVEEBISFAoQSFVCQ09OTl9DUkVBVElORxATEhMKD0hVQkNP",
+            "Tk5fQ1JFQVRFRBAUEhkKFUhVQkNPTk5fRElTQ09OTkVDVElORxAYEhgKFEhV",
+            "QkNPTk5fRElTQ09OTkVDVEVEEBkSFQoRSFVCQ09OTl9ESVNQT1NJTkcQGhIU",
+            "ChBIVUJDT05OX0RJU1BPU0VEEBsiEwoEU3RyZxILCgNzdHIYASABKAkiGQoJ",
+            "VGltZXN0YW1wEgwKBHRpbWUYASABKAQiBwoFRW1wdHky/AMKClJwY1NlcnZp",
+            "Y2USPgoMR2V0VGltZXN0YW1wEhMuQmVuY2guQ29tbW9uLkVtcHR5GhcuQmVu",
+            "Y2guQ29tbW9uLlRpbWVzdGFtcCIAEj4KEUdldENvdW50ZXJKc29uU3RyEhMu",
+            "QmVuY2guQ29tbW9uLkVtcHR5GhIuQmVuY2guQ29tbW9uLlN0cmciABI1CghH",
+            "ZXRTdGF0ZRITLkJlbmNoLkNvbW1vbi5FbXB0eRoSLkJlbmNoLkNvbW1vbi5T",
+            "dGF0IgASQgoNTG9hZEpvYkNvbmZpZxIbLkJlbmNoLkNvbW1vbi5DZWxsSm9i",
+            "Q29uZmlnGhIuQmVuY2guQ29tbW9uLlN0YXQiABI5CgxDcmVhdGVXb3JrZXIS",
+            "Ey5CZW5jaC5Db21tb24uRW1wdHkaEi5CZW5jaC5Db21tb24uU3RhdCIAEkMK",
+            "D0NvbGxlY3RDb3VudGVycxITLkJlbmNoLkNvbW1vbi5Gb3JjZRoZLkJlbmNo",
+            "LkNvbW1vbi5Db3VudGVyRGljdCIAEkEKBlJ1bkpvYhIhLkJlbmNoLkNvbW1v",
+            "bi5CZW5jaG1hcmtDZWxsQ29uZmlnGhIuQmVuY2guQ29tbW9uLlN0YXQiABIw",
+            "CgRUZXN0EhIuQmVuY2guQ29tbW9uLlN0cmcaEi5CZW5jaC5Db21tb24uU3Rh",
+            "dCIAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.BenchmarkCellConfig), global::Bench.Common.BenchmarkCellConfig.Parser, new[]{ "ServiveType", "TransportType", "HubProtocol", "Scenario", "Step" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.BenchmarkCellConfig), global::Bench.Common.BenchmarkCellConfig.Parser, new[]{ "ServiveType", "TransportType", "HubProtocol", "Scenario", "Step", "MixGroupName", "MixEchoConnection", "MixBroadcastConnection", "MixGroupConnection" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Force), global::Bench.Common.Force.Parser, new[]{ "Force_" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Pair), global::Bench.Common.Pair.Parser, new[]{ "Key", "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CounterDict), global::Bench.Common.CounterDict.Parser, new[]{ "Pairs" }, null, null, null),
@@ -104,6 +107,10 @@ namespace Bench.Common {
       hubProtocol_ = other.hubProtocol_;
       scenario_ = other.scenario_;
       step_ = other.step_;
+      mixGroupName_ = other.mixGroupName_;
+      mixEchoConnection_ = other.mixEchoConnection_;
+      mixBroadcastConnection_ = other.mixBroadcastConnection_;
+      mixGroupConnection_ = other.mixGroupConnection_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -166,6 +173,50 @@ namespace Bench.Common {
       }
     }
 
+    /// <summary>Field number for the "mixGroupName" field.</summary>
+    public const int MixGroupNameFieldNumber = 6;
+    private string mixGroupName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string MixGroupName {
+      get { return mixGroupName_; }
+      set {
+        mixGroupName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "mixEchoConnection" field.</summary>
+    public const int MixEchoConnectionFieldNumber = 7;
+    private int mixEchoConnection_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int MixEchoConnection {
+      get { return mixEchoConnection_; }
+      set {
+        mixEchoConnection_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mixBroadcastConnection" field.</summary>
+    public const int MixBroadcastConnectionFieldNumber = 8;
+    private int mixBroadcastConnection_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int MixBroadcastConnection {
+      get { return mixBroadcastConnection_; }
+      set {
+        mixBroadcastConnection_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mixGroupConnection" field.</summary>
+    public const int MixGroupConnectionFieldNumber = 9;
+    private int mixGroupConnection_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int MixGroupConnection {
+      get { return mixGroupConnection_; }
+      set {
+        mixGroupConnection_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as BenchmarkCellConfig);
@@ -184,6 +235,10 @@ namespace Bench.Common {
       if (HubProtocol != other.HubProtocol) return false;
       if (Scenario != other.Scenario) return false;
       if (Step != other.Step) return false;
+      if (MixGroupName != other.MixGroupName) return false;
+      if (MixEchoConnection != other.MixEchoConnection) return false;
+      if (MixBroadcastConnection != other.MixBroadcastConnection) return false;
+      if (MixGroupConnection != other.MixGroupConnection) return false;
       return true;
     }
 
@@ -195,6 +250,10 @@ namespace Bench.Common {
       if (HubProtocol.Length != 0) hash ^= HubProtocol.GetHashCode();
       if (Scenario.Length != 0) hash ^= Scenario.GetHashCode();
       if (Step.Length != 0) hash ^= Step.GetHashCode();
+      if (MixGroupName.Length != 0) hash ^= MixGroupName.GetHashCode();
+      if (MixEchoConnection != 0) hash ^= MixEchoConnection.GetHashCode();
+      if (MixBroadcastConnection != 0) hash ^= MixBroadcastConnection.GetHashCode();
+      if (MixGroupConnection != 0) hash ^= MixGroupConnection.GetHashCode();
       return hash;
     }
 
@@ -225,6 +284,22 @@ namespace Bench.Common {
         output.WriteRawTag(42);
         output.WriteString(Step);
       }
+      if (MixGroupName.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(MixGroupName);
+      }
+      if (MixEchoConnection != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(MixEchoConnection);
+      }
+      if (MixBroadcastConnection != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(MixBroadcastConnection);
+      }
+      if (MixGroupConnection != 0) {
+        output.WriteRawTag(72);
+        output.WriteInt32(MixGroupConnection);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -244,6 +319,18 @@ namespace Bench.Common {
       }
       if (Step.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Step);
+      }
+      if (MixGroupName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MixGroupName);
+      }
+      if (MixEchoConnection != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MixEchoConnection);
+      }
+      if (MixBroadcastConnection != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MixBroadcastConnection);
+      }
+      if (MixGroupConnection != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MixGroupConnection);
       }
       return size;
     }
@@ -267,6 +354,18 @@ namespace Bench.Common {
       }
       if (other.Step.Length != 0) {
         Step = other.Step;
+      }
+      if (other.MixGroupName.Length != 0) {
+        MixGroupName = other.MixGroupName;
+      }
+      if (other.MixEchoConnection != 0) {
+        MixEchoConnection = other.MixEchoConnection;
+      }
+      if (other.MixBroadcastConnection != 0) {
+        MixBroadcastConnection = other.MixBroadcastConnection;
+      }
+      if (other.MixGroupConnection != 0) {
+        MixGroupConnection = other.MixGroupConnection;
       }
     }
 
@@ -296,6 +395,22 @@ namespace Bench.Common {
           }
           case 42: {
             Step = input.ReadString();
+            break;
+          }
+          case 50: {
+            MixGroupName = input.ReadString();
+            break;
+          }
+          case 56: {
+            MixEchoConnection = input.ReadInt32();
+            break;
+          }
+          case 64: {
+            MixBroadcastConnection = input.ReadInt32();
+            break;
+          }
+          case 72: {
+            MixGroupConnection = input.ReadInt32();
             break;
           }
         }
