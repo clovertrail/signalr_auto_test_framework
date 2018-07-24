@@ -186,7 +186,7 @@ namespace JenkinsScript
                     Task.Delay(20 * 1000).Wait();
 
                     (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig, argsOption);
-                    if (!argsOption.Debug.Contains("debug")) (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
+                    (errCode, result) = ShellHelper.GitCloneRepo(hosts, agentConfig);
 
 
                     var types = jobConfig.ServiceTypeList;

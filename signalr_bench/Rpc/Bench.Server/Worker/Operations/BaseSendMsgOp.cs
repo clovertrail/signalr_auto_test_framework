@@ -28,6 +28,7 @@ namespace Bench.RpcSlave.Worker.Operations
             _tk.State = Stat.Types.State.SendReady;
 
             // setup
+            var connRange = _tk.MixConnectionConfig.
             Setup();
             Task.Delay(5000).Wait();
 
@@ -46,7 +47,7 @@ namespace Bench.RpcSlave.Worker.Operations
             Util.Log($"Sending Complete");
         }
 
-        private void Setup()
+        private void Setup((int, int) range)
         {
             StartTimeOffsetGenerator = new RandomGenerator(new LocalFileSaver());
 
@@ -60,7 +61,7 @@ namespace Bench.RpcSlave.Worker.Operations
             _tk.Counters.ResetCounters(withConnection: false);
         }
 
-        private void SetCallbacks()
+        private void SetCallbacks((int, int) range)
         {
             for (int i = 0; i < _tk.Connections.Count; i++)
             {
@@ -77,7 +78,7 @@ namespace Bench.RpcSlave.Worker.Operations
             }
         }
 
-        private void StartSendMsg()
+        private void StartSendMsg((int, int) range)
         {
             if (_tk.Connections.Count == 0)
             {
