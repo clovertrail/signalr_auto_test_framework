@@ -106,6 +106,12 @@ namespace Bench.RpcMaster
                     var i = clients.IndexOf(client);
                     var clientConnections = Util.SplitNumber(argsOption.Connections, i, slaveList.Count);
                     var concurrentConnections = Util.SplitNumber(argsOption.ConcurrentConnection, i, slaveList.Count);
+                    // modify the illegal case
+                    if (clientConnections > 0 && concurrentConnections == 0)
+                    {
+                        Util.Log($"Warning: the concurrent connection '{argsOption.ConcurrentConnection}' is too small, it is '{slaveList.Count}' at least");
+                        concurrentConnections = 1;
+                    }
                     var state = new Stat();
                     state = client.CreateWorker(new Empty());
                     var config = new CellJobConfig

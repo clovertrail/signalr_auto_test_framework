@@ -52,59 +52,40 @@ namespace Bench.RpcSlave.Worker.Operations
             //}
             //Task.WhenAll(tasks).Wait();
             Util.Log($"concurrent conn: {_tk.JobConfig.ConcurrentConnections}");
-            if (true || _tk.JobConfig.ConcurrentConnections == 1) // debug
+            var left = connections.Count;
+            var nextBatch = _tk.JobConfig.ConcurrentConnections; // bug: concurrent could be 0 -> dead loop
+            if (nextBatch <= left)
             {
-                Util.Log($"Concurrent conn: 1");
-                foreach (var conn in connections)
+                var tasks = new List<Task>(connections.Count);
+                var i = 0;
+                do
                 {
-                    try
+                    for (var j = 0; j < nextBatch; j++)
                     {
-                        conn.StartAsync().Wait();
-                    }
-                    catch (Exception ex)
-                    {
-                        Util.Log($"start connection exception: {ex}");
-                        _tk.Counters.IncreaseConnectionError();
-                    }
-                }
-            }
-            else
-            {
-                var left = connections.Count;
-                var nextBatch = _tk.JobConfig.ConcurrentConnections; // bug: concurrent could be 0 -> dead loop
-                if (nextBatch <= left)
-                {
-                    var tasks = new List<Task>(connections.Count);
-                    var i = 0;
-                    do
-                    {   
-                        for (var j = 0; j < nextBatch; j++)
+                        var index = i + j;
+                        tasks.Add(Task.Run(() =>
                         {
-                            var index = i + j;
-                            tasks.Add(Task.Run(() =>
+                            try
                             {
-                                try
-                                {
-                                    connections[index].StartAsync().Wait();
-                                }
-                                catch (Exception ex)
-                                {
-                                    Util.Log($"start connection exception: {ex}");
-                                    _tk.Counters.IncreaseConnectionError();
-                                }
-                            }));
-                        }
+                                connections[index].StartAsync().Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                Util.Log($"start connection exception: {ex}");
+                                _tk.Counters.IncreaseConnectionError();
+                            }
+                        }));
+                    }
 
-                        Task.Delay(TimeSpan.FromSeconds(1)).Wait();
-                        i += nextBatch;
-                        left = left - nextBatch;
-                        if (left < nextBatch)
-                        {
-                            nextBatch = left;
-                        }
-                    } while (left > 0);
-                    Task.WhenAll(tasks).Wait();
-                }
+                    Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+                    i += nextBatch;
+                    left = left - nextBatch;
+                    if (left < nextBatch)
+                    {
+                        nextBatch = left;
+                    }
+                } while (left > 0);
+                Task.WhenAll(tasks).Wait();
             }
 
             _tk.Counters.UpdateConnectionSuccess(_tk.Connections.Count);
