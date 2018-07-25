@@ -199,10 +199,6 @@ namespace Bench.RpcMaster
                                 Directory.CreateDirectory(dir);
                             }
                         }
-                        if (!File.Exists(argsOption.OutputCounterFile))
-                        {
-                            StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
-                        }
 
                         File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
                     }
@@ -286,10 +282,6 @@ namespace Bench.RpcMaster
             {
                 Directory.CreateDirectory(resDir);
             }
-            if (!File.Exists(path))
-            {
-                StreamWriter sw = File.CreateText(path);
-            }
 
             File.AppendAllText(path, onelineRecord);
         }
@@ -304,10 +296,6 @@ namespace Bench.RpcMaster
             if (!Directory.Exists(resDir))
             {
                 Directory.CreateDirectory(resDir);
-            }
-            if (!File.Exists(path))
-            {
-                StreamWriter sw = File.CreateText(path);
             }
 
             File.AppendAllText(path, onelineRecord);

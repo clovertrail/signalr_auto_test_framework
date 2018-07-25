@@ -289,9 +289,19 @@ namespace JenkinsScript
                                 foreach (var scenario in jobConfig.ScenarioList)
                                 {
                                     var propName = scenario.First().ToString().ToUpper() + scenario.Substring(1);
-                                    var connectionBase = (jobConfig.ConnectionBase.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionBase) as List<int>)[indType];
-                                    var connectionIncreaseStep = (jobConfig.ConnectionIncreaseStep.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionIncreaseStep) as List<int>)[indType];
-
+                                    var connectionBase = 0;
+                                    var connectionIncreaseStep = 0;
+                                    if (!string.Equals(propName, "mix", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        connectionBase = (jobConfig.ConnectionBase.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionBase) as List<int>)[indType];
+                                        connectionIncreaseStep = (jobConfig.ConnectionIncreaseStep.GetType().GetProperty(propName).GetValue(jobConfig.ConnectionIncreaseStep) as List<int>)[indType];
+                                    }
+                                    else
+                                    {
+                                        connectionBase = jobConfig.Mix.MixEchoConnection + jobConfig.Mix.MixBroadcastConnection + jobConfig.Mix.MixGroupConnection;
+                                        connectionIncreaseStep = 1;
+                                    }
+                                    
                                     for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep * jobConfig.ConnectionLength; connection += connectionIncreaseStep)
                                     {
                                         var maxRetry = 1;
