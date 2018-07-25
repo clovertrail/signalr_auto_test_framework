@@ -115,7 +115,7 @@ namespace Bench.Common
         public static void SaveContentToFile(string path, string content, bool append)
         {
             var resDir = System.IO.Path.GetDirectoryName(path);
-            if (!Directory.Exists(resDir))
+            if (!String.IsNullOrEmpty(resDir) && !Directory.Exists(resDir))
             {
                 Directory.CreateDirectory(resDir);
             }
