@@ -216,14 +216,17 @@ namespace Bench.RpcMaster
                 {
                     var tasks = new List<Task>(clients.Count);
                     var step = pipeLines[i];
-                    int ind = -1;
+                    int indClient = -1;
+                    var connectionConfigBuilder = new ConnectionConfigBuilder();
+                    var connectionAllConfigList = connectionConfigBuilder.Build(argsOption.GroupConnection, argsOption.groupNum);
+
                     clients.ForEach(client =>
                     {
-                        ind++;
-                        var echoConn = Util.SplitNumber(argsOption.MixEchoConnection, ind, slaveList.Count);
-                        var broadcastConn = Util.SplitNumber(argsOption.MixBroadcastConnection, ind, slaveList.Count);
-                        var groupConn = Util.SplitNumber(argsOption.MixGroupConnection, ind, slaveList.Count);
-                        Util.Log($"conn: echoConn {echoConn}, b: {broadcastConn}, g: {groupConn}");
+                        indClient++;
+                        var mixEchoConn = Util.SplitNumber(argsOption.MixEchoConnection, indClient, slaveList.Count);
+                        var mixBroadcastConn = Util.SplitNumber(argsOption.MixBroadcastConnection, indClient, slaveList.Count);
+                        var mixGroupConn = Util.SplitNumber(argsOption.MixGroupConnection, indClient, slaveList.Count);
+                        Util.Log($"conn: echoConn {mixEchoConn}, b: {mixBroadcastConn}, g: {mixGroupConn}");
 
                         var benchmarkCellConfig = new BenchmarkCellConfig
                         {
@@ -232,16 +235,25 @@ namespace Bench.RpcMaster
                             HubProtocol = argsOption.HubProtocal,
                             Scenario = argsOption.Scenario,
                             Step = step,
-                            MixEchoConnection = echoConn,
-                            MixBroadcastConnection = broadcastConn,
+                            MixEchoConnection = mixEchoConn,
+                            MixBroadcastConnection = mixBroadcastConn,
                             MixGroupName = argsOption.MixGroupName,
-                            MixGroupConnection = groupConn
+                            MixGroupConnection = mixGroupConn
                         };
+
                         Util.Log($"service: {benchmarkCellConfig.ServiceType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
 
                         tasks.Add(Task.Run(() =>
                         {
+                            var beg = 0;
+                            for (var indStart = 0; indStart < indClient; indStart++)
+                            {
+                                beg += Util.SplitNumber(argsOption.GroupConnection, indStart, slaveList.Count);
+                            }
+                            var currConnSliceCnt = Util.SplitNumber(argsOption.GroupConnection, indClient, slaveList.Count);
                             client.RunJob(benchmarkCellConfig);
+                            client.LoadConnectionConfig(connectionAllConfigList);
+                            client.LoadConnectionRange(new Range{ Begin = beg, End = beg + currConnSliceCnt});
                         }));
                     });
                     Task.WhenAll(tasks).Wait();

@@ -22,6 +22,15 @@ namespace Bench.RpcSlave.Worker
             _tk.BenchmarkCellConfig = benchmarkCellConfig;
         }
 
+        public void LoadConnectionConfig(ConnectionConfigList connectionConfigList)
+        {
+            _tk.ConnectionConfigList = connectionConfigList;
+        }
+
+        public void LoadConnectionRange(Range range)
+        {
+            _tk.ConnectionRange  = range;
+        }
 
         public Stat.Types.State ProcessJob(string opName)
         {

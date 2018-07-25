@@ -19,8 +19,10 @@ namespace Bench.Common {
     static readonly grpc::Marshaller<global::Bench.Common.Stat> __Marshaller_Stat = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Stat.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.CellJobConfig> __Marshaller_CellJobConfig = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.CellJobConfig.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.Force> __Marshaller_Force = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Force.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Bench.Common.CounterDict> __Marshaller_CounterDict = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.CounterDict.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Bench.Common.Dict> __Marshaller_Dict = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Dict.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Bench.Common.BenchmarkCellConfig> __Marshaller_BenchmarkCellConfig = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.BenchmarkCellConfig.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Bench.Common.ConnectionConfigList> __Marshaller_ConnectionConfigList = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.ConnectionConfigList.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Bench.Common.Range> __Marshaller_Range = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Bench.Common.Range.Parser.ParseFrom);
 
     static readonly grpc::Method<global::Bench.Common.Empty, global::Bench.Common.Timestamp> __Method_GetTimestamp = new grpc::Method<global::Bench.Common.Empty, global::Bench.Common.Timestamp>(
         grpc::MethodType.Unary,
@@ -57,12 +59,12 @@ namespace Bench.Common {
         __Marshaller_Empty,
         __Marshaller_Stat);
 
-    static readonly grpc::Method<global::Bench.Common.Force, global::Bench.Common.CounterDict> __Method_CollectCounters = new grpc::Method<global::Bench.Common.Force, global::Bench.Common.CounterDict>(
+    static readonly grpc::Method<global::Bench.Common.Force, global::Bench.Common.Dict> __Method_CollectCounters = new grpc::Method<global::Bench.Common.Force, global::Bench.Common.Dict>(
         grpc::MethodType.Unary,
         __ServiceName,
         "CollectCounters",
         __Marshaller_Force,
-        __Marshaller_CounterDict);
+        __Marshaller_Dict);
 
     static readonly grpc::Method<global::Bench.Common.BenchmarkCellConfig, global::Bench.Common.Stat> __Method_RunJob = new grpc::Method<global::Bench.Common.BenchmarkCellConfig, global::Bench.Common.Stat>(
         grpc::MethodType.Unary,
@@ -77,6 +79,20 @@ namespace Bench.Common {
         "Test",
         __Marshaller_Strg,
         __Marshaller_Stat);
+
+    static readonly grpc::Method<global::Bench.Common.ConnectionConfigList, global::Bench.Common.Empty> __Method_LoadConnectionConfig = new grpc::Method<global::Bench.Common.ConnectionConfigList, global::Bench.Common.Empty>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "LoadConnectionConfig",
+        __Marshaller_ConnectionConfigList,
+        __Marshaller_Empty);
+
+    static readonly grpc::Method<global::Bench.Common.Range, global::Bench.Common.Empty> __Method_LoadConnectionRange = new grpc::Method<global::Bench.Common.Range, global::Bench.Common.Empty>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "LoadConnectionRange",
+        __Marshaller_Range,
+        __Marshaller_Empty);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -112,7 +128,7 @@ namespace Bench.Common {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      public virtual global::System.Threading.Tasks.Task<global::Bench.Common.CounterDict> CollectCounters(global::Bench.Common.Force request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::Bench.Common.Dict> CollectCounters(global::Bench.Common.Force request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -123,6 +139,16 @@ namespace Bench.Common {
       }
 
       public virtual global::System.Threading.Tasks.Task<global::Bench.Common.Stat> Test(global::Bench.Common.Strg request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      public virtual global::System.Threading.Tasks.Task<global::Bench.Common.Empty> LoadConnectionConfig(global::Bench.Common.ConnectionConfigList request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      public virtual global::System.Threading.Tasks.Task<global::Bench.Common.Empty> LoadConnectionRange(global::Bench.Common.Range request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -232,19 +258,19 @@ namespace Bench.Common {
       {
         return CallInvoker.AsyncUnaryCall(__Method_CreateWorker, null, options, request);
       }
-      public virtual global::Bench.Common.CounterDict CollectCounters(global::Bench.Common.Force request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual global::Bench.Common.Dict CollectCounters(global::Bench.Common.Force request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return CollectCounters(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::Bench.Common.CounterDict CollectCounters(global::Bench.Common.Force request, grpc::CallOptions options)
+      public virtual global::Bench.Common.Dict CollectCounters(global::Bench.Common.Force request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_CollectCounters, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::Bench.Common.CounterDict> CollectCountersAsync(global::Bench.Common.Force request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Dict> CollectCountersAsync(global::Bench.Common.Force request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
       {
         return CollectCountersAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::Bench.Common.CounterDict> CollectCountersAsync(global::Bench.Common.Force request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Dict> CollectCountersAsync(global::Bench.Common.Force request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_CollectCounters, null, options, request);
       }
@@ -280,6 +306,38 @@ namespace Bench.Common {
       {
         return CallInvoker.AsyncUnaryCall(__Method_Test, null, options, request);
       }
+      public virtual global::Bench.Common.Empty LoadConnectionConfig(global::Bench.Common.ConnectionConfigList request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return LoadConnectionConfig(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual global::Bench.Common.Empty LoadConnectionConfig(global::Bench.Common.ConnectionConfigList request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_LoadConnectionConfig, null, options, request);
+      }
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Empty> LoadConnectionConfigAsync(global::Bench.Common.ConnectionConfigList request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return LoadConnectionConfigAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Empty> LoadConnectionConfigAsync(global::Bench.Common.ConnectionConfigList request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_LoadConnectionConfig, null, options, request);
+      }
+      public virtual global::Bench.Common.Empty LoadConnectionRange(global::Bench.Common.Range request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return LoadConnectionRange(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual global::Bench.Common.Empty LoadConnectionRange(global::Bench.Common.Range request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_LoadConnectionRange, null, options, request);
+      }
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Empty> LoadConnectionRangeAsync(global::Bench.Common.Range request, grpc::Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default(CancellationToken))
+      {
+        return LoadConnectionRangeAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual grpc::AsyncUnaryCall<global::Bench.Common.Empty> LoadConnectionRangeAsync(global::Bench.Common.Range request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_LoadConnectionRange, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override RpcServiceClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -299,7 +357,9 @@ namespace Bench.Common {
           .AddMethod(__Method_CreateWorker, serviceImpl.CreateWorker)
           .AddMethod(__Method_CollectCounters, serviceImpl.CollectCounters)
           .AddMethod(__Method_RunJob, serviceImpl.RunJob)
-          .AddMethod(__Method_Test, serviceImpl.Test).Build();
+          .AddMethod(__Method_Test, serviceImpl.Test)
+          .AddMethod(__Method_LoadConnectionConfig, serviceImpl.LoadConnectionConfig)
+          .AddMethod(__Method_LoadConnectionRange, serviceImpl.LoadConnectionRange).Build();
     }
 
   }

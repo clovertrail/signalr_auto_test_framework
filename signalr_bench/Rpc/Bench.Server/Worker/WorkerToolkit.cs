@@ -16,5 +16,7 @@ namespace Bench.RpcSlave.Worker
         public Common.BenchmarkCellConfig BenchmarkCellConfig { get; set; }
         public int ServerCount { get; set; }
 
+        public ConnectionConfigList ConnectionConfigList {get; set;}
+        public Range ConnectionRange {get; set;}
     }
 }

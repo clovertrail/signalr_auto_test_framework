@@ -91,11 +91,11 @@ namespace Bench.RpcSlave
             }
         }
 
-        public override Task<CounterDict> CollectCounters(Force force, ServerCallContext context)
+        public override Task<Dict> CollectCounters(Force force, ServerCallContext context)
         {
             try
             {
-                var dict = new CounterDict();
+                var dict = new Dict();
                 if (force.Force_ != true && (int)_sigWorker.GetState() < (int)Stat.Types.State.SendRunning)
                 {
                     return Task.FromResult(dict);
@@ -138,6 +138,18 @@ namespace Bench.RpcSlave
                 Util.Log($"Exception: {ex}");
                 throw;
             }
+        }
+
+        public override Task<Empty> LoadConnectionConfig(ConnectionConfigList connectionConfigList, ServerCallContext context)
+        {
+            _sigWorker.LoadConnectionConfig(connectionConfigList);
+            return Task.FromResult(new Empty());
+        }
+
+        public override Task<Empty> LoadConnectionRange(Range connectionRange, ServerCallContext context)
+        {
+            _sigWorker.LoadConnectionRange(connectionRange);
+            return Task.FromResult(new Empty());
         }
 
         public override Task<Stat> Test(Strg strg, ServerCallContext context)

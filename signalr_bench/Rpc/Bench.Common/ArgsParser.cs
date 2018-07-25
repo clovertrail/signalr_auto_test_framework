@@ -93,5 +93,10 @@ namespace Bench.Common
 
         [Option("mixGroupName",  Required = false, HelpText = "")]
         public string MixGroupName {get; set;}
+
+        [Option("groupConnection",  Required = false, HelpText = "")]
+        public int GroupConnection {get; set;}
+        [Option("groupNum",  Required = false, HelpText = "")]
+        public int groupNum {get; set;}
     }
 }
