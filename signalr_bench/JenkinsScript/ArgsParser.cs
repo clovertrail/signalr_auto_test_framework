@@ -55,6 +55,9 @@ namespace JenkinsScript
         [Option ("debug", Required = false, HelpText = " debug")]
         public string Debug { get; set; }
 
+        [Option ("utils", Required = false, Default = null, HelpText = "Specify the Utils.sh which is required by external scripts")]
+        public string UtilsFilePath { get; set; }
+
         [Option ("commit", Default = "", Required = false, HelpText = "")]
         public string Commit { get; set; }
 
