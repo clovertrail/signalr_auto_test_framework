@@ -301,7 +301,7 @@ namespace JenkinsScript
                                         connectionBase = jobConfig.Mix.MixEchoConnection + jobConfig.Mix.MixBroadcastConnection + jobConfig.Mix.MixGroupConnection;
                                         connectionIncreaseStep = 1;
                                     }
-                                    
+
                                     for (var connection = connectionBase; connection < connectionBase + connectionIncreaseStep * jobConfig.ConnectionLength; connection += connectionIncreaseStep)
                                     {
                                         var maxRetry = 1;

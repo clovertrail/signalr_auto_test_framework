@@ -244,6 +244,7 @@ namespace JenkinsScript
                     $" --mixGroupConnection  {mixGroupConnection} " +
                     $" --mixGroupName  {mixGroupName} " +
                     $" --concurrentConnection 1 " +
+                    // $" --pidFile pid_{Environment.GetEnvironmentVariable("result_root")}.txt " +
                     $" -o '{outputCounterFile}' > log/{Environment.GetEnvironmentVariable("result_root")}/log_rpcmaster_{serviceType}_{transportType}_{hubProtocol}_{scenario}_{connection}.txt";
 
                 Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");
