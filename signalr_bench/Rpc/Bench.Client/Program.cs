@@ -64,7 +64,7 @@ namespace Bench.RpcMaster
                     {
                         File.Delete(_jobResultFile);
                     }
-                } 
+                }
                 else
                 {
                     if (File.Exists(_jobResultFile))
@@ -80,14 +80,25 @@ namespace Bench.RpcMaster
                     clients.Add(new RpcService.RpcServiceClient(channels[i]));
                 }
 
+                // check rpc connections
+                while (true) {
+                    try
+                    {
+                        foreach (var client in clients)
+                        {
+                            var strg = new Strg { Str = "" };
+                            client.Test(strg);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Util.Log($"rpc connection ex: {ex}");
+                        continue;
+                    }
+                    break;
+                }
                 // load job config
                 var jobConfig = new JobConfig(argsOption);
-
-                // allocate connections/protocol/transport type...
-                // TODO, only for dev
-                //var criteria = new Dictionary<string, int>();
-                //var allocator = new OneAllocator();
-                //var allocated = allocator.Allocate(slaveList, jobConfig.Connections, criteria);
 
                 // call salves to load job config
                 clients.ForEach( client =>
@@ -108,6 +119,7 @@ namespace Bench.RpcMaster
                         Pipeline = argsOption.PipeLine
                     };
                     Util.Log($"create worker state: {state.State}");
+                    Util.Log($"client connections: {config.Connections}");
                     state = client.LoadJobConfig(config);
                     Util.Log($"load job config state: {state.State}");
                 });
@@ -118,40 +130,34 @@ namespace Bench.RpcMaster
                 collectTimer.Elapsed += (sender, e) =>
                 {
                     var allClientCounters = new ConcurrentDictionary<string, int>();
-                    var collectCountersTasks = new List<Task>();
+                    var collectCountersTasks = new List<Task>(clients.Count);
                     var isSend = false;
                     var isComplete = false;
-                    //var isComplete = false;
+                    var swCollect = new Stopwatch();
+                    swCollect.Start();
                     clients.ForEach(client =>
                     {
-                        collectCountersTasks.Add(
-                            Task.Delay(0).ContinueWith(t =>
-                                {
-                                    var state = client.GetState(new Empty { });
-                                    if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
-                                    if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
-                                    isSend = true;
-                                    var counters = client.CollectCounters(new Force { Force_ = false });
+                        var state = client.GetState(new Empty { });
+                        if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
+                        if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
+                        isSend = true;
+                        isComplete = false;
+                        var counters = client.CollectCounters(new Force { Force_ = false });
 
-                                    for (var i = 0; i < counters.Pairs.Count; i++)
-                                    {
-                                        var key = counters.Pairs[i].Key;
-                                        var value = counters.Pairs[i].Value;
-                                        if (key.Contains("server"))
-                                        {
-                                            allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
-                                        }
-                                        else
-                                            allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
-                                    }
-                                }
-                            )
-                        );
-                    
+                        for (var i = 0; i < counters.Pairs.Count; i++)
+                        {
+                            var key = counters.Pairs[i].Key;
+                            var value = counters.Pairs[i].Value;
+                            if (key.Contains("server"))
+                            {
+                                allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
+                            }
+                            else
+                                allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
+                        }
                     });
-
-                    Task.WhenAll(collectCountersTasks).Wait();
-
+                    swCollect.Stop();
+                    Util.Log($"collecting counters time: {swCollect.Elapsed.TotalSeconds} s");
                     if (isSend == false || isComplete == true)
                     {
                         return;
@@ -182,11 +188,7 @@ namespace Bench.RpcMaster
 
                     try
                     {
-                        //var percentage = GetSuccessPercentage(_counters, argsOption.Scenario, argsOption.Connections);
-                        //if (percentage > _successThreshold)
-                        //{
                         Util.SaveContentToFile(argsOption.OutputCounterFile, onelineRecord, true);
-                        //}
                     }
                     catch (Exception ex)
                     {
@@ -194,21 +196,36 @@ namespace Bench.RpcMaster
                     }
                 };
                 collectTimer.Start();
+
                 // process jobs for each step
-                foreach (var step in argsOption.PipeLine.Split(';'))
+                var pipeLines = new List<string>(argsOption.PipeLine.Split(';'));
+                for (var i = 0; i < pipeLines.Count; i++)
                 {
-                    var benchmarkCellConfig = new BenchmarkCellConfig
-                    {
-                        ServiveType = argsOption.ServiceType,
-                        TransportType = argsOption.TransportType,
-                        HubProtocol = argsOption.HubProtocal,
-                        Scenario = argsOption.Scenario,
-                        Step = step
-                    };
-                    Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
                     var tasks = new List<Task>(clients.Count);
+                    var step = pipeLines[i];
+                    int ind = -1;
                     clients.ForEach(client =>
                     {
+                        ind++;
+                        var echoConn = Util.SplitNumber(argsOption.MixEchoConnection, ind, slaveList.Count);
+                        var broadcastConn = Util.SplitNumber(argsOption.MixBroadcastConnection, ind, slaveList.Count);
+                        var groupConn = Util.SplitNumber(argsOption.MixGroupConnection, ind, slaveList.Count);
+                        Util.Log($"conn: echoConn {echoConn}, b: {broadcastConn}, g: {groupConn}");
+
+                        var benchmarkCellConfig = new BenchmarkCellConfig
+                        {
+                            ServiceType = argsOption.ServiceType,
+                            TransportType = argsOption.TransportType,
+                            HubProtocol = argsOption.HubProtocal,
+                            Scenario = argsOption.Scenario,
+                            Step = step,
+                            MixEchoConnection = echoConn,
+                            MixBroadcastConnection = broadcastConn,
+                            MixGroupName = argsOption.MixGroupName,
+                            MixGroupConnection = groupConn
+                        };
+                        Util.Log($"service: {benchmarkCellConfig.ServiceType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
+
                         tasks.Add(Task.Run(() =>
                         {
                             client.RunJob(benchmarkCellConfig);
@@ -271,9 +288,12 @@ namespace Bench.RpcMaster
             {
                 percentage = (double)received / (total * connection);
             }
-            else
+            else if (scenario.Contains("echo"))
             {
                 percentage = (double)received / (total);
+            } else if (scenario.Contains("mix"))
+            {
+                percentage  = 1.0; // todo
             }
 
             return percentage;

@@ -22,12 +22,11 @@ namespace JenkinsScript
         public List<string> TransportTypeList { get; set; }
         public List<string> ScenarioList { get; set; }
 
-        // list 
+        // list
         public List<string> SignalrUnit { get; set; }
         public ConnectionIncreaseStepConfig ConnectionIncreaseStep { get; set; }
         public ConnectionBaseConfig ConnectionBase { get; set; }
-        public MixConfig Mix { get; set; }
-        public GroupConfig Group { get; set; }
         public int ConnectionLength { get; set;}
+        public MixConfig Mix { get; set; }
     }
 }

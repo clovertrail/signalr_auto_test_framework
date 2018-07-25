@@ -18,8 +18,6 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            
-
             var waitTime = 5 * 1000;
             Console.WriteLine($"wait time: {waitTime / 1000}s");
             Task.Delay(waitTime).Wait();
@@ -28,6 +26,7 @@ namespace Bench.RpcSlave.Worker.Operations
             _tk.State = Stat.Types.State.SendReady;
 
             // setup
+            // var connRange = _tk.MixConnectionConfig.
             Setup();
             Task.Delay(5000).Wait();
 
@@ -64,7 +63,6 @@ namespace Bench.RpcSlave.Worker.Operations
         {
             for (int i = 0; i < _tk.Connections.Count; i++)
             {
-                int ind = i;
                 _tk.Connections[i].On(_tk.BenchmarkCellConfig.Scenario, (int count, string time) =>
                 {
                     var receiveTimestamp = Util.Timestamp();
@@ -79,13 +77,20 @@ namespace Bench.RpcSlave.Worker.Operations
 
         private void StartSendMsg()
         {
-            var tasks = new List<Task>(_tk.Connections.Count);
-            for (var i = 0; i < _tk.Connections.Count; i++)
+            if (_tk.Connections.Count == 0)
             {
-                tasks.Add(StartSendingMessageAsync(_tk.Connections[i], i));
+                Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + 5)).Wait();
             }
+            else
+            {
+                var tasks = new List<Task>(_tk.Connections.Count);
+                for (var i = 0; i < _tk.Connections.Count; i++)
+                {
+                    tasks.Add(StartSendingMessageAsync(_tk.Connections[i], i));
+                }
 
-            Task.WhenAll(tasks).Wait();
+                Task.WhenAll(tasks).Wait();
+            }
         }
 
         private async Task StartSendingMessageAsync(HubConnection connection, int ind)
@@ -113,12 +118,9 @@ namespace Bench.RpcSlave.Worker.Operations
             }
         }
 
-
         private void SaveCounters()
         {
             _tk.Counters.SaveCounters();
         }
-
-        
     }
 }

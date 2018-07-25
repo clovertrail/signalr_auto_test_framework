@@ -9,18 +9,19 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
 {
     public class BenchHub : Hub
     {
-        private static int _totolReceivedEcho = 0;
-        private static int _totolReceivedBroadcast = 0;
+        private static int _totalReceivedEcho = 0;
+        private static int _totalReceivedBroadcast = 0;
+        private static int _totalReceivedGroup = 0;
         public void Echo(string uid, string time)
         {
-            Interlocked.Increment(ref _totolReceivedEcho);
-            Clients.Client(Context.ConnectionId).SendAsync("echo", _totolReceivedEcho, time);
+            Interlocked.Increment(ref _totalReceivedEcho);
+            Clients.Client(Context.ConnectionId).SendAsync("echo", _totalReceivedEcho, time);
         }
 
         public void Broadcast(string uid, string time)
         {
-            Interlocked.Increment(ref _totolReceivedBroadcast);
-            Clients.All.SendAsync("broadcast", _totolReceivedBroadcast, time);
+            Interlocked.Increment(ref _totalReceivedBroadcast);
+            Clients.All.SendAsync("broadcast", _totalReceivedBroadcast, time);
         }
 
         public void BroadcastMessage(string name, string message)
@@ -33,9 +34,15 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
             Clients.Group(groupName).SendAsync("SendToGroup", Context.ConnectionId, message);
         }
 
+        public void SendGroup(string groupName, string message)
+        {
+            Interlocked.Increment(ref _totalReceivedGroup);
+            Clients.Group(groupName).SendAsync("SendGroup", 0, message);
+        }
+
         public void JoinGroup(string groupName, string client)
         {
-            Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            Groups.AddToGroupAsync(Context.ConnectionId, groupName).Wait();
             if (string.Equals(client, "perf", StringComparison.Ordinal))
             {
                 // for perf test
@@ -49,7 +56,7 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
 
         public void LeaveGroup(string groupName, string client)
         {
-            Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+            Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName).Wait();
             if (string.Equals(client, "perf", StringComparison.Ordinal))
             {
                 Clients.Client(Context.ConnectionId).SendAsync("LeaveGroup", Context.ConnectionId, $"{Context.ConnectionId} left {groupName}");
@@ -63,8 +70,9 @@ namespace Microsoft.Azure.SignalR.PerfTest.AppServer
         public void Count(string name)
         {
             var count = 0;
-            if (name == "echo") count = _totolReceivedEcho; 
-            if (name == "broadcast") count = _totolReceivedBroadcast;
+            if (name == "echo") count = _totalReceivedEcho; 
+            if (name == "broadcast") count = _totalReceivedBroadcast;
+            if (name == "group") count = _totalReceivedGroup;
             Clients.Client(Context.ConnectionId).SendAsync("count", count);
         }
     }

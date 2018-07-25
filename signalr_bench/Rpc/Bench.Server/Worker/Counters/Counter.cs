@@ -40,6 +40,8 @@ namespace Bench.RpcSlave.Worker.Counters
 
         public void ResetCounters(bool withConnection = true)
         {
+
+            // messages
             for (int i = 1; i <= LatencyLength; i++)
             {
                 InnerCounters.AddOrUpdate(MsgKey(i * LatencyStep), 0, (k, v) => 0);
@@ -48,13 +50,32 @@ namespace Bench.RpcSlave.Worker.Counters
             InnerCounters.AddOrUpdate("message:notSentFromClient", 0, (k, v) => 0);
             InnerCounters.AddOrUpdate("message:sent", 0, (k, v) => 0);
             InnerCounters.AddOrUpdate($"message:ge:{LatencyLength * LatencyStep}", 0, (k, v) => 0);
+            
+            // connections
             if (withConnection == true)
             {
                 InnerCounters.AddOrUpdate("connection:error", 0, (k, v) => 0);
                 InnerCounters.AddOrUpdate("connection:success", 0, (k, v) => 0);
             }
+
+            // join/leave groups
+            InnerCounters.AddOrUpdate("group:join:fail", 0, (k, v) => 0);
+            InnerCounters.AddOrUpdate("group:leave:fail", 0, (k, v) => 0);
+
         }
 
+        public void IncreaseJoinGroupFail()
+        {
+            InnerCounters.AddOrUpdate("group:join:fail", 0, (k, v) => v + 1);
+
+        }
+
+        public void IncreaseLeaveGroupFail()
+        {
+            InnerCounters.AddOrUpdate("group:leave:fail", 0, (k, v) => v + 1);
+
+        }
+        
         public void CountLatency(long sendTimestamp, long receiveTimestamp)
         {
             long dTime = receiveTimestamp - sendTimestamp;

@@ -14,7 +14,7 @@ namespace Bench.RpcSlave.Worker
 
         public void LoadJobs(JobConfig jobConfig)
         {
-            _tk.JobConfig = jobConfig; 
+            _tk.JobConfig = jobConfig;
         }
 
         public void LoadBenchmarkCellConfig(BenchmarkCellConfig benchmarkCellConfig)

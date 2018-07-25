@@ -117,15 +117,16 @@ namespace Bench.RpcSlave
             try
             {
                 Console.WriteLine($"Run Job");
-                Worker.BenchmarkCellConfig benchmarkCellConfig = new Worker.BenchmarkCellConfig
-                {
-                    ServiceType = cellConfig.ServiveType,
-                    HubProtocol = cellConfig.HubProtocol,
-                    TransportType = cellConfig.TransportType,
-                    Scenario = cellConfig.Scenario
-                };
+                // Worker.BenchmarkCellConfig benchmarkCellConfig = new Worker.BenchmarkCellConfig
+                // {
+                //     ServiceType = cellConfig.ServiveType,
+                //     HubProtocol = cellConfig.HubProtocol,
+                //     TransportType = cellConfig.TransportType,
+                //     Scenario = cellConfig.Scenario
+                    
+                // };
                 Console.WriteLine($"LoadBenchmarkCellConfig");
-                _sigWorker.LoadBenchmarkCellConfig(benchmarkCellConfig);
+                _sigWorker.LoadBenchmarkCellConfig(cellConfig);
 
                 Console.WriteLine($"ProcessJob step: {cellConfig.Step}");
                 _sigWorker.ProcessJob(cellConfig.Step);

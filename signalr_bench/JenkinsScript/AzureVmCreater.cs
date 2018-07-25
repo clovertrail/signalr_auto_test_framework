@@ -52,7 +52,7 @@ namespace JenkinsScript
             var publicIp = CreatePublicIpAsync(AppSvrPublicIpBase, Location, AppSvrGroupName, AppSvrPublicDnsBase).GetAwaiter().GetResult();
             var nsg = CreateNetworkSecurityGroupAsync(AppSvrNsgBase, Location, AppSvrGroupName, _agentConfig.SshPort).GetAwaiter().GetResult();
             var nic = CreateNetworkInterfaceAsync(AppSvrNicBase, Location, AppSvrGroupName, AppSvrSubNet, vnet, publicIp, nsg).GetAwaiter().GetResult();
-            var vmTemp = GenerateVmTemplateAsync(AppSvrVmNameBase, Location, AppSvrGroupName, _agentConfig.ImageId, _agentConfig.AppSvrVmName, _agentConfig.AppSvrVmPassWord, _agentConfig.Ssh, AppSvrVmSize, nic).GetAwaiter().GetResult();
+            var vmTemp = GenerateVmTemplateAsync(AppSvrVmNameBase, Location, AppSvrGroupName, _agentConfig.ImageId, _agentConfig.User, _agentConfig.Password, _agentConfig.Ssh, AppSvrVmSize, nic).GetAwaiter().GetResult();
             vmTemp.Create();
             sw.Stop();
             Util.Log($"create vm time: {sw.Elapsed.TotalMinutes} min");
@@ -101,7 +101,7 @@ namespace JenkinsScript
             var vmTasks = new List<Task<IWithCreate>>();
             for (var i = 0; i < _agentConfig.SlaveVmCount; i++)
             {
-                vmTasks.Add(GenerateVmTemplateAsync(VmNameBase, Location, GroupName, _agentConfig.ImageId, _agentConfig.SlaveVmName, _agentConfig.SlaveVmPassWord, _agentConfig.Ssh, SlaveVmSize, nics[i], avSet, i));
+                vmTasks.Add(GenerateVmTemplateAsync(VmNameBase, Location, GroupName, _agentConfig.ImageId, _agentConfig.User, _agentConfig.Password, _agentConfig.Ssh, SlaveVmSize, nics[i], avSet, i));
             }
 
             var vms = Task.WhenAll(vmTasks).GetAwaiter().GetResult();
@@ -243,7 +243,7 @@ namespace JenkinsScript
                     .FromAnyAddress()
                     .FromAnyPort()
                     .ToAnyAddress()
-                    .ToPort(5000)
+                    .ToPort(5050)
                     .WithAnyProtocol()
                     .WithPriority(104)
                     .Attach()
@@ -531,7 +531,6 @@ namespace JenkinsScript
 
                 return location;
             }
-            
         }
 
         public VirtualMachineSizeTypes SlaveVmSize
@@ -540,7 +539,6 @@ namespace JenkinsScript
             {
                 return GetVmSize(_agentConfig.SlaveVmSize);
             }
-            
         }
 
         public VirtualMachineSizeTypes AppSvrVmSize
@@ -554,12 +552,14 @@ namespace JenkinsScript
 
         private VirtualMachineSizeTypes GetVmSize(string vmSizeName)
         {
-            switch (vmSizeName.ToLower())
+            switch (vmSizeName)
             {
-                case "standardds1":
+                case "StandardDS1":
                     return VirtualMachineSizeTypes.StandardDS1;
-                case "d2v2":
+                case "StandardD2V2":
                     return VirtualMachineSizeTypes.StandardD2V2;
+                case "StandardF2s":
+                    return VirtualMachineSizeTypes.StandardF2s;
                 default:
                     return VirtualMachineSizeTypes.StandardDS1;
             }
