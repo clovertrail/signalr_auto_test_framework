@@ -23,7 +23,7 @@ namespace Bench.Common {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgtCZW5jaC5wcm90bxIMQmVuY2guQ29tbW9uIuMBChNCZW5jaG1hcmtDZWxs",
-            "Q29uZmlnEhMKC3NlcnZpdmVUeXBlGAEgASgJEhUKDXRyYW5zcG9ydFR5cGUY",
+            "Q29uZmlnEhMKC3NlcnZpY2VUeXBlGAEgASgJEhUKDXRyYW5zcG9ydFR5cGUY",
             "AiABKAkSEwoLaHViUHJvdG9jb2wYAyABKAkSEAoIc2NlbmFyaW8YBCABKAkS",
             "DAoEc3RlcBgFIAEoCRIUCgxtaXhHcm91cE5hbWUYBiABKAkSGQoRbWl4RWNo",
             "b0Nvbm5lY3Rpb24YByABKAUSHgoWbWl4QnJvYWRjYXN0Q29ubmVjdGlvbhgI",
@@ -62,7 +62,7 @@ namespace Bench.Common {
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.BenchmarkCellConfig), global::Bench.Common.BenchmarkCellConfig.Parser, new[]{ "ServiveType", "TransportType", "HubProtocol", "Scenario", "Step", "MixGroupName", "MixEchoConnection", "MixBroadcastConnection", "MixGroupConnection" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.BenchmarkCellConfig), global::Bench.Common.BenchmarkCellConfig.Parser, new[]{ "ServiceType", "TransportType", "HubProtocol", "Scenario", "Step", "MixGroupName", "MixEchoConnection", "MixBroadcastConnection", "MixGroupConnection" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Force), global::Bench.Common.Force.Parser, new[]{ "Force_" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.Pair), global::Bench.Common.Pair.Parser, new[]{ "Key", "Value" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Bench.Common.CounterDict), global::Bench.Common.CounterDict.Parser, new[]{ "Pairs" }, null, null, null),
@@ -102,7 +102,7 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public BenchmarkCellConfig(BenchmarkCellConfig other) : this() {
-      serviveType_ = other.serviveType_;
+      serviceType_ = other.serviceType_;
       transportType_ = other.transportType_;
       hubProtocol_ = other.hubProtocol_;
       scenario_ = other.scenario_;
@@ -118,14 +118,14 @@ namespace Bench.Common {
       return new BenchmarkCellConfig(this);
     }
 
-    /// <summary>Field number for the "serviveType" field.</summary>
-    public const int ServiveTypeFieldNumber = 1;
-    private string serviveType_ = "";
+    /// <summary>Field number for the "serviceType" field.</summary>
+    public const int ServiceTypeFieldNumber = 1;
+    private string serviceType_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string ServiveType {
-      get { return serviveType_; }
+    public string ServiceType {
+      get { return serviceType_; }
       set {
-        serviveType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        serviceType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -230,7 +230,7 @@ namespace Bench.Common {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (ServiveType != other.ServiveType) return false;
+      if (ServiceType != other.ServiceType) return false;
       if (TransportType != other.TransportType) return false;
       if (HubProtocol != other.HubProtocol) return false;
       if (Scenario != other.Scenario) return false;
@@ -245,7 +245,7 @@ namespace Bench.Common {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (ServiveType.Length != 0) hash ^= ServiveType.GetHashCode();
+      if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
       if (TransportType.Length != 0) hash ^= TransportType.GetHashCode();
       if (HubProtocol.Length != 0) hash ^= HubProtocol.GetHashCode();
       if (Scenario.Length != 0) hash ^= Scenario.GetHashCode();
@@ -264,9 +264,9 @@ namespace Bench.Common {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (ServiveType.Length != 0) {
+      if (ServiceType.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(ServiveType);
+        output.WriteString(ServiceType);
       }
       if (TransportType.Length != 0) {
         output.WriteRawTag(18);
@@ -305,8 +305,8 @@ namespace Bench.Common {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (ServiveType.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiveType);
+      if (ServiceType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceType);
       }
       if (TransportType.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(TransportType);
@@ -340,8 +340,8 @@ namespace Bench.Common {
       if (other == null) {
         return;
       }
-      if (other.ServiveType.Length != 0) {
-        ServiveType = other.ServiveType;
+      if (other.ServiceType.Length != 0) {
+        ServiceType = other.ServiceType;
       }
       if (other.TransportType.Length != 0) {
         TransportType = other.TransportType;
@@ -378,7 +378,7 @@ namespace Bench.Common {
             input.SkipLastField();
             break;
           case 10: {
-            ServiveType = input.ReadString();
+            ServiceType = input.ReadString();
             break;
           }
           case 18: {

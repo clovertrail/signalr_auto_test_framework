@@ -103,12 +103,6 @@ namespace Bench.RpcMaster
                 // load job config
                 var jobConfig = new JobConfig(argsOption);
 
-                // allocate connections/protocol/transport type...
-                // TODO, only for dev
-                //var criteria = new Dictionary<string, int>();
-                //var allocator = new OneAllocator();
-                //var allocated = allocator.Allocate(slaveList, jobConfig.Connections, criteria);
-
                 // call salves to load job config
                 clients.ForEach( client =>
                 {
@@ -142,58 +136,27 @@ namespace Bench.RpcMaster
                     var collectCountersTasks = new List<Task>(clients.Count);
                     var isSend = false;
                     var isComplete = false;
-                    //var isComplete = false;
-                    var swCounter = new Stopwatch();
-                    swCounter.Start();
                     clients.ForEach(client =>
                     {
-                            // var task = 
-                                // Task.Run(() =>
-                                    // {
-                                        Util.Log($"ssssssss start collecting time: {Util.Timestamp2DateTimeStr(Util.Timestamp())}");
-                                        var swCounterInner = new Stopwatch();
-                                        swCounterInner.Start();
-                                        var swGetState = new Stopwatch();
-                                        swGetState.Start();
-                                        var state = client.GetState(new Empty { });
-                                        swGetState.Stop();
-                                        Util.Log($"********* swGetState: {swGetState.Elapsed.TotalSeconds} s");
-                                        if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
-                                        if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
-                                        isSend = true;
-                                        var swCounterCollect = new Stopwatch();
-                                        swCounterCollect.Start();
-                                        var counters = client.CollectCounters(new Force { Force_ = false });
-                                        swCounterCollect.Stop();
-                                        Util.Log($"............ swCounterCollect: {swCounterCollect.Elapsed.TotalSeconds} s");
+                        var state = client.GetState(new Empty { });
+                        if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
+                        if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
+                        isSend = true;
+                        isComplete = false;
+                        var counters = client.CollectCounters(new Force { Force_ = false });
 
-                                        var swUpdateCounters = new Stopwatch();
-                                        swUpdateCounters.Start();
-                                        for (var i = 0; i < counters.Pairs.Count; i++)
-                                        {
-                                            var key = counters.Pairs[i].Key;
-                                            var value = counters.Pairs[i].Value;
-                                            if (key.Contains("server"))
-                                            {
-                                                allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
-                                            }
-                                            else
-                                                allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
-                                        }
-                                        swUpdateCounters.Stop();
-                                        Util.Log($"uuuuuuuuuuuu swUpdateCounters: {swUpdateCounters.Elapsed.TotalSeconds} s");
-                                        swCounterInner.Stop();
-                                        Util.Log($"ccccccccccc swCounterInner: {swCounterInner.Elapsed.TotalSeconds} s");
-                                    // }
-                                // );
-                        // task.Start();
-                        // collectCountersTasks.Add(task);
+                        for (var i = 0; i < counters.Pairs.Count; i++)
+                        {
+                            var key = counters.Pairs[i].Key;
+                            var value = counters.Pairs[i].Value;
+                            if (key.Contains("server"))
+                            {
+                                allClientCounters.AddOrUpdate(key, value, (k, v) => Math.Max(v,value));
+                            }
+                            else
+                                allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
+                        }
                     });
-                    // Task.WhenAll(collectCountersTasks).Wait();
-
-                    swCounter.Stop();
-                    Util.Log($"CCCCCCCCCCCCCC collect time: {swCounter.Elapsed.TotalSeconds} s");
-
 
                     if (isSend == false || isComplete == true)
                     {
@@ -225,25 +188,20 @@ namespace Bench.RpcMaster
 
                     try
                     {
-                        //var percentage = GetSuccessPercentage(_counters, argsOption.Scenario, argsOption.Connections);
-                        //if (percentage > _successThreshold)
-                        //{
-
-                            var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
-                            if (!Directory.Exists(dir))
+                        var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
+                        if (!Directory.Exists(dir))
+                        {
+                            if (dir != null && dir != "")
                             {
-                                if (dir != null && dir != "")
-                                {
-                                    Directory.CreateDirectory(dir);
-                                }
+                                Directory.CreateDirectory(dir);
                             }
-                            if (!File.Exists(argsOption.OutputCounterFile))
-                            {
-                                StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
-                            }
+                        }
+                        if (!File.Exists(argsOption.OutputCounterFile))
+                        {
+                            StreamWriter sw = File.CreateText(argsOption.OutputCounterFile);
+                        }
 
-                            File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
-                        //}
+                        File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
                     }
                     catch (Exception ex)
                     {
@@ -251,22 +209,28 @@ namespace Bench.RpcMaster
                     }
                 };
                 collectTimer.Start();
+
                 // process jobs for each step
-                foreach (var step in argsOption.PipeLine.Split(';'))
+                var pipeLines = new List<string>(argsOption.PipeLine.Split(';'));
+                for (var i = 0; i < pipeLines.Count; i++)
                 {
+                    var step = pipeLines[i];
+                    var echoConn = Util.SplitNumber(argsOption.MixEchoConnection, i, slaveList.Count);
+                    var broadcastConn = Util.SplitNumber(argsOption.MixBroadcastConnection, i, slaveList.Count);
+                    var groupConn = Util.SplitNumber(argsOption.MixGroupConnection, i, slaveList.Count);
                     var benchmarkCellConfig = new BenchmarkCellConfig
                     {
-                        ServiveType = argsOption.ServiceType,
+                        ServiceType = argsOption.ServiceType,
                         TransportType = argsOption.TransportType,
                         HubProtocol = argsOption.HubProtocal,
                         Scenario = argsOption.Scenario,
                         Step = step,
-                        MixEchoConnection = 10, //todo
-                        MixBroadcastConnection = 10, //todo
-                        MixGroupName = "group", //todo
-                        MixGroupConnection = 10 //todo
+                        MixEchoConnection = echoConn,
+                        MixBroadcastConnection = broadcastConn,
+                        MixGroupName = argsOption.MixGroupName,
+                        MixGroupConnection = groupConn
                     };
-                    Util.Log($"service: {benchmarkCellConfig.ServiveType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
+                    Util.Log($"service: {benchmarkCellConfig.ServiceType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
                     var tasks = new List<Task>(clients.Count);
                     clients.ForEach(client =>
                     {

@@ -18,8 +18,6 @@ namespace Bench.RpcSlave.Worker.Operations
 
         public void Do(WorkerToolkit tk)
         {
-            
-
             var waitTime = 5 * 1000;
             Console.WriteLine($"wait time: {waitTime / 1000}s");
             Task.Delay(waitTime).Wait();
@@ -65,7 +63,6 @@ namespace Bench.RpcSlave.Worker.Operations
         {
             for (int i = 0; i < _tk.Connections.Count; i++)
             {
-                int ind = i;
                 _tk.Connections[i].On(_tk.BenchmarkCellConfig.Scenario, (int count, string time) =>
                 {
                     var receiveTimestamp = Util.Timestamp();
@@ -121,12 +118,9 @@ namespace Bench.RpcSlave.Worker.Operations
             }
         }
 
-
         private void SaveCounters()
         {
             _tk.Counters.SaveCounters();
         }
-
-        
     }
 }

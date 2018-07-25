@@ -16,7 +16,7 @@ service RpcService {
 
 
 message BenchmarkCellConfig {
-	string serviveType = 1;
+	string serviceType = 1;
 	string transportType = 2;
 	string hubProtocol = 3;
 	string scenario = 4;
