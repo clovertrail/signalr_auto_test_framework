@@ -142,7 +142,8 @@ namespace Bench.RpcMaster
                     {
                         var state = client.GetState(new Empty { });
                         if ((int)state.State >= (int)Stat.Types.State.SendComplete) isComplete = true;
-                        if ((int)state.State < (int)Stat.Types.State.SendRunning || (int)state.State >= (int)Stat.Types.State.SendComplete) return;
+                        if ((int)state.State < (int)Stat.Types.State.SendRunning || 
+                        (int)state.State > (int)Stat.Types.State.SendComplete && (int)state.State < (int)Stat.Types.State.HubconnDisconnecting) return;
                         isSend = true;
                         isComplete = false;
                         var counters = client.CollectCounters(new Force { Force_ = false });
