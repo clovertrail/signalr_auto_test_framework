@@ -35,15 +35,23 @@ namespace Bench.RpcSlave.Worker.Operations
             _tk.State = Stat.Types.State.SendRunning;
             Task.Delay(5000).Wait();
 
-            Util.Log($"join group");
-            JoinGroup();
-            Task.Delay(5000).Wait();
+            if (_tk.Connections.Count == 0)
+            {
+                Util.Log("no connections");
+                Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Duration + 15)).Wait();
+            }
+            else
+            {
+                Util.Log($"join group");
+                JoinGroup();
+                Task.Delay(5000).Wait();
 
-            StartSendMsg();
+                StartSendMsg();
 
-            Util.Log($"leave group");
-            LeaveGroup();
-            Task.Delay(5000).Wait();
+                Util.Log($"leave group");
+                LeaveGroup();
+                Task.Delay(5000).Wait();
+            }
 
             Task.Delay(30 * 1000).Wait();
 
@@ -61,6 +69,19 @@ namespace Bench.RpcSlave.Worker.Operations
             _sentMessagesEcho = new List<int>(_tk.BenchmarkCellConfig.MixEchoConnection);
             _sentMessagesBroadcast = new List<int>(_tk.BenchmarkCellConfig.MixBroadcastConnection);
             _sentMessagesGroup = new List<int>(_tk.BenchmarkCellConfig.MixGroupConnection);
+
+            for (var i = 0; i <_tk.BenchmarkCellConfig.MixEchoConnection; i++)
+            {
+                _sentMessagesEcho.Add(0);
+            }
+            for (var i = 0; i < _tk.BenchmarkCellConfig.MixBroadcastConnection; i++)
+            {
+                _sentMessagesBroadcast.Add(0);
+            }
+            for (var i = 0; i < _tk.BenchmarkCellConfig.MixGroupConnection; i++)
+            {
+                _sentMessagesGroup.Add(0);
+            }
 
             SetCallbacks();
 
@@ -177,15 +198,30 @@ namespace Bench.RpcSlave.Worker.Operations
                     try
                     {
                         await connection.SendAsync(name, _tk.BenchmarkCellConfig.MixGroupName, $"{Util.Timestamp()}");
-                        if (IsInRangeOf("echo", i, echoConnCnt, broadcastConnCnt, groupConnCnt)) _sentMessagesEcho[i]++;
-                        if (IsInRangeOf("broadcast", i, echoConnCnt, broadcastConnCnt, groupConnCnt)) _sentMessagesBroadcast[i]++;
-                        if (IsInRangeOf("group", i, echoConnCnt, broadcastConnCnt, groupConnCnt)) _sentMessagesGroup[i]++;
+                        if (IsInRangeOf("echo", i, echoConnCnt, broadcastConnCnt, groupConnCnt))
+                        {
+                            (var beg, var end) = GetRange("echo", echoConnCnt, broadcastConnCnt, groupConnCnt);
+                            var ind  = i - beg;
+                            _sentMessagesEcho[ind]++;
+                        }
+                        if (IsInRangeOf("broadcast", i, echoConnCnt, broadcastConnCnt, groupConnCnt))
+                        {
+                            (var beg, var end) = GetRange("broadcast", echoConnCnt, broadcastConnCnt, groupConnCnt);
+                            var ind  = i - beg;
+                            _sentMessagesBroadcast[ind]++;
+                        }
+                        if (IsInRangeOf("group", i, echoConnCnt, broadcastConnCnt, groupConnCnt))
+                        {
+                            (var beg, var end) = GetRange("group", echoConnCnt, broadcastConnCnt, groupConnCnt);
+                            var ind  = i - beg;
+                            _sentMessagesGroup[ind]++;
+                        }
                         _tk.Counters.IncreseSentMsg();
 
                     }
                     catch (Exception ex)
                     {
-                        Util.Log($"send msg fails: {name}");
+                        Util.Log($"send msg fails: {name}, exception: {ex}");
                         _tk.Counters.IncreseNotSentFromClientMsg();
                     }
                     await Task.Delay(TimeSpan.FromSeconds(_tk.JobConfig.Interval));

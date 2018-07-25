@@ -136,6 +136,8 @@ namespace Bench.RpcMaster
                     var collectCountersTasks = new List<Task>(clients.Count);
                     var isSend = false;
                     var isComplete = false;
+                    var swCollect = new Stopwatch();
+                    swCollect.Start();
                     clients.ForEach(client =>
                     {
                         var state = client.GetState(new Empty { });
@@ -157,7 +159,8 @@ namespace Bench.RpcMaster
                                 allClientCounters.AddOrUpdate(key, value, (k, v) => v + value);
                         }
                     });
-
+                    swCollect.Stop();
+                    Util.Log($"collecting counters time: {swCollect.Elapsed.TotalSeconds} s");
                     if (isSend == false || isComplete == true)
                     {
                         return;
@@ -214,26 +217,31 @@ namespace Bench.RpcMaster
                 var pipeLines = new List<string>(argsOption.PipeLine.Split(';'));
                 for (var i = 0; i < pipeLines.Count; i++)
                 {
-                    var step = pipeLines[i];
-                    var echoConn = Util.SplitNumber(argsOption.MixEchoConnection, i, slaveList.Count);
-                    var broadcastConn = Util.SplitNumber(argsOption.MixBroadcastConnection, i, slaveList.Count);
-                    var groupConn = Util.SplitNumber(argsOption.MixGroupConnection, i, slaveList.Count);
-                    var benchmarkCellConfig = new BenchmarkCellConfig
-                    {
-                        ServiceType = argsOption.ServiceType,
-                        TransportType = argsOption.TransportType,
-                        HubProtocol = argsOption.HubProtocal,
-                        Scenario = argsOption.Scenario,
-                        Step = step,
-                        MixEchoConnection = echoConn,
-                        MixBroadcastConnection = broadcastConn,
-                        MixGroupName = argsOption.MixGroupName,
-                        MixGroupConnection = groupConn
-                    };
-                    Util.Log($"service: {benchmarkCellConfig.ServiceType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
                     var tasks = new List<Task>(clients.Count);
+                    var step = pipeLines[i];
+                    int ind = -1;
                     clients.ForEach(client =>
                     {
+                        ind++;
+                        var echoConn = Util.SplitNumber(argsOption.MixEchoConnection, ind, slaveList.Count);
+                        var broadcastConn = Util.SplitNumber(argsOption.MixBroadcastConnection, ind, slaveList.Count);
+                        var groupConn = Util.SplitNumber(argsOption.MixGroupConnection, ind, slaveList.Count);
+                        Util.Log($"conn: echoConn {echoConn}, b: {broadcastConn}, g: {groupConn}");
+
+                        var benchmarkCellConfig = new BenchmarkCellConfig
+                        {
+                            ServiceType = argsOption.ServiceType,
+                            TransportType = argsOption.TransportType,
+                            HubProtocol = argsOption.HubProtocal,
+                            Scenario = argsOption.Scenario,
+                            Step = step,
+                            MixEchoConnection = echoConn,
+                            MixBroadcastConnection = broadcastConn,
+                            MixGroupName = argsOption.MixGroupName,
+                            MixGroupConnection = groupConn
+                        };
+                        Util.Log($"service: {benchmarkCellConfig.ServiceType}; transport: {benchmarkCellConfig.TransportType}; hubprotocol: {benchmarkCellConfig.HubProtocol}; scenario: {benchmarkCellConfig.Scenario}; step: {step}");
+
                         tasks.Add(Task.Run(() =>
                         {
                             client.RunJob(benchmarkCellConfig);
@@ -316,9 +324,12 @@ namespace Bench.RpcMaster
             {
                 percentage = (double)received / (total * connection);
             }
-            else
+            else if (scenario.Contains("echo"))
             {
                 percentage = (double)received / (total);
+            } else if (scenario.Contains("mix"))
+            {
+                percentage  = 1.0; // todo
             }
 
             return percentage;
