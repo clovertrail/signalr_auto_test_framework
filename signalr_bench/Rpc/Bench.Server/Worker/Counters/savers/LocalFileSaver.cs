@@ -38,7 +38,6 @@ namespace Bench.RpcSlave.Worker.Savers
             string oneLineRecord = Regex.Replace(rec.ToString(), @"\s+", "");
             oneLineRecord = Regex.Replace(oneLineRecord, @"\t|\n|\r", "") + Environment.NewLine;
             Util.SaveContentToFile(url, oneLineRecord, true);
-            SaveFile(url, oneLineRecord);
         }
     }
 }
