@@ -82,17 +82,17 @@ namespace Bench.Common
         [Option("pidFile", Default = null, Required = false, HelpText = "Set The File to Save PID")]
         public string PidFile { get; set; }
 
-        [Option("mixEchoConnection", Default = null, Required = false, HelpText = "")]
-        public int MixEchoConnection {get; set;}
+        [Option("mixEchoConnection", Default = 0, Required = false, HelpText = "")]
+        public int MixEchoConnection { get; set; }
 
-        [Option("mixBroadcastConnection", Required = false, HelpText = "")]
-        public int MixBroadcastConnection {get; set;}
+        [Option("mixBroadcastConnection", Default = 0, Required = false, HelpText = "")]
+        public int MixBroadcastConnection { get; set; }
 
-        [Option("mixGroupConnection",  Required = false, HelpText = "")]
-        public int MixGroupConnection {get; set;}
+        [Option("mixGroupConnection", Default = 0, Required = false, HelpText = "")]
+        public int MixGroupConnection { get; set; }
 
-        [Option("mixGroupName",  Required = false, HelpText = "")]
-        public string MixGroupName {get; set;}
+        [Option("mixGroupName", Required = false, HelpText = "")]
+        public string MixGroupName { get; set; } = Guid.NewGuid().ToString("n").Substring(0, 8);
 
         [Option("groupConnection",  Required = false, HelpText = "")]
         public int GroupConnection {get; set;}

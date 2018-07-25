@@ -43,10 +43,7 @@ namespace Bench.RpcMaster
             var pid = Process.GetCurrentProcess().Id;
             if (argsOption.PidFile != null)
             {
-                using (StreamWriter file = new StreamWriter(argsOption.PidFile, false))
-                {
-                    file.Write(pid);
-                }
+                Util.SaveContentToFile(argsOption.PidFile, Convert.ToString(pid), false);
             }
 
             var slaveList = new List<string>(argsOption.SlaveList.Split(';'));
@@ -109,6 +106,12 @@ namespace Bench.RpcMaster
                     var i = clients.IndexOf(client);
                     var clientConnections = Util.SplitNumber(argsOption.Connections, i, slaveList.Count);
                     var concurrentConnections = Util.SplitNumber(argsOption.ConcurrentConnection, i, slaveList.Count);
+                    // modify the illegal case
+                    if (clientConnections > 0 && concurrentConnections == 0)
+                    {
+                        Util.Log($"Warning: the concurrent connection '{argsOption.ConcurrentConnection}' is too small, it is '{slaveList.Count}' at least");
+                        concurrentConnections = 1;
+                    }
                     var state = new Stat();
                     state = client.CreateWorker(new Empty());
                     var config = new CellJobConfig
@@ -192,16 +195,7 @@ namespace Bench.RpcMaster
 
                     try
                     {
-                        var dir = System.IO.Path.GetDirectoryName(argsOption.OutputCounterFile);
-                        if (!Directory.Exists(dir))
-                        {
-                            if (dir != null && dir != "")
-                            {
-                                Directory.CreateDirectory(dir);
-                            }
-                        }
-
-                        File.AppendAllText(argsOption.OutputCounterFile, onelineRecord);
+                        Util.SaveContentToFile(argsOption.OutputCounterFile, onelineRecord, true);
                     }
                     catch (Exception ex)
                     {
@@ -290,13 +284,7 @@ namespace Bench.RpcMaster
             onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
             onelineRecord += Environment.NewLine;
 
-            var resDir = System.IO.Path.GetDirectoryName(path);
-            if (!Directory.Exists(resDir))
-            {
-                Directory.CreateDirectory(resDir);
-            }
-
-            File.AppendAllText(path, onelineRecord);
+            Util.SaveContentToFile(path, onelineRecord, false);
         }
 
         private static void SaveToFile(string path, JObject jobj)
@@ -305,13 +293,7 @@ namespace Bench.RpcMaster
             onelineRecord = Regex.Replace(onelineRecord, @"\t|\n|\r", "");
             onelineRecord += Environment.NewLine;
 
-            var resDir = System.IO.Path.GetDirectoryName(path);
-            if (!Directory.Exists(resDir))
-            {
-                Directory.CreateDirectory(resDir);
-            }
-
-            File.AppendAllText(path, onelineRecord);
+            Util.SaveContentToFile(path, onelineRecord, true);
         }
 
         private static double GetSuccessPercentage(JObject counters, string scenario, int connection)
