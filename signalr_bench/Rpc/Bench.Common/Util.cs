@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
@@ -109,6 +110,19 @@ namespace Bench.Common
                 baseNumber++;
             }
             return baseNumber;
+        }
+
+        public static void SaveContentToFile(string path, string content, bool append)
+        {
+            var resDir = System.IO.Path.GetDirectoryName(path);
+            if (!Directory.Exists(resDir))
+            {
+                Directory.CreateDirectory(resDir);
+            }
+            using (StreamWriter sr = new StreamWriter(path, append))
+            {
+                sr.Write(content);
+            }
         }
     }
 }

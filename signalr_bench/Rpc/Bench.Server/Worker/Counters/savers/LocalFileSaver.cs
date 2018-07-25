@@ -42,16 +42,10 @@ namespace Bench.RpcSlave.Worker.Savers
 
         private void SaveFile(string path, string content)
         {
-            if (!File.Exists(path))
+            using (StreamWriter sr = new StreamWriter(path, true))
             {
-                StreamWriter sw = File.CreateText(path);
+                sr.Write(content);
             }
-            File.AppendAllText(path, content);
-
         }
-
-        
-
-        
     }
 }
