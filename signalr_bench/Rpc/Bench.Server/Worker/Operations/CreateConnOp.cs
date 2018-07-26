@@ -29,9 +29,9 @@ namespace Bench.RpcSlave.Worker.Operations
             Util.Log($"xxxconnections: {_tk.Connections.Count}");
         }
 
-        private List<HubConnection> Create(int conn, string url, 
+        private List<HubConnection> Create(int conn, string url,
             string transportTypeName = "Websockets",
-            string hubProtocol = "json") 
+            string hubProtocol = "json")
         {
             Util.Log($"transport type: {transportTypeName}");
             var transportType = HttpTransportType.WebSockets;
@@ -105,6 +105,5 @@ namespace Bench.RpcSlave.Worker.Operations
             return connections;
 
         }
-        
     }
 }

@@ -64,9 +64,9 @@ namespace Bench.RpcSlave.Worker.Operations
         private void Setup()
         {
             StartTimeOffsetGenerator = new RandomGenerator(new LocalFileSaver());
-            _sentMessagesGroup = new List<int>(_tk.BenchmarkCellConfig.MixGroupConnection);
+            _sentMessagesGroup = new List<int>(_tk.Connections.Count);
 
-            for (var i = 0; i < _tk.BenchmarkCellConfig.MixGroupConnection; i++)
+            for (var i = 0; i < _tk.Connections.Count; i++)
             {
                 _sentMessagesGroup.Add(0);
             }
@@ -79,13 +79,14 @@ namespace Bench.RpcSlave.Worker.Operations
 
         private void JoinGroup()
         {
-            for (int i = _tk.ConnectionRange.Begin; i <_tk.ConnectionRange.End; i++)
+            for (var i = _tk.ConnectionRange.Begin; i <_tk.ConnectionRange.End; i++)
             {
+                var ind = i;
                 Task.Run(() =>
                 {
                     try
                     {
-                        _tk.Connections[i - _tk.ConnectionRange.Begin].SendAsync("JoinGroup", _tk.ConnectionConfigList.Configs[i].GroupName, "");
+                        _tk.Connections[ind - _tk.ConnectionRange.Begin].SendAsync("JoinGroup", _tk.ConnectionConfigList.Configs[ind].GroupName, "");
                     }
                     catch (Exception ex)
                     {
@@ -100,11 +101,12 @@ namespace Bench.RpcSlave.Worker.Operations
         {
             for (int i = _tk.ConnectionRange.Begin; i < _tk.ConnectionRange.End; i++)
             {
+                var ind = i;
                 Task.Run(() =>
                 {
                     try
                     {
-                        _tk.Connections[i - _tk.ConnectionRange.Begin].SendAsync("LeaveGroup", _tk.ConnectionConfigList.Configs[i].GroupName, "");
+                        _tk.Connections[ind - _tk.ConnectionRange.Begin].SendAsync("LeaveGroup", _tk.ConnectionConfigList.Configs[ind].GroupName, "");
                     }
                     catch (Exception ex)
                     {
@@ -129,6 +131,14 @@ namespace Bench.RpcSlave.Worker.Operations
 
                     _tk.Counters.CountLatency(sendTimestamp, receiveTimestamp);
                     _tk.Counters.SetServerCounter(count);
+                });
+
+                _tk.Connections[i].On("JoinGroup", (string connectionId, string message) =>
+                {
+                });
+
+                _tk.Connections[i].On("LeaveGroup", (string connectionId, string message) =>
+                {
                 });
             }
         }
@@ -163,8 +173,8 @@ namespace Bench.RpcSlave.Worker.Operations
                 {
                     try
                     {
-                        await connection.SendAsync(name, _tk.ConnectionConfigList.Configs[i + _tk.ConnectionRange.Begin].GroupName, $"{Util.Timestamp()}");
-                        _sentMessagesGroup[i]++;
+                        await connection.SendAsync(name, _tk.ConnectionConfigList.Configs[i - _tk.ConnectionRange.Begin].GroupName, $"{Util.Timestamp()}");
+                        _sentMessagesGroup[i - _tk.ConnectionRange.Begin]++;
                         _tk.Counters.IncreseSentMsg();
 
                     }

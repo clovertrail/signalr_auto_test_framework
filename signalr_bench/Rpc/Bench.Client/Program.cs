@@ -310,10 +310,16 @@ namespace Bench.RpcMaster
             else if (scenario.Contains("echo"))
             {
                 percentage = (double)received / (total);
-            } else if (scenario.Contains("mix"))
+            }
+            else if (scenario.Contains("mix"))
             {
                 percentage  = 1.0; // todo
             }
+            else if (scenario.Contains("group"))
+            {
+                percentage = 1.0; // todo
+            }
+            
 
             return percentage;
         }
@@ -354,7 +360,7 @@ namespace Bench.RpcMaster
             {
                 SaveToFile(path, res);
                 throw new Exception();
-            } 
+            }
             else
             {
                 SaveToFile(path, res);

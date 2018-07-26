@@ -148,6 +148,7 @@ namespace Bench.RpcSlave
 
         public override Task<Empty> LoadConnectionRange(Range connectionRange, ServerCallContext context)
         {
+            Util.Log($"connection ind range for current client: {connectionRange.Begin} {connectionRange.End}");
             _sigWorker.LoadConnectionRange(connectionRange);
             return Task.FromResult(new Empty());
         }
