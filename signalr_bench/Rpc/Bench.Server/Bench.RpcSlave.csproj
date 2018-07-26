@@ -8,6 +8,7 @@
     <OutputType>Exe</OutputType>
     <PackageId>Bench.Server</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

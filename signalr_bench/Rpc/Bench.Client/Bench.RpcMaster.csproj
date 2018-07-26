@@ -8,6 +8,7 @@
     <OutputType>Exe</OutputType>
     <PackageId>Bench.Client</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   

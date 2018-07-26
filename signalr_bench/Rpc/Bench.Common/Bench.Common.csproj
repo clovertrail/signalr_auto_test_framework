@@ -7,6 +7,7 @@
     <AssemblyName>Bench.Common</AssemblyName>
     <PackageId>Bench.Common</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
