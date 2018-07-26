@@ -142,7 +142,8 @@ namespace JenkinsScript
         }
 
         public static (int, string) StartAppServer(List<string> hosts, AgentConfig agentConfig, ArgsOption argsOption,
-        string serviceType, string transportType, string hubProtocol, string scenario, int connection, string useLocalSingalR="false", string repoRoot="/home/wanl/signalr_auto_test_framework")
+        string serviceType, string transportType, string hubProtocol, string scenario, int connection,
+        string useLocalSingalR="false", string repoRoot="/home/wanl/signalr_auto_test_framework")
         {
             var errCode = 0;
             var result = "";
@@ -190,10 +191,11 @@ namespace JenkinsScript
         }
 
         public static (int, string) StartRpcMaster(AgentConfig agentConfig,
-            ArgsOption argsOption, string serviceType, bool isSelfHost, string transportType, string hubProtocol, string scenario,
+            ArgsOption argsOption, string serviceType, string transportType, string hubProtocol, string scenario,
             int connection, int duration, int interval, string pipeLine,
             int mixEchoConnection, int mixBroadcastConnection, int mixGroupConnection, string mixGroupName,
-            BenchmarkVmBuilder vmCreator, string mode="All", string repoRoot="/home/wanl/signalr_auto_test_framework")
+            int groupNum,
+            string serverUrl, string repoRoot="/home/wanl/signalr_auto_test_framework")
         {
             Util.Log($"service type: {serviceType}, transport type: {transportType}, hub protocol: {hubProtocol}, scenario: {scenario}");
             var errCode = 0;
@@ -210,9 +212,7 @@ namespace JenkinsScript
                     slaveList += ";";
             }
 
-            var serverUrl = vmCreator.AppSvrDomainName();
-
-            if (mode == "debugmaclocal") serverUrl = "localhost";
+            // if (mode == "debugmaclocal") serverUrl = "localhost";
 
             for (var i = 0; i < 1; i++)
             {
@@ -225,10 +225,6 @@ namespace JenkinsScript
                 outputCounterFile = outputCounterDir + $"counters.txt";
 
                 cmd += $"rm -rf {outputCounterFile} || true;";
-
-                // cmd += $"export bench_type_list='{serviceType}{connection}'; " +
-                //     $"export bench_codec_list='{hubProtocol}'; " +
-                //     $"export bench_name_list='{scenario}'; ";
 
                 cmd += $" mkdir log/{Environment.GetEnvironmentVariable("result_root")}/; ";
 
@@ -244,7 +240,8 @@ namespace JenkinsScript
                     $" --mixGroupConnection  {mixGroupConnection} " +
                     $" --mixGroupName  {mixGroupName} " +
                     $" --concurrentConnection 1 " +
-                    // $" --pidFile pid_{Environment.GetEnvironmentVariable("result_root")}.txt " +
+                    $" --groupConnection {connection} " +
+                    $" --groupNum {groupNum} " +
                     $" -o '{outputCounterFile}' > log/{Environment.GetEnvironmentVariable("result_root")}/log_rpcmaster_{serviceType}_{transportType}_{hubProtocol}_{scenario}_{connection}.txt";
 
                 Util.Log($"CMD: {agentConfig.User}@{agentConfig.Master}: {cmd}");

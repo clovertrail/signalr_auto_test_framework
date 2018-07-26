@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+
+// todo: uniform in the same structure for scenarios
 namespace Bench.Common.Config
 {
     public class JobConfig
