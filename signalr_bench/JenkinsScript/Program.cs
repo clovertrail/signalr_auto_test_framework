@@ -336,7 +336,7 @@ namespace JenkinsScript
             var errCode = 0;
             var result = "";
             Util.Log($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
-            Task.Delay(waitTime).Wait();
+            (errCode, result) = ShellHelper.KillAllDotnetProcess(hosts, agentConfig, argsOption, repoRoot);
             (errCode, result) = ShellHelper.StartAppServer(hosts, agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario, connection, useLocalSignalR, repoRoot);
             Task.Delay(waitTime).Wait();
             (errCode, result) = ShellHelper.StartRpcSlaves(agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario, connection, repoRoot);
