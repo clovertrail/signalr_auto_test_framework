@@ -152,7 +152,7 @@ namespace Bench.RpcSlave.Worker.Operations
             else
             {
                 var tasks = new List<Task>(_tk.Connections.Count);
-                for (var i = 0; i < _tk.Connections.Count; i++)
+                for (var i = _tk.ConnectionRange.Begin; i < _tk.ConnectionRange.End; i++)
                 {
                     tasks.Add(StartSendingMessageAsync(_tk.Connections[i], i));
                 }
@@ -176,7 +176,6 @@ namespace Bench.RpcSlave.Worker.Operations
                         await connection.SendAsync(name, _tk.ConnectionConfigList.Configs[i - _tk.ConnectionRange.Begin].GroupName, $"{Util.Timestamp()}");
                         _sentMessagesGroup[i - _tk.ConnectionRange.Begin]++;
                         _tk.Counters.IncreseSentMsg();
-
                     }
                     catch (Exception ex)
                     {
