@@ -280,9 +280,9 @@ namespace JenkinsScript
                                 }
                             }
                             indType++;
-                            if (argsOption.UseLocalSignalR == "false" &&
-                                argsOption.AzureSignalrConnectionString != null &&
-                                argsOption.AzureSignalrConnectionString != "")
+                            if (argsOption.UseLocalSignalR == "true" ||
+                                argsOption.AzureSignalrConnectionString == null ||
+                                argsOption.AzureSignalrConnectionString == "")
                                 (errCode, result) = ShellHelper.DeleteSignalr (argsOption);
 
                             //(errCode, result) = ShellHelper.DeleteSignalr(argsOption);
