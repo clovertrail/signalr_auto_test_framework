@@ -10,5 +10,6 @@ namespace Bench.Common.Config
         public string TransportType { get; set; }
         public string Stage { get; set; }
         public List<string> GroupNameList {get; set;}
+        public bool Idle {get; set;}
     }
 }

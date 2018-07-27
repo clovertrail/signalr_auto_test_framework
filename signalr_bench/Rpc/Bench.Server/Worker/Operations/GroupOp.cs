@@ -152,7 +152,7 @@ namespace Bench.RpcSlave.Worker.Operations
                 for (var i = _tk.ConnectionRange.Begin; i < _tk.ConnectionRange.End; i++)
                 {
                     Util.Log ($"tk conn count: {_tk.Connections.Count}, ({_tk.ConnectionRange.Begin}, {_tk.ConnectionRange.End}), i:{i}");
-                    tasks.Add (StartSendingMessageAsync (_tk.Connections[i], i));
+                    tasks.Add (StartSendingMessageAsync (_tk.Connections[i - _tk.ConnectionRange.Begin], i));
                 }
 
                 Task.WhenAll (tasks).Wait ();
