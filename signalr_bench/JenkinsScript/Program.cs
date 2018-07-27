@@ -164,7 +164,7 @@ namespace JenkinsScript
 
                                             for (var groupNum = groupNumBase; groupNum < groupNumBase + groupNumStep * groupNumLength; groupNum += groupNumStep)
                                             {
-                                                RunJob (serviceType, transportType, hubProtocol, scenario, connection, groupNum, jobConfig, agentConfig, argsOption, hosts, repoRoot, serverUrl: "localhost", useLocalSignalR: "false",  waitTime : TimeSpan.FromSeconds (5));
+                                                RunJob (serviceType, transportType, hubProtocol, scenario, connection, groupNum, jobConfig, agentConfig, argsOption, hosts, repoRoot, serverUrl: "localhost", useLocalSignalR: "false", waitTime : TimeSpan.FromSeconds (5));
                                             }
                                         }
                                     }
@@ -280,7 +280,11 @@ namespace JenkinsScript
                                 }
                             }
                             indType++;
-                            (errCode, result) = ShellHelper.DeleteSignalr (argsOption);
+                            if (argsOption.UseLocalSignalR == "false" &&
+                                argsOption.AzureSignalrConnectionString != null &&
+                                argsOption.AzureSignalrConnectionString != "")
+                                (errCode, result) = ShellHelper.DeleteSignalr (argsOption);
+
                             //(errCode, result) = ShellHelper.DeleteSignalr(argsOption);
                         }
                         //(errCode, result) = ShellHelper.GenerateAllReports(hosts, agentConfig);

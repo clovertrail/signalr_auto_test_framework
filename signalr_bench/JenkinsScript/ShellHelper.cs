@@ -79,8 +79,7 @@ namespace JenkinsScript
             hosts.ForEach (host =>
             {
                 cmd = $"killall dotnet || true";
-                if (host.Contains ("localhost") || host.Contains ("127.0.0.1"))
-                { }
+                if (host.Contains ("localhost") || host.Contains ("127.0.0.1")) { }
                 else if (host == agentConfig.Master) // todo: move rpc master to another vm
                 {
                     Util.Log ($"CMD: {agentConfig.User}@{host}: {cmd}");
@@ -122,8 +121,7 @@ namespace JenkinsScript
                     cmdInner += $"git reset --hard {commit};";
                     cmdInner += $" cd ~ ;";
                     Util.Log ($"CMD: {agentConfig.User}@{host}: {cmdInner}");
-                    if (host == agentConfig.Master)
-                    { }
+                    if (host == agentConfig.Master) { }
                     else (errCodeInner, resultInner) = ShellHelper.RemoteBash (agentConfig.User, host, agentConfig.SshPort, agentConfig.Password, cmdInner);
                     if (errCodeInner != 0)
                     {
@@ -215,8 +213,6 @@ namespace JenkinsScript
                     slaveList += ";";
             }
 
-            // if (mode == "debugmaclocal") serverUrl = "localhost";
-
             for (var i = 0; i < 1; i++)
             {
                 var clear = "false";
@@ -224,7 +220,11 @@ namespace JenkinsScript
                 var outputCounterFile = "";
 
                 cmd = $"cd {repoRoot}/signalr_bench/Rpc/Bench.Client/; ";
-                outputCounterDir = $"{repoRoot}/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{serviceType}_{transportType}_{hubProtocol}_{scenario}_{connection}/";
+                if (scenario == "echo" || scenario == "broadcast")
+                    outputCounterDir = $"{repoRoot}/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{serviceType}_{transportType}_{hubProtocol}_{scenario}_{connection}_{groupNum}/";
+                else if (scenario == "group")
+                    outputCounterDir = $"{repoRoot}/signalr_bench/Report/public/results/{Environment.GetEnvironmentVariable("result_root")}/{serviceType}_{transportType}_{hubProtocol}_{scenario}_{connection}_{groupNum}/";
+
                 outputCounterFile = outputCounterDir + $"counters.txt";
 
                 cmd += $"rm -rf {outputCounterFile} || true;";
