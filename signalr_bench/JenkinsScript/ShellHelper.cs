@@ -120,7 +120,7 @@ namespace JenkinsScript
                     cmdInner += $"cd {repoRoot};";
                     cmdInner += $"git checkout {branch};";
                     cmdInner += $"git reset --hard {commit};";
-                    cmdInner += "$ cd ~ ;";
+                    cmdInner += $" cd ~ ;";
                     Util.Log ($"CMD: {agentConfig.User}@{host}: {cmdInner}");
                     if (host == agentConfig.Master)
                     { }
