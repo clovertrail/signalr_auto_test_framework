@@ -118,7 +118,7 @@ namespace JenkinsScript
                     var resultInner = "";
                     var cmdInner = $"rm -rf {repoRoot}; git clone {agentConfig.Repo} {repoRoot}; "; //TODO
                     cmdInner += $"git checkout {branch};";
-                    cmdInner += $"git reset --hard {commit}";
+                    cmdInner += $"git reset --hard {commit};";
                     Util.Log ($"CMD: {agentConfig.User}@{host}: {cmdInner}");
                     if (host == agentConfig.Master)
                     { }
