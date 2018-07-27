@@ -164,7 +164,7 @@ namespace JenkinsScript
 
                                             for (var groupNum = groupNumBase; groupNum < groupNumBase + groupNumStep * groupNumLength; groupNum += groupNumStep)
                                             {
-                                                RunJob (serviceType, transportType, hubProtocol, scenario, connection, groupNum, jobConfig, agentConfig, argsOption, hosts, repoRoot, serverUrl: "localhost", useLocalSignalR: "true", waitTime : TimeSpan.FromSeconds (5));
+                                                RunJob (serviceType, transportType, hubProtocol, scenario, connection, groupNum, jobConfig, agentConfig, argsOption, hosts, repoRoot, serverUrl: "localhost", useLocalSignalR: "false",  waitTime : TimeSpan.FromSeconds (5));
                                             }
                                         }
                                     }
@@ -273,7 +273,7 @@ namespace JenkinsScript
                                         {
                                             for (var groupNum = groupNumBase; groupNum < groupNumBase + groupNumStep * groupNumLength; groupNum += groupNumStep)
                                             {
-                                                RunJob (serviceType, transportType, hubProtocol, scenario, connection, groupNum, jobConfig, agentConfig, argsOption, hosts, repoRoot: "~/signalr_auto_test_framework", serverUrl : vmBuilder.AppSvrDomainName (), useLocalSignalR: "false", waitTime : TimeSpan.FromSeconds (20));
+                                                RunJob (serviceType, transportType, hubProtocol, scenario, connection, groupNum, jobConfig, agentConfig, argsOption, hosts, repoRoot: "~/signalr_auto_test_framework", serverUrl : vmBuilder.AppSvrDomainName (), argsOption.UseLocalSignalR, waitTime : TimeSpan.FromSeconds (20));
                                             }
                                         }
                                     }
@@ -343,9 +343,9 @@ namespace JenkinsScript
             Util.Log ($"current connection: {connection}, duration: {jobConfig.Duration}, interval: {jobConfig.Interval}, transport type: {transportType}, protocol: {hubProtocol}, scenario: {scenario}");
             (errCode, result) = ShellHelper.KillAllDotnetProcess (hosts, agentConfig, argsOption, repoRoot);
             (errCode, result) = ShellHelper.StartAppServer (hosts, agentConfig, argsOption.AzureSignalrConnectionString, serviceType, transportType, hubProtocol, scenario, connection, useLocalSignalR, repoRoot);
-            Task.Delay (waitTime).Wait();
+            Task.Delay (waitTime).Wait ();
             (errCode, result) = ShellHelper.StartRpcSlaves (agentConfig, argsOption, serviceType, transportType, hubProtocol, scenario, connection, repoRoot);
-            Task.Delay (waitTime).Wait();
+            Task.Delay (waitTime).Wait ();
             (errCode, result) = ShellHelper.StartRpcMaster (agentConfig, argsOption,
                 serviceType, transportType, hubProtocol, scenario, connection, jobConfig.Duration,
                 jobConfig.Interval, string.Join (";", jobConfig.Pipeline),

@@ -55,11 +55,14 @@ namespace JenkinsScript
         [Option ("debug", Required = false, HelpText = " debug")]
         public string Debug { get; set; }
 
-        [Option ("commit", Required = false, HelpText = "")]
+        [Option ("commit", Default = "", Required = false, HelpText = "")]
         public string Commit { get; set; }
 
-        [Option ("branch", Required = false, HelpText = "master")]
+        [Option ("branch", Default = "master", Required = false, HelpText = "")]
         public string Branch { get; set; }
+
+        [Option ("useLocalSignalR", Default = "false", Required = false, HelpText = "")]
+        public string UseLocalSignalR { get; set; }
 
     }
 }
