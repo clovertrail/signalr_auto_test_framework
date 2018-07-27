@@ -117,7 +117,7 @@ namespace JenkinsScript
                     var errCodeInner = 0;
                     var resultInner = "";
                     var cmdInner = $"rm -rf {repoRoot}; git clone {agentConfig.Repo} {repoRoot}; "; //TODO
-                    cmdInner += "cd {repoRoot};";
+                    cmdInner += $"cd {repoRoot};";
                     cmdInner += $"git checkout {branch};";
                     cmdInner += $"git reset --hard {commit};";
                     cmdInner += "$ cd ~ ;";
