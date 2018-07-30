@@ -72,6 +72,11 @@ namespace JenkinsScript
                     }
                     else
                     {
+                        var destFile = System.IO.Path.Combine(argsOption.ExtensionScriptDir, "utils.sh");
+                        if (argsOption.UtilsFilePath != null)
+                        {
+                            System.IO.File.Copy(argsOption.UtilsFilePath, destFile, true);
+                        }
                         var postfix = Util.GenRandPrefix ();
                         resourceGroupName = Util.GenResourceGroupName (postfix);
                         signalrServiceName = Util.GenSignalRServiceName (postfix);
@@ -95,6 +100,11 @@ namespace JenkinsScript
                         }
                         else
                         {
+                            var destFile = System.IO.Path.Combine(argsOption.ExtensionScriptDir, "utils.sh");
+                            if (argsOption.UtilsFilePath != null)
+                            {
+                                System.IO.File.Copy(argsOption.UtilsFilePath, destFile, true);
+                            }
                             DogfoodSignalROps.DeleteDogfoodSignalRService (argsOption.ExtensionScriptDir, argsOption.ResourceGroup, argsOption.SignalRService);
                         }
                     }
