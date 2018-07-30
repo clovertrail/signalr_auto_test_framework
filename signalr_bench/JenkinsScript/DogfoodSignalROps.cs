@@ -21,6 +21,7 @@
 
             // Dogfood Azure login
             var cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; az_login_ASRS_dogfood";
+            Util.Log(cmd);
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0)
             {
@@ -29,6 +30,7 @@
             }
             // Create resource group if it does not exist
             cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; create_group_if_not_exist {resourceGroup} {location}";
+            Util.Log(cmd);
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0)
             {
@@ -37,6 +39,7 @@
             }
             // Create SignalR service
             cmd = $"cd {extensionScriptsDir}; . ./az_signalr_service.sh; create_signalr_service {resourceGroup} {serviceName} {sku} {unit}";
+            Util.Log(cmd);
             (errCode, result) = ShellHelper.Bash(cmd, handleRes: true);
             if (errCode != 0)
             {
